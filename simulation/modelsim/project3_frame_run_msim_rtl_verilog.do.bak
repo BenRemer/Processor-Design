@@ -1,0 +1,14 @@
+transcript on
+if {[file exists rtl_work]} {
+	vdel -lib rtl_work -all
+}
+vlib rtl_work
+vmap work rtl_work
+
+vlog -vlog01compat -work work +incdir+C:/Users/caoji/Desktop/project3 {C:/Users/caoji/Desktop/project3/Pll.vo}
+vlib Pll
+vmap Pll Pll
+vlog -vlog01compat -work Pll +incdir+C:/Users/caoji/Desktop/project3/Pll {C:/Users/caoji/Desktop/project3/Pll/Pll_0002.v}
+vlog -vlog01compat -work work +incdir+C:/Users/caoji/Desktop/project3 {C:/Users/caoji/Desktop/project3/SevenSeg.v}
+vlog -vlog01compat -work work +incdir+C:/Users/caoji/Desktop/project3 {C:/Users/caoji/Desktop/project3/project3_frame.v}
+

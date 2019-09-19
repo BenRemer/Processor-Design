@@ -1,0 +1,171 @@
+# Reading C:/intelFPGA_lite/18.0/modelsim_ase/tcl/vsim/pref.tcl
+# do project3_frame_run_msim_rtl_verilog.do
+# if ![file isdirectory project3_frame_iputf_libs] {
+# 	file mkdir project3_frame_iputf_libs
+# }
+# 
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Model Technology ModelSim - Intel FPGA Edition vmap 10.5b Lib Mapping Utility 2016.10 Oct  5 2016
+# vmap work rtl_work 
+# Copying C:/intelFPGA_lite/18.0/modelsim_ase/win32aloem/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# 
+###### Libraries for IPUTF cores 
+###### End libraries for IPUTF cores 
+###### MIF file copy and HDL compilation commands for IPUTF cores 
+# 
+# 
+# vlog "C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo"
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 12:29:31 on Sep 19,2019
+# vlog -reportprogress 300 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo 
+# -- Compiling module Pll
+# 
+# Top level modules:
+# 	Pll
+# End time: 12:29:31 on Sep 19,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3 {C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v}
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 12:29:31 on Sep 19,2019
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3" C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v 
+# -- Compiling module SevenSeg
+# 
+# Top level modules:
+# 	SevenSeg
+# End time: 12:29:31 on Sep 19,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3 {C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v}
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 12:29:32 on Sep 19,2019
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3" C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v 
+# -- Compiling module project3_frame
+# -- Compiling module SXT
+# 
+# Top level modules:
+# 	project3_frame
+# End time: 12:29:32 on Sep 19,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3 {C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v}
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 12:29:32 on Sep 19,2019
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3" C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v 
+# -- Compiling module tb_project3
+# 
+# Top level modules:
+# 	tb_project3
+# End time: 12:29:32 on Sep 19,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# vsim -t 1ps -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cyclonev_ver -L cyclonev_hssi_ver -L cyclonev_pcie_hip_ver -L rtl_work -L work -voptargs="+acc"  tb_project3
+# vsim -t 1ps -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L cyclonev_ver -L cyclonev_hssi_ver -L cyclonev_pcie_hip_ver -L rtl_work -L work -voptargs=""+acc"" tb_project3 
+# Start time: 12:29:32 on Sep 19,2019
+# Loading work.tb_project3
+# Loading work.project3_frame
+# Loading work.Pll
+# Loading sv_std.std
+# Loading altera_lnsim_ver.altera_lnsim_functions
+# Loading altera_lnsim_ver.altera_pll
+# Loading work.SXT
+# Loading work.SevenSeg
+# Loading altera_lnsim_ver.dps_extra_kick
+# Loading altera_lnsim_ver.dprio_init
+# Loading altera_lnsim_ver.altera_generic_pll_functions
+# Loading altera_lnsim_ver.generic_pll
+# ** Warning: (vsim-3017) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Too few port connections. Expected 26, found 5.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_project3/myprj/myPll/pll_altera_pll_altera_pll_i_639 File: /build/swbuild/SJ/nightly/18.0std/614/l64/work/modelsim/eda/sim_lib/altera_lnsim.sv
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'refclk1'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'phase_en'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'updn'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'num_phase_shifts'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'scanclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'cntsel'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'reconfig_to_pll'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'extswitch'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'adjpllin'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'cclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'fboutclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'phase_done'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'reconfig_from_pll'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'activeclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'clkbad'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'phout'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'lvds_clk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'loaden'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'extclk_out'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'cascade_out'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'zdbfbclk'.
+# 
+# add wave *
+# view structure
+# .main_pane.structure.interior.cs.body.struct
+# view signals
+# .main_pane.objects.interior.cs.body.tree
+# run -all
+# Info: =================================================
+# Info:           Generic PLL Summary
+# Info: =================================================
+# Time scale of (tb_project3.myprj.myPll.pll_altera_pll_altera_pll_i_639.new_model.gpll.no_need_to_gen) is  1ps /  1ps
+# Info: hierarchical_name = tb_project3.myprj.myPll.pll_altera_pll_altera_pll_i_639.new_model.gpll.no_need_to_gen
+# Info: reference_clock_frequency = 50.0 MHz
+# Info: output_clock_frequency = 50 MHZ
+# Info: phase_shift = 0 ps
+# Info: duty_cycle = 50
+# Info: sim_additional_refclk_cycles_to_lock = 0
+# Info: output_clock_high_period = 10000.000000
+# Info: output_clock_low_period = 10000.000000
+# Info: hierarchical_name = tb_project3.myprj.myPll.pll_altera_pll_altera_pll_i_639.new_model.gpll.UI
+# Warning: The frequency of the reference clock signal differs from the specified frequency (50.0 MHz).
+restart -f
+# ** Warning: (vsim-3017) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Too few port connections. Expected 26, found 5.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_project3/myprj/myPll/pll_altera_pll_altera_pll_i_639 File: /build/swbuild/SJ/nightly/18.0std/614/l64/work/modelsim/eda/sim_lib/altera_lnsim.sv
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'refclk1'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'phase_en'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'updn'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'num_phase_shifts'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'scanclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'cntsel'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'reconfig_to_pll'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'extswitch'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'adjpllin'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'cclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'fboutclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'phase_done'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'reconfig_from_pll'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'activeclk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'clkbad'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'phout'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'lvds_clk'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'loaden'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'extclk_out'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'cascade_out'.
+# ** Warning: (vsim-3722) C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo(46): [TFMPC] - Missing connection for port 'zdbfbclk'.
+add wave -position insertpoint  \
+sim:/tb_project3/myprj/PC_FE
+add wave -position insertpoint  \
+sim:/tb_project3/myprj/pcplus_FE
+run -all
+# Info: =================================================
+# Info:           Generic PLL Summary
+# Info: =================================================
+# Time scale of (tb_project3.myprj.myPll.pll_altera_pll_altera_pll_i_639.new_model.gpll.no_need_to_gen) is  1ps /  1ps
+# Info: hierarchical_name = tb_project3.myprj.myPll.pll_altera_pll_altera_pll_i_639.new_model.gpll.no_need_to_gen
+# Info: reference_clock_frequency = 50.0 MHz
+# Info: output_clock_frequency = 50 MHZ
+# Info: phase_shift = 0 ps
+# Info: duty_cycle = 50
+# Info: sim_additional_refclk_cycles_to_lock = 0
+# Info: output_clock_high_period = 10000.000000
+# Info: output_clock_low_period = 10000.000000
+# Info: hierarchical_name = tb_project3.myprj.myPll.pll_altera_pll_altera_pll_i_639.new_model.gpll.UI
+# Warning: The frequency of the reference clock signal differs from the specified frequency (50.0 MHz).
+# Break key hit
+# Break in VlGenerateBlock no_need_to_gen at /build/swbuild/SJ/nightly/18.0std/614/l64/work/modelsim/eda/sim_lib/altera_lnsim.sv line 1942
+# End time: 12:36:31 on Sep 19,2019, Elapsed time: 0:06:59
+# Errors: 0, Warnings: 44

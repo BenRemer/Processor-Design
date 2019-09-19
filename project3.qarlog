@@ -1,0 +1,18 @@
+Quartus Prime Archive log --	C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/project3.qarlog
+
+Archive:	C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/project3.qar
+Date:		Tue Sep 17 15:13:22 2019
+Quartus Prime		18.0.0 Build 614 04/24/2018 SJ Lite Edition
+
+	=========== Files Selected: ===========
+C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/Pll.v
+C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/Pll/Pll_0002.v
+C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/SevenSeg.v
+C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/project3.qpf
+C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/project3_frame.qsf
+C:/Users/Jiashen Cao/Desktop/workspace/CS3220/project3/project3_frame.v
+c:/intelfpga_lite/18.0/quartus/bin64/assignment_defaults.qdf
+	======= Total: 7 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.

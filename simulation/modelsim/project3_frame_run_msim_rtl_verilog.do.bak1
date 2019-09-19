@@ -1,0 +1,21 @@
+transcript on
+if ![file isdirectory project3_frame_iputf_libs] {
+	file mkdir project3_frame_iputf_libs
+}
+
+if {[file exists rtl_work]} {
+	vdel -lib rtl_work -all
+}
+vlib rtl_work
+vmap work rtl_work
+
+###### Libraries for IPUTF cores 
+###### End libraries for IPUTF cores 
+###### MIF file copy and HDL compilation commands for IPUTF cores 
+
+
+vlog "C:/Users/caoji/Desktop/project3/Pll_sim/Pll.vo"
+
+vlog -vlog01compat -work work +incdir+C:/Users/caoji/Desktop/project3 {C:/Users/caoji/Desktop/project3/SevenSeg.v}
+vlog -vlog01compat -work work +incdir+C:/Users/caoji/Desktop/project3 {C:/Users/caoji/Desktop/project3/project3_frame.v}
+
