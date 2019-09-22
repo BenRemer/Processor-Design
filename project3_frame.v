@@ -135,7 +135,11 @@ module project3_frame(
       inst_FE <= {INSTBITS{1'b0}};
     else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
-		// ...
+		// What does inst_FE represent?
+		inst_FE =<= imem[PC_FE];
+		// assign the values of stall_pipe and mispred_EX_w here?
+		// OR, if there is a misprediction or stall, assign the inst_FE to something else
+		
 		
 	 end
   end
@@ -179,8 +183,12 @@ module project3_frame(
 
   // TODO: Specify signals such as op*_ID_w, imm_ID_w, r*_ID_w
   assign op1_ID_w = inst_FE[31:26];
-  // ...
-
+  assign op2_ID_w = inst_FE[25:18];
+  assign imm_ID_w = inst_FE[23:8];
+  assign rd_ID_w = inst_FE[11:8];
+  assign rs_ID_w = inst_FE[7:4];
+  assign rt_ID_w = inst_FE[3:0];
+  
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
   assign regval2_ID_w = regs[rt_ID_w];
@@ -190,13 +198,20 @@ module project3_frame(
 
   // TODO: Specify control signals such as is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, etc.
   // You may add or change control signals if needed
-  // assign is_br_ID_w = ... ;
-  // ...
+  assign is_br_ID_w = (op1_ID_w === OP1_BEQ 
+							|| op1_ID_w === OP1_BLT
+							|| op1_ID_w === OP1_BLE
+							|| op1_ID_w === 0P1_BNE) ? 1 : 0;
+  assign is_jmp_ID_w = (op1_ID_w === OP1_JAL) ? 1 : 0;
+  assign rd_mem_ID_w = ?
+  assign wr_mem_ID_w = ?
+  assign wr_reg_ID_w = ?
   
   assign ctrlsig_ID_w = {is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, wr_mem_ID_w, wr_reg_ID_w};
   
   // TODO: Specify stall condition
   // assign stall_pipe = ... ;
+  if 
 
   // ID_latch
   always @ (posedge clk or posedge reset) begin
@@ -246,7 +261,20 @@ module project3_frame(
       case (op2_ID)
 			OP2_EQ	 : aluout_EX_r = {31'b0, regval1_ID == regval2_ID};
 			OP2_LT	 : aluout_EX_r = {31'b0, regval1_ID < regval2_ID};
-			// TODO: complete OP2_*...
+			// TODO: assign all the things here:
+			OP2_LE    : aluout_EX_r = {31'b0, regval1_ID <= regval2_ID};
+			OP2_NE    : aluout_EX_r = {31'b0, regval1_ID != regval2_ID};
+ 			OP2_ADD    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
+  			OP2_AND    : aluout_EX_r = {31'b0, regval1_ID & regval2_ID};
+ 			OP2_OR    : aluout_EX_r = {31'b0, regval1_ID | regval2_ID};
+ 			OP2_XOR    : aluout_EX_r = {31'b0, regval1_ID xor regval2_ID};
+ 			OP2_SUB    : aluout_EX_r = {31'b0, regval1_ID - regval2_ID};
+ 			OP2_NAND    : aluout_EX_r = {31'b0, !(regval1_ID & regval2_ID)};
+ 			OP2_NOR    : aluout_EX_r = {31'b0, !(regval1_ID | regval2_ID)};
+ 			OP2_NXOR    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
+ 			OP2_RSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
+ 			OP2_LSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
+			//todo: use powerpoint example to create a left shift and right shift module?ss
 	default	 : aluout_EX_r = {DBITS{1'b0}};
       endcase
     else if(op1_ID == OP1_LW || op1_ID == OP1_SW || op1_ID == OP1_ADDI)
@@ -266,6 +294,7 @@ module project3_frame(
   assign wr_reg_EX_w = ctrlsig_ID[0];
   
   // TODO: Specify signals such as mispred_EX_w, pcgood_EX_w
+  // what do these mean??
   // assign mispred_EX_w = ... ;
   // assign pcgood_EX_w = ... ;
 
