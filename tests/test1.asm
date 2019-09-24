@@ -9,7 +9,7 @@
 	; bad PC goes here
 	.ORG 0x0
 	br	BadPC
-	
+
 BadPC:
 	; for bad PC, display BAD on HEX
 	andi	zero,zero,0x0
@@ -20,11 +20,11 @@ BadPC:
 	br	BadPC
 
 	; normal example display 1 on HEX
-	.ORG 0x100	
+	.ORG 0x100
 Done:
 	lw 	s1,DATA(zero)
 	sw 	s1,HEX(zero)
 	br 	Done
-	
+
 	.ORG 0x1000
 .WORD 0x1

@@ -117,9 +117,9 @@ module project3_frame(
     if(reset)
       PC_FE <= STARTPC;
     else if(mispred_EX)
-      PC_FE <= pcgood_EX;
+      PC_FE <= pcgood_EX; // assign to what was caclulated in EX stage
     else if(!stall_pipe)
-      PC_FE <= pcpred_FE;
+      PC_FE <= pcpred_FE; // if no stall, assign to the predicted pc (i.e. the regular incremented pc)
     else
       PC_FE <= PC_FE;
   end
@@ -136,10 +136,9 @@ module project3_frame(
     else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
 		// What does inst_FE represent?
-		inst_FE =<= imem[PC_FE];
+		inst_FE <= inst_FE_w;
 		// assign the values of stall_pipe and mispred_EX_w here?
 		// OR, if there is a misprediction or stall, assign the inst_FE to something else
-		
 		
 	 end
   end
@@ -210,8 +209,7 @@ module project3_frame(
   assign ctrlsig_ID_w = {is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, wr_mem_ID_w, wr_reg_ID_w};
   
   // TODO: Specify stall condition
-  // assign stall_pipe = ... ;
-  if 
+   assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0; // is this correct?
 
   // ID_latch
   always @ (posedge clk or posedge reset) begin
@@ -227,7 +225,12 @@ module project3_frame(
     end else begin
       PC_ID	 <= PC_FE;
 		// TODO: Specify ID latches
-		// ...
+		inst_ID	 <= inst_FE;
+      op1_ID	 <= op1_ID_w;
+      op2_ID	 <= op2_ID_w;
+      regval1_ID  <= regval1_ID_w;
+      regval2_ID  <= regval2_ID_w;
+      wregno_ID	 <= // is this value of Rd?
     end
   end
 
@@ -272,8 +275,8 @@ module project3_frame(
  			OP2_NAND    : aluout_EX_r = {31'b0, !(regval1_ID & regval2_ID)};
  			OP2_NOR    : aluout_EX_r = {31'b0, !(regval1_ID | regval2_ID)};
  			OP2_NXOR    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
- 			OP2_RSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
- 			OP2_LSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
+ 			OP2_RSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID}; // rd = SEXT(rs >> (rt) )
+ 			OP2_LSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};  // rd = rs << (rt) 
 			//todo: use powerpoint example to create a left shift and right shift module?ss
 	default	 : aluout_EX_r = {DBITS{1'b0}};
       endcase
@@ -297,6 +300,14 @@ module project3_frame(
   // what do these mean??
   // assign mispred_EX_w = ... ;
   // assign pcgood_EX_w = ... ;
+  
+  // put in some always block:
+  if (op1_ID_w === OP1_BEQ || op1_ID_w === OP1_BLT || op1_ID_w === OP1_BLE || op1_ID_w === 0P1_BNE)
+		assign pcgood_EX_w = aluout_EX_r + 4 * sxt_imm_ID_w;
+  else if (op1_ID_1w == OP1_JAL) 
+		assign pcgood_EX_w = RS + 4 * sxt(imm); // should some of this be calculated in ALU or done here?
+  end
+  
 
   // EX_latch
   always @ (posedge clk or posedge reset) begin
