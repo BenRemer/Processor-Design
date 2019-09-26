@@ -165,6 +165,8 @@ module project3_frame(
   wire wr_reg_EX_w;
   wire wr_reg_MEM_w;
   wire is_alui_operation;
+  wire is_op2_ID;
+  wire send_nop;
   
   // Register file
   reg [DBITS-1:0] PC_ID;
@@ -189,7 +191,7 @@ module project3_frame(
   assign rs_ID_w = inst_FE[7:4];
   assign rt_ID_w = inst_FE[3:0];
   assign is_alui_operation = inst_FE[31];
-  assign is_op2 = op1_ID_w == OP1_ALUR;
+  assign is_op2_ID = op1_ID_w == OP1_ALUR;
   
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -207,14 +209,15 @@ module project3_frame(
   assign is_jmp_ID_w = (op1_ID_w === OP1_JAL) ? 1 : 0;
   assign rd_mem_ID_w = (op1_ID_w === OP1_LW) ? 1 : 0; // are we reading from memory?
   assign wr_mem_ID_w = (op1_ID_w === OP1_SW) ? 1 : 0; // are we writing to memory?
-  assign wr_reg_ID_w = (is_op2					 // any OP2 writes to a register
+  assign wr_reg_ID_w = (is_op2_ID				 // any OP2 writes to a register
 							|| is_alui_operation 	 // any alui operation writes to a register
 							|| op1_ID_w == OP1_JAL	 // JAL and LW also write to a register
 							|| op1_ID_w == OP1_LW) ? 1 : 0; // are we writing to a register
 							
+  //wregno is the register number that will be written to by store
   if (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW)
 		assign wregno_ID_w = rt_ID_w;
-  else if (is_op2)
+  else if (is_op2_ID)
 		assign wregno_ID_w = rd_ID_w;
   else
 		assign wregno_ID_w = 0; // is this right? We are not writing to a register in this case
@@ -228,7 +231,7 @@ module project3_frame(
 
   // ID_latch
   always @ (posedge clk or posedge reset) begin
-    if(reset) begin
+    if(reset || send_nop) begin
       PC_ID	 		<= {DBITS{1'b0}};
 		inst_ID	 	<= {INSTBITS{1'b0}};
       op1_ID	 	<= {OP1BITS{1'b0}};
@@ -264,7 +267,24 @@ module project3_frame(
   reg signed [DBITS-1:0] aluout_EX_r;
   reg [DBITS-1:0] aluout_EX;
   reg [DBITS-1:0] regval2_EX;
+  
+  wire [OP1BITS-1:0] op1_EX_w;
+  wire [REGNOBITS-1:0] rd_EX_w;
+  wire [REGNOBITS-1:0] rs_EX_w;
+  wire [REGNOBITS-1:0] rt_EX_w;
+  wire is_op2_EX;
+  
+  assign op1_EX_w = inst_ID[31:26];
+  assign rd_EX_w = inst_ID[11:8];
+  assign rt_EX_w = inst_ID[3:0];
+  assign is_op2_EX = op1_EX_w == OP1_ALUR;
 
+  if (is_op2_EX)
+		assign send_nop = ((rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	
+  else
+  		assign send_nop = ((rt_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	  
+  end
+  
   always @ (op1_ID or regval1_ID or regval2_ID) begin
     case (op1_ID)
       OP1_BEQ : br_cond_EX = (regval1_ID == regval2_ID);
@@ -365,6 +385,24 @@ module project3_frame(
   assign rd_mem_MEM_w = ctrlsig_EX[2];
   assign wr_mem_MEM_w = ctrlsig_EX[1];
   assign wr_reg_MEM_w = ctrlsig_EX[0];
+  
+  wire [OP1BITS-1:0] op1_MEM_w;
+  wire [REGNOBITS-1:0] rd_MEM_w;
+  wire [REGNOBITS-1:0] rs_MEM_w;
+  wire [REGNOBITS-1:0] rt_MEM_w;
+  wire is_op2_MEM;
+  
+  assign op1_MEM_w = inst_EX[31:26];
+  assign rd_MEM_w = inst_EX[11:8];
+  assign rt_MEM_w = inst_EX[3:0];
+  assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
+
+  if (is_op2_MEM)
+		assign send_nop = ((rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) ? 1 : 0;	
+  else
+  		assign send_nop = ((rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w)) ? 1 : 0;	  
+  end
+  
   // Read from D-MEM
   assign rd_val_MEM_w = (memaddr_MEM_w == ADDRKEY) ? {{(DBITS-KEYBITS){1'b0}}, ~KEY} :
 									dmem[memaddr_MEM_w[DMEMADDRBITS-1:DMEMWORDBITS]];
