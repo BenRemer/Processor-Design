@@ -1,5 +1,5 @@
 Analysis & Synthesis report for project3_frame
-Tue Sep 17 23:14:45 2019
+Thu Sep 26 12:48:04 2019
 Quartus Prime Version 18.0.0 Build 614 04/24/2018 SJ Lite Edition
 
 
@@ -13,22 +13,33 @@ Quartus Prime Version 18.0.0 Build 614 04/24/2018 SJ Lite Edition
   5. Analysis & Synthesis Source Files Read
   6. Analysis & Synthesis Resource Usage Summary
   7. Analysis & Synthesis Resource Utilization by Entity
-  8. Analysis & Synthesis IP Cores Summary
-  9. Registers Removed During Synthesis
- 10. General Register Statistics
- 11. Parameter Settings for User Entity Instance: Top-level Entity: |project3_frame
- 12. Parameter Settings for User Entity Instance: Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i
- 13. Parameter Settings for User Entity Instance: SXT:mysxt
- 14. Port Connectivity Checks: "SevenSeg:ss0"
- 15. Port Connectivity Checks: "SevenSeg:ss1"
- 16. Port Connectivity Checks: "SevenSeg:ss2"
- 17. Port Connectivity Checks: "SevenSeg:ss3"
- 18. Port Connectivity Checks: "SevenSeg:ss4"
- 19. Port Connectivity Checks: "SevenSeg:ss5"
- 20. Port Connectivity Checks: "SXT:mysxt"
- 21. Post-Synthesis Netlist Statistics for Top Partition
- 22. Elapsed Time Per Partition
- 23. Analysis & Synthesis Messages
+  8. Analysis & Synthesis RAM Summary
+  9. Analysis & Synthesis IP Cores Summary
+ 10. Registers Removed During Synthesis
+ 11. Removed Registers Triggering Further Register Optimizations
+ 12. General Register Statistics
+ 13. Inverted Register Statistics
+ 14. Registers Packed Into Inferred Megafunctions
+ 15. Registers Added for RAM Pass-Through Logic
+ 16. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 17. Source assignments for altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated
+ 18. Source assignments for altsyncram:dmem_rtl_0|altsyncram_qgl1:auto_generated
+ 19. Parameter Settings for User Entity Instance: Top-level Entity: |project3_frame
+ 20. Parameter Settings for User Entity Instance: Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i
+ 21. Parameter Settings for User Entity Instance: SXT:mysxt
+ 22. Parameter Settings for Inferred Entity Instance: altsyncram:imem_rtl_0
+ 23. Parameter Settings for Inferred Entity Instance: altsyncram:dmem_rtl_0
+ 24. altsyncram Parameter Settings by Entity Instance
+ 25. Port Connectivity Checks: "SevenSeg:ss0"
+ 26. Port Connectivity Checks: "SevenSeg:ss1"
+ 27. Port Connectivity Checks: "SevenSeg:ss2"
+ 28. Port Connectivity Checks: "SevenSeg:ss3"
+ 29. Port Connectivity Checks: "SevenSeg:ss4"
+ 30. Port Connectivity Checks: "SevenSeg:ss5"
+ 31. Port Connectivity Checks: "SXT:mysxt"
+ 32. Post-Synthesis Netlist Statistics for Top Partition
+ 33. Elapsed Time Per Partition
+ 34. Analysis & Synthesis Messages
 
 
 
@@ -54,22 +65,22 @@ refer to the applicable agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                  ;
 +---------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status     ; Successful - Tue Sep 17 23:14:45 2019       ;
+; Analysis & Synthesis Status     ; Successful - Thu Sep 26 12:48:04 2019       ;
 ; Quartus Prime Version           ; 18.0.0 Build 614 04/24/2018 SJ Lite Edition ;
 ; Revision Name                   ; project3_frame                              ;
 ; Top-level Entity Name           ; project3_frame                              ;
 ; Family                          ; Cyclone V                                   ;
 ; Logic utilization (in ALMs)     ; N/A                                         ;
-; Total registers                 ; 0                                           ;
+; Total registers                 ; 379                                         ;
 ; Total pins                      ; 68                                          ;
 ; Total virtual pins              ; 0                                           ;
-; Total block memory bits         ; 0                                           ;
+; Total block memory bits         ; 884,736                                     ;
 ; Total DSP Blocks                ; 0                                           ;
 ; Total HSSI RX PCSs              ; 0                                           ;
 ; Total HSSI PMA RX Deserializers ; 0                                           ;
 ; Total HSSI TX PCSs              ; 0                                           ;
 ; Total HSSI PMA TX Serializers   ; 0                                           ;
-; Total PLLs                      ; 0                                           ;
+; Total PLLs                      ; 1                                           ;
 ; Total DLLs                      ; 0                                           ;
 +---------------------------------+---------------------------------------------+
 
@@ -166,66 +177,113 @@ refer to the applicable agreement for further details.
 +----------------------------+-------------+
 ; Processors                 ; Number      ;
 +----------------------------+-------------+
-; Number detected on machine ; 8           ;
-; Maximum allowed            ; 4           ;
+; Number detected on machine ; 4           ;
+; Maximum allowed            ; 2           ;
 ;                            ;             ;
 ; Average used               ; 1.00        ;
-; Maximum used               ; 1           ;
+; Maximum used               ; 2           ;
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
+;     Processor 2            ;   0.0%      ;
 +----------------------------+-------------+
 
 
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Source Files Read                                                                                                                                     ;
-+----------------------------------+-----------------+---------------------------------------+---------------------------------------------------------------------+---------+
-; File Name with User-Entered Path ; Used in Netlist ; File Type                             ; File Name with Absolute Path                                        ; Library ;
-+----------------------------------+-----------------+---------------------------------------+---------------------------------------------------------------------+---------+
-; tests/test1.hex                  ; yes             ; User Hexadecimal (Intel-Format) File  ; C:/Users/caoji/Desktop/project3/tests/test1.hex                     ;         ;
-; Pll.v                            ; yes             ; User Wizard-Generated File            ; C:/Users/caoji/Desktop/project3/Pll.v                               ; Pll     ;
-; Pll/Pll_0002.v                   ; yes             ; User Verilog HDL File                 ; C:/Users/caoji/Desktop/project3/Pll/Pll_0002.v                      ; Pll     ;
-; SevenSeg.v                       ; yes             ; User Verilog HDL File                 ; C:/Users/caoji/Desktop/project3/SevenSeg.v                          ;         ;
-; project3_frame.v                 ; yes             ; User Verilog HDL File                 ; C:/Users/caoji/Desktop/project3/project3_frame.v                    ;         ;
-; altera_pll.v                     ; yes             ; Megafunction                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altera_pll.v ;         ;
-+----------------------------------+-----------------+---------------------------------------+---------------------------------------------------------------------+---------+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                                                                                                                ;
++--------------------------------------------------------+-----------------+-------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+---------+
+; File Name with User-Entered Path                       ; Used in Netlist ; File Type                                             ; File Name with Absolute Path                                                                                             ; Library ;
++--------------------------------------------------------+-----------------+-------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+---------+
+; tests/test2.mif                                        ; yes             ; User Memory Initialization File                       ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tests/test2.mif                                        ;         ;
+; tests/test2.hex                                        ; yes             ; User Hexadecimal (Intel-Format) File                  ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tests/test2.hex                                        ;         ;
+; Pll.v                                                  ; yes             ; User Wizard-Generated File                            ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll.v                                                  ; Pll     ;
+; Pll/Pll_0002.v                                         ; yes             ; User Verilog HDL File                                 ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll/Pll_0002.v                                         ; Pll     ;
+; SevenSeg.v                                             ; yes             ; User Verilog HDL File                                 ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v                                             ;         ;
+; project3_frame.v                                       ; yes             ; User Verilog HDL File                                 ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v                                       ;         ;
+; altera_pll.v                                           ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altera_pll.v                                                      ;         ;
+; altsyncram.tdf                                         ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altsyncram.tdf                                                    ;         ;
+; stratix_ram_block.inc                                  ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/stratix_ram_block.inc                                             ;         ;
+; lpm_mux.inc                                            ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/lpm_mux.inc                                                       ;         ;
+; lpm_decode.inc                                         ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/lpm_decode.inc                                                    ;         ;
+; aglobal180.inc                                         ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/aglobal180.inc                                                    ;         ;
+; a_rdenreg.inc                                          ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/a_rdenreg.inc                                                     ;         ;
+; altrom.inc                                             ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altrom.inc                                                        ;         ;
+; altram.inc                                             ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altram.inc                                                        ;         ;
+; altdpram.inc                                           ; yes             ; Megafunction                                          ; c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altdpram.inc                                                      ;         ;
+; db/altsyncram_jkf1.tdf                                 ; yes             ; Auto-Generated Megafunction                           ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf                                 ;         ;
+; db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif ; yes             ; Auto-Generated Auto-Found Memory Initialization File  ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif ;         ;
+; db/mux_2hb.tdf                                         ; yes             ; Auto-Generated Megafunction                           ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/mux_2hb.tdf                                         ;         ;
+; db/altsyncram_qgl1.tdf                                 ; yes             ; Auto-Generated Megafunction                           ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_qgl1.tdf                                 ;         ;
+; db/decode_5la.tdf                                      ; yes             ; Auto-Generated Megafunction                           ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/decode_5la.tdf                                      ;         ;
+; db/decode_u0a.tdf                                      ; yes             ; Auto-Generated Megafunction                           ; C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/decode_u0a.tdf                                      ;         ;
++--------------------------------------------------------+-----------------+-------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------+---------+
 
 
-+--------------------------------------------------------+
-; Analysis & Synthesis Resource Usage Summary            ;
-+---------------------------------------------+----------+
-; Resource                                    ; Usage    ;
-+---------------------------------------------+----------+
-; Estimate of Logic utilization (ALMs needed) ; 0        ;
-;                                             ;          ;
-; Combinational ALUT usage for logic          ; 0        ;
-;     -- 7 input functions                    ; 0        ;
-;     -- 6 input functions                    ; 0        ;
-;     -- 5 input functions                    ; 0        ;
-;     -- 4 input functions                    ; 0        ;
-;     -- <=3 input functions                  ; 0        ;
-;                                             ;          ;
-; Dedicated logic registers                   ; 0        ;
-;                                             ;          ;
-; I/O pins                                    ; 68       ;
-;                                             ;          ;
-; Total DSP Blocks                            ; 0        ;
-;                                             ;          ;
-; Maximum fan-out node                        ; CLOCK_50 ;
-; Maximum fan-out                             ; 1        ;
-; Total fan-out                               ; 68       ;
-; Average fan-out                             ; 0.50     ;
-+---------------------------------------------+----------+
++------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary                                                                      ;
++---------------------------------------------+--------------------------------------------------------------------+
+; Resource                                    ; Usage                                                              ;
++---------------------------------------------+--------------------------------------------------------------------+
+; Estimate of Logic utilization (ALMs needed) ; 475                                                                ;
+;                                             ;                                                                    ;
+; Combinational ALUT usage for logic          ; 651                                                                ;
+;     -- 7 input functions                    ; 4                                                                  ;
+;     -- 6 input functions                    ; 265                                                                ;
+;     -- 5 input functions                    ; 128                                                                ;
+;     -- 4 input functions                    ; 111                                                                ;
+;     -- <=3 input functions                  ; 143                                                                ;
+;                                             ;                                                                    ;
+; Dedicated logic registers                   ; 379                                                                ;
+;                                             ;                                                                    ;
+; I/O pins                                    ; 68                                                                 ;
+; Total MLAB memory bits                      ; 0                                                                  ;
+; Total block memory bits                     ; 884736                                                             ;
+;                                             ;                                                                    ;
+; Total DSP Blocks                            ; 0                                                                  ;
+;                                             ;                                                                    ;
+; Total PLLs                                  ; 1                                                                  ;
+;     -- PLLs                                 ; 1                                                                  ;
+;                                             ;                                                                    ;
+; Maximum fan-out node                        ; Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i|outclk_wire[0] ;
+; Maximum fan-out                             ; 488                                                                ;
+; Total fan-out                               ; 6712                                                               ;
+; Average fan-out                             ; 5.26                                                               ;
++---------------------------------------------+--------------------------------------------------------------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                       ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+----------------+--------------+
-; Compilation Hierarchy Node ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name ; Entity Name    ; Library Name ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+----------------+--------------+
-; |project3_frame            ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 68   ; 0            ; |project3_frame     ; project3_frame ; work         ;
-+----------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+---------------------+----------------+--------------+
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                                                        ;
++----------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------+-----------------+--------------+
+; Compilation Hierarchy Node             ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                                     ; Entity Name     ; Library Name ;
++----------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------+-----------------+--------------+
+; |project3_frame                        ; 651 (606)           ; 379 (377)                 ; 884736            ; 0          ; 68   ; 0            ; |project3_frame                                                                         ; project3_frame  ; work         ;
+;    |Pll:myPll|                         ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|Pll:myPll                                                               ; Pll             ; Pll          ;
+;       |Pll_0002:pll_inst|              ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|Pll:myPll|Pll_0002:pll_inst                                             ; Pll_0002        ; Pll          ;
+;          |altera_pll:altera_pll_i|     ; 0 (0)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i                     ; altera_pll      ; work         ;
+;    |SevenSeg:ss0|                      ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|SevenSeg:ss0                                                            ; SevenSeg        ; work         ;
+;    |SevenSeg:ss1|                      ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|SevenSeg:ss1                                                            ; SevenSeg        ; work         ;
+;    |SevenSeg:ss2|                      ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|SevenSeg:ss2                                                            ; SevenSeg        ; work         ;
+;    |SevenSeg:ss3|                      ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|SevenSeg:ss3                                                            ; SevenSeg        ; work         ;
+;    |SevenSeg:ss4|                      ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|SevenSeg:ss4                                                            ; SevenSeg        ; work         ;
+;    |SevenSeg:ss5|                      ; 7 (7)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|SevenSeg:ss5                                                            ; SevenSeg        ; work         ;
+;    |altsyncram:dmem_rtl_0|             ; 1 (0)               ; 1 (0)                     ; 524288            ; 0          ; 0    ; 0            ; |project3_frame|altsyncram:dmem_rtl_0                                                   ; altsyncram      ; work         ;
+;       |altsyncram_qgl1:auto_generated| ; 1 (0)               ; 1 (1)                     ; 524288            ; 0          ; 0    ; 0            ; |project3_frame|altsyncram:dmem_rtl_0|altsyncram_qgl1:auto_generated                    ; altsyncram_qgl1 ; work         ;
+;          |decode_5la:decode2|          ; 1 (1)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|altsyncram:dmem_rtl_0|altsyncram_qgl1:auto_generated|decode_5la:decode2 ; decode_5la      ; work         ;
+;    |altsyncram:imem_rtl_0|             ; 2 (0)               ; 1 (0)                     ; 360448            ; 0          ; 0    ; 0            ; |project3_frame|altsyncram:imem_rtl_0                                                   ; altsyncram      ; work         ;
+;       |altsyncram_jkf1:auto_generated| ; 2 (0)               ; 1 (1)                     ; 360448            ; 0          ; 0    ; 0            ; |project3_frame|altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated                    ; altsyncram_jkf1 ; work         ;
+;          |mux_2hb:mux2|                ; 2 (2)               ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |project3_frame|altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|mux_2hb:mux2       ; mux_2hb         ; work         ;
++----------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-----------------------------------------------------------------------------------------+-----------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis RAM Summary                                                                                                                                                                                        ;
++-----------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+--------+--------------------------------------------------------+
+; Name                                                            ; Type ; Mode             ; Port A Depth ; Port A Width ; Port B Depth ; Port B Width ; Size   ; MIF                                                    ;
++-----------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+--------+--------------------------------------------------------+
+; altsyncram:dmem_rtl_0|altsyncram_qgl1:auto_generated|ALTSYNCRAM ; AUTO ; Simple Dual Port ; 16384        ; 32           ; 16384        ; 32           ; 524288 ; tests/test2.mif                                        ;
+; altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ALTSYNCRAM ; AUTO ; ROM              ; 16384        ; 32           ; --           ; --           ; 524288 ; db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif ;
++-----------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+--------+--------------------------------------------------------+
 
 
 +-------------------------------------------------------------------------------------------------------------+
@@ -237,17 +295,513 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +--------+--------------+---------+--------------+--------------+---------------------------+-----------------+
 
 
-+---------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                              ;
-+----------------------------------------+----------------------------------------+
-; Register name                          ; Reason for Removal                     ;
-+----------------------------------------+----------------------------------------+
-; HEX_out[2,3,5,7,9..12,14,15,17..23]    ; Merged with HEX_out[0]                 ;
-; HEX_out[1,4,6,8,13]                    ; Merged with HEX_out[16]                ;
-; HEX_out[0]                             ; Stuck at VCC due to stuck port data_in ;
-; HEX_out[16]                            ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 24 ;                                        ;
-+----------------------------------------+----------------------------------------+
++----------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                               ;
++-----------------------------------------+----------------------------------------+
+; Register name                           ; Reason for Removal                     ;
++-----------------------------------------+----------------------------------------+
+; wregno_ID[0..3]                         ; Stuck at GND due to stuck port data_in ;
+; wregno_EX[0..3]                         ; Stuck at GND due to stuck port data_in ;
+; wregno_MEM[0..3]                        ; Stuck at GND due to stuck port data_in ;
+; regs[9][18]                             ; Merged with regs[15][31]               ;
+; regs[3][2]                              ; Merged with regs[15][31]               ;
+; regs[15][20]                            ; Merged with regs[15][31]               ;
+; regs[3][0]                              ; Merged with regs[15][31]               ;
+; regs[9][16]                             ; Merged with regs[15][31]               ;
+; regs[2][30]                             ; Merged with regs[15][31]               ;
+; regs[12][24]                            ; Merged with regs[15][31]               ;
+; regs[2][28]                             ; Merged with regs[15][31]               ;
+; regs[9][14]                             ; Merged with regs[15][31]               ;
+; regs[2][26]                             ; Merged with regs[15][31]               ;
+; regs[14][12]                            ; Merged with regs[15][31]               ;
+; regs[2][24]                             ; Merged with regs[15][31]               ;
+; regs[9][12]                             ; Merged with regs[15][31]               ;
+; regs[2][22]                             ; Merged with regs[15][31]               ;
+; regs[12][22]                            ; Merged with regs[15][31]               ;
+; regs[2][20]                             ; Merged with regs[15][31]               ;
+; regs[9][10]                             ; Merged with regs[15][31]               ;
+; regs[2][18]                             ; Merged with regs[15][31]               ;
+; regs[15][6]                             ; Merged with regs[15][31]               ;
+; regs[2][16]                             ; Merged with regs[15][31]               ;
+; regs[9][8]                              ; Merged with regs[15][31]               ;
+; regs[2][14]                             ; Merged with regs[15][31]               ;
+; regs[12][20]                            ; Merged with regs[15][31]               ;
+; regs[2][12]                             ; Merged with regs[15][31]               ;
+; regs[9][6]                              ; Merged with regs[15][31]               ;
+; regs[2][10]                             ; Merged with regs[15][31]               ;
+; regs[14][10]                            ; Merged with regs[15][31]               ;
+; regs[2][8]                              ; Merged with regs[15][31]               ;
+; regs[9][4]                              ; Merged with regs[15][31]               ;
+; regs[2][6]                              ; Merged with regs[15][31]               ;
+; regs[12][18]                            ; Merged with regs[15][31]               ;
+; regs[2][4]                              ; Merged with regs[15][31]               ;
+; regs[9][2]                              ; Merged with regs[15][31]               ;
+; regs[2][2]                              ; Merged with regs[15][31]               ;
+; regs[15][26]                            ; Merged with regs[15][31]               ;
+; regs[2][0]                              ; Merged with regs[15][31]               ;
+; regs[9][0]                              ; Merged with regs[15][31]               ;
+; regs[1][30]                             ; Merged with regs[15][31]               ;
+; regs[12][16]                            ; Merged with regs[15][31]               ;
+; regs[1][28]                             ; Merged with regs[15][31]               ;
+; regs[8][30]                             ; Merged with regs[15][31]               ;
+; regs[1][26]                             ; Merged with regs[15][31]               ;
+; regs[14][8]                             ; Merged with regs[15][31]               ;
+; regs[1][24]                             ; Merged with regs[15][31]               ;
+; regs[8][28]                             ; Merged with regs[15][31]               ;
+; regs[1][22]                             ; Merged with regs[15][31]               ;
+; regs[12][14]                            ; Merged with regs[15][31]               ;
+; regs[1][20]                             ; Merged with regs[15][31]               ;
+; regs[8][26]                             ; Merged with regs[15][31]               ;
+; regs[1][18]                             ; Merged with regs[15][31]               ;
+; regs[15][4]                             ; Merged with regs[15][31]               ;
+; regs[1][16]                             ; Merged with regs[15][31]               ;
+; regs[8][24]                             ; Merged with regs[15][31]               ;
+; regs[1][14]                             ; Merged with regs[15][31]               ;
+; regs[12][12]                            ; Merged with regs[15][31]               ;
+; regs[1][12]                             ; Merged with regs[15][31]               ;
+; regs[8][22]                             ; Merged with regs[15][31]               ;
+; regs[1][10]                             ; Merged with regs[15][31]               ;
+; regs[14][6]                             ; Merged with regs[15][31]               ;
+; regs[1][8]                              ; Merged with regs[15][31]               ;
+; regs[8][20]                             ; Merged with regs[15][31]               ;
+; regs[1][6]                              ; Merged with regs[15][31]               ;
+; regs[12][10]                            ; Merged with regs[15][31]               ;
+; regs[1][4]                              ; Merged with regs[15][31]               ;
+; regs[8][18]                             ; Merged with regs[15][31]               ;
+; regs[1][2]                              ; Merged with regs[15][31]               ;
+; regs[15][18]                            ; Merged with regs[15][31]               ;
+; regs[8][16]                             ; Merged with regs[15][31]               ;
+; regs[15][29]                            ; Merged with regs[15][31]               ;
+; regs[15][25]                            ; Merged with regs[15][31]               ;
+; regs[15][17]                            ; Merged with regs[15][31]               ;
+; regs[15][1]                             ; Merged with regs[15][31]               ;
+; regs[14][1]                             ; Merged with regs[15][31]               ;
+; regs[12][1]                             ; Merged with regs[15][31]               ;
+; regs[8][1]                              ; Merged with regs[15][31]               ;
+; regs[6][8]                              ; Merged with regs[15][30]               ;
+; regs[11][4]                             ; Merged with regs[15][30]               ;
+; regs[6][6]                              ; Merged with regs[15][30]               ;
+; regs[13][18]                            ; Merged with regs[15][30]               ;
+; regs[6][4]                              ; Merged with regs[15][30]               ;
+; regs[11][2]                             ; Merged with regs[15][30]               ;
+; regs[6][2]                              ; Merged with regs[15][30]               ;
+; regs[15][28]                            ; Merged with regs[15][30]               ;
+; regs[6][0]                              ; Merged with regs[15][30]               ;
+; regs[11][0]                             ; Merged with regs[15][30]               ;
+; regs[5][30]                             ; Merged with regs[15][30]               ;
+; regs[13][16]                            ; Merged with regs[15][30]               ;
+; regs[5][28]                             ; Merged with regs[15][30]               ;
+; regs[10][30]                            ; Merged with regs[15][30]               ;
+; regs[5][26]                             ; Merged with regs[15][30]               ;
+; regs[14][24]                            ; Merged with regs[15][30]               ;
+; regs[5][24]                             ; Merged with regs[15][30]               ;
+; regs[10][28]                            ; Merged with regs[15][30]               ;
+; regs[5][22]                             ; Merged with regs[15][30]               ;
+; regs[13][14]                            ; Merged with regs[15][30]               ;
+; regs[5][20]                             ; Merged with regs[15][30]               ;
+; regs[10][26]                            ; Merged with regs[15][30]               ;
+; regs[5][18]                             ; Merged with regs[15][30]               ;
+; regs[15][12]                            ; Merged with regs[15][30]               ;
+; regs[5][16]                             ; Merged with regs[15][30]               ;
+; regs[10][24]                            ; Merged with regs[15][30]               ;
+; regs[5][14]                             ; Merged with regs[15][30]               ;
+; regs[13][12]                            ; Merged with regs[15][30]               ;
+; regs[5][12]                             ; Merged with regs[15][30]               ;
+; regs[10][22]                            ; Merged with regs[15][30]               ;
+; regs[5][10]                             ; Merged with regs[15][30]               ;
+; regs[14][22]                            ; Merged with regs[15][30]               ;
+; regs[5][8]                              ; Merged with regs[15][30]               ;
+; regs[10][20]                            ; Merged with regs[15][30]               ;
+; regs[5][6]                              ; Merged with regs[15][30]               ;
+; regs[13][10]                            ; Merged with regs[15][30]               ;
+; regs[5][4]                              ; Merged with regs[15][30]               ;
+; regs[10][18]                            ; Merged with regs[15][30]               ;
+; regs[5][2]                              ; Merged with regs[15][30]               ;
+; regs[15][22]                            ; Merged with regs[15][30]               ;
+; regs[5][0]                              ; Merged with regs[15][30]               ;
+; regs[10][16]                            ; Merged with regs[15][30]               ;
+; regs[4][30]                             ; Merged with regs[15][30]               ;
+; regs[13][8]                             ; Merged with regs[15][30]               ;
+; regs[4][28]                             ; Merged with regs[15][30]               ;
+; regs[10][14]                            ; Merged with regs[15][30]               ;
+; regs[4][26]                             ; Merged with regs[15][30]               ;
+; regs[14][20]                            ; Merged with regs[15][30]               ;
+; regs[4][24]                             ; Merged with regs[15][30]               ;
+; regs[10][12]                            ; Merged with regs[15][30]               ;
+; regs[4][22]                             ; Merged with regs[15][30]               ;
+; regs[13][6]                             ; Merged with regs[15][30]               ;
+; regs[4][20]                             ; Merged with regs[15][30]               ;
+; regs[10][10]                            ; Merged with regs[15][30]               ;
+; regs[4][18]                             ; Merged with regs[15][30]               ;
+; regs[15][10]                            ; Merged with regs[15][30]               ;
+; regs[4][16]                             ; Merged with regs[15][30]               ;
+; regs[10][8]                             ; Merged with regs[15][30]               ;
+; regs[4][14]                             ; Merged with regs[15][30]               ;
+; regs[13][4]                             ; Merged with regs[15][30]               ;
+; regs[4][12]                             ; Merged with regs[15][30]               ;
+; regs[10][6]                             ; Merged with regs[15][30]               ;
+; regs[4][10]                             ; Merged with regs[15][30]               ;
+; regs[14][18]                            ; Merged with regs[15][30]               ;
+; regs[4][8]                              ; Merged with regs[15][30]               ;
+; regs[10][4]                             ; Merged with regs[15][30]               ;
+; regs[4][6]                              ; Merged with regs[15][30]               ;
+; regs[13][2]                             ; Merged with regs[15][30]               ;
+; regs[4][4]                              ; Merged with regs[15][30]               ;
+; regs[10][2]                             ; Merged with regs[15][30]               ;
+; regs[4][2]                              ; Merged with regs[15][30]               ;
+; regs[4][0]                              ; Merged with regs[15][30]               ;
+; regs[10][0]                             ; Merged with regs[15][30]               ;
+; regs[3][30]                             ; Merged with regs[15][30]               ;
+; regs[13][0]                             ; Merged with regs[15][30]               ;
+; regs[3][28]                             ; Merged with regs[15][30]               ;
+; regs[9][30]                             ; Merged with regs[15][30]               ;
+; regs[3][26]                             ; Merged with regs[15][30]               ;
+; regs[14][16]                            ; Merged with regs[15][30]               ;
+; regs[3][24]                             ; Merged with regs[15][30]               ;
+; regs[9][28]                             ; Merged with regs[15][30]               ;
+; regs[3][22]                             ; Merged with regs[15][30]               ;
+; regs[12][30]                            ; Merged with regs[15][30]               ;
+; regs[3][20]                             ; Merged with regs[15][30]               ;
+; regs[9][26]                             ; Merged with regs[15][30]               ;
+; regs[3][18]                             ; Merged with regs[15][30]               ;
+; regs[15][8]                             ; Merged with regs[15][30]               ;
+; regs[3][16]                             ; Merged with regs[15][30]               ;
+; regs[9][24]                             ; Merged with regs[15][30]               ;
+; regs[3][14]                             ; Merged with regs[15][30]               ;
+; regs[12][28]                            ; Merged with regs[15][30]               ;
+; regs[3][12]                             ; Merged with regs[15][30]               ;
+; regs[9][22]                             ; Merged with regs[15][30]               ;
+; regs[3][10]                             ; Merged with regs[15][30]               ;
+; regs[14][14]                            ; Merged with regs[15][30]               ;
+; regs[3][8]                              ; Merged with regs[15][30]               ;
+; regs[9][20]                             ; Merged with regs[15][30]               ;
+; regs[3][6]                              ; Merged with regs[15][30]               ;
+; regs[12][26]                            ; Merged with regs[15][30]               ;
+; regs[3][4]                              ; Merged with regs[15][30]               ;
+; regs[2][13]                             ; Merged with regs[15][27]               ;
+; regs[9][5]                              ; Merged with regs[15][27]               ;
+; regs[2][5]                              ; Merged with regs[15][27]               ;
+; regs[15][5]                             ; Merged with regs[15][27]               ;
+; regs[1][29]                             ; Merged with regs[15][27]               ;
+; regs[8][29]                             ; Merged with regs[15][27]               ;
+; regs[1][21]                             ; Merged with regs[15][27]               ;
+; regs[12][13]                            ; Merged with regs[15][27]               ;
+; regs[1][13]                             ; Merged with regs[15][27]               ;
+; regs[8][21]                             ; Merged with regs[15][27]               ;
+; regs[1][5]                              ; Merged with regs[15][27]               ;
+; regs[14][5]                             ; Merged with regs[15][27]               ;
+; regs[8][15]                             ; Merged with regs[15][27]               ;
+; regs[12][7]                             ; Merged with regs[15][27]               ;
+; regs[8][11]                             ; Merged with regs[15][27]               ;
+; regs[14][3]                             ; Merged with regs[15][27]               ;
+; regs[8][7]                              ; Merged with regs[15][27]               ;
+; regs[12][3]                             ; Merged with regs[15][27]               ;
+; regs[7][31]                             ; Merged with regs[15][27]               ;
+; regs[8][3]                              ; Merged with regs[15][27]               ;
+; regs[11][31]                            ; Merged with regs[15][27]               ;
+; regs[7][27]                             ; Merged with regs[15][27]               ;
+; regs[13][31]                            ; Merged with regs[15][27]               ;
+; regs[7][23]                             ; Merged with regs[15][27]               ;
+; regs[11][27]                            ; Merged with regs[15][27]               ;
+; regs[7][19]                             ; Merged with regs[15][27]               ;
+; regs[14][31]                            ; Merged with regs[15][27]               ;
+; regs[7][15]                             ; Merged with regs[15][27]               ;
+; regs[11][23]                            ; Merged with regs[15][27]               ;
+; regs[7][11]                             ; Merged with regs[15][27]               ;
+; regs[13][27]                            ; Merged with regs[15][27]               ;
+; regs[7][7]                              ; Merged with regs[15][27]               ;
+; regs[11][19]                            ; Merged with regs[15][27]               ;
+; regs[7][3]                              ; Merged with regs[15][27]               ;
+; regs[15][15]                            ; Merged with regs[15][27]               ;
+; regs[6][31]                             ; Merged with regs[15][27]               ;
+; regs[11][15]                            ; Merged with regs[15][27]               ;
+; regs[6][27]                             ; Merged with regs[15][27]               ;
+; regs[13][23]                            ; Merged with regs[15][27]               ;
+; regs[6][23]                             ; Merged with regs[15][27]               ;
+; regs[11][11]                            ; Merged with regs[15][27]               ;
+; regs[6][19]                             ; Merged with regs[15][27]               ;
+; regs[14][27]                            ; Merged with regs[15][27]               ;
+; regs[6][15]                             ; Merged with regs[15][27]               ;
+; regs[11][7]                             ; Merged with regs[15][27]               ;
+; regs[6][11]                             ; Merged with regs[15][27]               ;
+; regs[13][19]                            ; Merged with regs[15][27]               ;
+; regs[6][7]                              ; Merged with regs[15][27]               ;
+; regs[11][3]                             ; Merged with regs[15][27]               ;
+; regs[6][3]                              ; Merged with regs[15][27]               ;
+; regs[15][23]                            ; Merged with regs[15][27]               ;
+; regs[5][31]                             ; Merged with regs[15][27]               ;
+; regs[10][31]                            ; Merged with regs[15][27]               ;
+; regs[5][27]                             ; Merged with regs[15][27]               ;
+; regs[13][15]                            ; Merged with regs[15][27]               ;
+; regs[5][23]                             ; Merged with regs[15][27]               ;
+; regs[10][27]                            ; Merged with regs[15][27]               ;
+; regs[5][19]                             ; Merged with regs[15][27]               ;
+; regs[14][23]                            ; Merged with regs[15][27]               ;
+; regs[5][15]                             ; Merged with regs[15][27]               ;
+; regs[10][23]                            ; Merged with regs[15][27]               ;
+; regs[5][11]                             ; Merged with regs[15][27]               ;
+; regs[13][11]                            ; Merged with regs[15][27]               ;
+; regs[5][7]                              ; Merged with regs[15][27]               ;
+; regs[10][19]                            ; Merged with regs[15][27]               ;
+; regs[5][3]                              ; Merged with regs[15][27]               ;
+; regs[15][11]                            ; Merged with regs[15][27]               ;
+; regs[4][31]                             ; Merged with regs[15][27]               ;
+; regs[10][15]                            ; Merged with regs[15][27]               ;
+; regs[4][27]                             ; Merged with regs[15][27]               ;
+; regs[13][7]                             ; Merged with regs[15][27]               ;
+; regs[4][23]                             ; Merged with regs[15][27]               ;
+; regs[10][11]                            ; Merged with regs[15][27]               ;
+; regs[4][19]                             ; Merged with regs[15][27]               ;
+; regs[14][19]                            ; Merged with regs[15][27]               ;
+; regs[4][15]                             ; Merged with regs[15][27]               ;
+; regs[10][7]                             ; Merged with regs[15][27]               ;
+; regs[4][11]                             ; Merged with regs[15][27]               ;
+; regs[13][3]                             ; Merged with regs[15][27]               ;
+; regs[4][7]                              ; Merged with regs[15][27]               ;
+; regs[10][3]                             ; Merged with regs[15][27]               ;
+; regs[4][3]                              ; Merged with regs[15][27]               ;
+; regs[3][31]                             ; Merged with regs[15][27]               ;
+; regs[9][31]                             ; Merged with regs[15][27]               ;
+; regs[3][27]                             ; Merged with regs[15][27]               ;
+; regs[12][31]                            ; Merged with regs[15][27]               ;
+; regs[3][23]                             ; Merged with regs[15][27]               ;
+; regs[9][27]                             ; Merged with regs[15][27]               ;
+; regs[3][19]                             ; Merged with regs[15][27]               ;
+; regs[14][15]                            ; Merged with regs[15][27]               ;
+; regs[3][15]                             ; Merged with regs[15][27]               ;
+; regs[9][23]                             ; Merged with regs[15][27]               ;
+; regs[3][11]                             ; Merged with regs[15][27]               ;
+; regs[12][27]                            ; Merged with regs[15][27]               ;
+; regs[3][7]                              ; Merged with regs[15][27]               ;
+; regs[9][19]                             ; Merged with regs[15][27]               ;
+; regs[3][3]                              ; Merged with regs[15][27]               ;
+; regs[15][7]                             ; Merged with regs[15][27]               ;
+; regs[2][31]                             ; Merged with regs[15][27]               ;
+; regs[9][15]                             ; Merged with regs[15][27]               ;
+; regs[2][27]                             ; Merged with regs[15][24]               ;
+; regs[12][23]                            ; Merged with regs[15][24]               ;
+; regs[2][23]                             ; Merged with regs[15][24]               ;
+; regs[9][11]                             ; Merged with regs[15][24]               ;
+; regs[2][19]                             ; Merged with regs[15][24]               ;
+; regs[14][11]                            ; Merged with regs[15][24]               ;
+; regs[2][15]                             ; Merged with regs[15][24]               ;
+; regs[9][7]                              ; Merged with regs[15][24]               ;
+; regs[2][11]                             ; Merged with regs[15][24]               ;
+; regs[12][19]                            ; Merged with regs[15][24]               ;
+; regs[2][7]                              ; Merged with regs[15][24]               ;
+; regs[9][3]                              ; Merged with regs[15][24]               ;
+; regs[2][3]                              ; Merged with regs[15][24]               ;
+; regs[15][19]                            ; Merged with regs[15][24]               ;
+; regs[1][31]                             ; Merged with regs[15][24]               ;
+; regs[8][31]                             ; Merged with regs[15][24]               ;
+; regs[1][27]                             ; Merged with regs[15][24]               ;
+; regs[12][15]                            ; Merged with regs[15][24]               ;
+; regs[1][23]                             ; Merged with regs[15][24]               ;
+; regs[8][27]                             ; Merged with regs[15][24]               ;
+; regs[1][19]                             ; Merged with regs[15][24]               ;
+; regs[14][7]                             ; Merged with regs[15][24]               ;
+; regs[1][15]                             ; Merged with regs[15][24]               ;
+; regs[8][23]                             ; Merged with regs[15][24]               ;
+; regs[1][11]                             ; Merged with regs[15][24]               ;
+; regs[12][11]                            ; Merged with regs[15][24]               ;
+; regs[1][7]                              ; Merged with regs[15][24]               ;
+; regs[8][19]                             ; Merged with regs[15][24]               ;
+; regs[1][3]                              ; Merged with regs[15][24]               ;
+; regs[15][3]                             ; Merged with regs[15][24]               ;
+; regs[1][0]                              ; Merged with regs[15][24]               ;
+; regs[12][8]                             ; Merged with regs[15][24]               ;
+; regs[8][14]                             ; Merged with regs[15][24]               ;
+; regs[14][4]                             ; Merged with regs[15][24]               ;
+; regs[8][12]                             ; Merged with regs[15][24]               ;
+; regs[12][6]                             ; Merged with regs[15][24]               ;
+; regs[8][10]                             ; Merged with regs[15][24]               ;
+; regs[15][2]                             ; Merged with regs[15][24]               ;
+; regs[8][8]                              ; Merged with regs[15][24]               ;
+; regs[12][4]                             ; Merged with regs[15][24]               ;
+; regs[8][6]                              ; Merged with regs[15][24]               ;
+; regs[14][2]                             ; Merged with regs[15][24]               ;
+; regs[8][4]                              ; Merged with regs[15][24]               ;
+; regs[12][2]                             ; Merged with regs[15][24]               ;
+; regs[8][0]                              ; Merged with regs[15][24]               ;
+; regs[8][2]                              ; Merged with regs[15][24]               ;
+; regs[12][0]                             ; Merged with regs[15][24]               ;
+; regs[7][30]                             ; Merged with regs[15][24]               ;
+; regs[14][0]                             ; Merged with regs[15][24]               ;
+; regs[7][28]                             ; Merged with regs[15][24]               ;
+; regs[11][30]                            ; Merged with regs[15][24]               ;
+; regs[7][26]                             ; Merged with regs[15][24]               ;
+; regs[15][0]                             ; Merged with regs[15][24]               ;
+; regs[7][24]                             ; Merged with regs[15][24]               ;
+; regs[11][28]                            ; Merged with regs[15][24]               ;
+; regs[7][22]                             ; Merged with regs[15][24]               ;
+; regs[13][30]                            ; Merged with regs[15][24]               ;
+; regs[7][20]                             ; Merged with regs[15][24]               ;
+; regs[11][26]                            ; Merged with regs[15][24]               ;
+; regs[7][18]                             ; Merged with regs[15][24]               ;
+; regs[15][16]                            ; Merged with regs[15][24]               ;
+; regs[7][16]                             ; Merged with regs[15][24]               ;
+; regs[11][24]                            ; Merged with regs[15][24]               ;
+; regs[7][14]                             ; Merged with regs[15][24]               ;
+; regs[13][28]                            ; Merged with regs[15][24]               ;
+; regs[7][12]                             ; Merged with regs[15][24]               ;
+; regs[11][22]                            ; Merged with regs[15][24]               ;
+; regs[7][10]                             ; Merged with regs[15][24]               ;
+; regs[14][30]                            ; Merged with regs[15][24]               ;
+; regs[7][8]                              ; Merged with regs[15][24]               ;
+; regs[11][20]                            ; Merged with regs[15][24]               ;
+; regs[7][6]                              ; Merged with regs[15][24]               ;
+; regs[13][26]                            ; Merged with regs[15][24]               ;
+; regs[7][4]                              ; Merged with regs[15][24]               ;
+; regs[11][18]                            ; Merged with regs[15][24]               ;
+; regs[7][2]                              ; Merged with regs[15][24]               ;
+; regs[7][0]                              ; Merged with regs[15][24]               ;
+; regs[11][16]                            ; Merged with regs[15][24]               ;
+; regs[6][30]                             ; Merged with regs[15][24]               ;
+; regs[13][24]                            ; Merged with regs[15][24]               ;
+; regs[6][28]                             ; Merged with regs[15][24]               ;
+; regs[11][14]                            ; Merged with regs[15][24]               ;
+; regs[6][26]                             ; Merged with regs[15][24]               ;
+; regs[14][28]                            ; Merged with regs[15][24]               ;
+; regs[6][24]                             ; Merged with regs[15][24]               ;
+; regs[11][12]                            ; Merged with regs[15][24]               ;
+; regs[6][22]                             ; Merged with regs[15][24]               ;
+; regs[13][22]                            ; Merged with regs[15][24]               ;
+; regs[6][20]                             ; Merged with regs[15][24]               ;
+; regs[11][10]                            ; Merged with regs[15][24]               ;
+; regs[6][18]                             ; Merged with regs[15][24]               ;
+; regs[15][14]                            ; Merged with regs[15][24]               ;
+; regs[6][16]                             ; Merged with regs[15][24]               ;
+; regs[11][8]                             ; Merged with regs[15][24]               ;
+; regs[6][14]                             ; Merged with regs[15][24]               ;
+; regs[13][20]                            ; Merged with regs[15][24]               ;
+; regs[6][12]                             ; Merged with regs[15][24]               ;
+; regs[11][6]                             ; Merged with regs[15][24]               ;
+; regs[6][10]                             ; Merged with regs[15][24]               ;
+; regs[14][26]                            ; Merged with regs[15][24]               ;
+; regs[6][1]                              ; Merged with regs[15][21]               ;
+; regs[4][1]                              ; Merged with regs[15][21]               ;
+; regs[10][1]                             ; Merged with regs[15][21]               ;
+; regs[7][1]                              ; Merged with regs[15][21]               ;
+; regs[2][1]                              ; Merged with regs[15][21]               ;
+; regs[11][1]                             ; Merged with regs[15][21]               ;
+; regs[5][1]                              ; Merged with regs[15][21]               ;
+; regs[13][1]                             ; Merged with regs[15][21]               ;
+; regs[3][1]                              ; Merged with regs[15][21]               ;
+; regs[9][1]                              ; Merged with regs[15][21]               ;
+; regs[7][17]                             ; Merged with regs[15][21]               ;
+; regs[1][1]                              ; Merged with regs[15][21]               ;
+; regs[11][17]                            ; Merged with regs[15][21]               ;
+; regs[6][17]                             ; Merged with regs[15][21]               ;
+; regs[13][17]                            ; Merged with regs[15][21]               ;
+; regs[5][17]                             ; Merged with regs[15][21]               ;
+; regs[10][17]                            ; Merged with regs[15][21]               ;
+; regs[4][17]                             ; Merged with regs[15][21]               ;
+; regs[14][17]                            ; Merged with regs[15][21]               ;
+; regs[3][17]                             ; Merged with regs[15][21]               ;
+; regs[9][17]                             ; Merged with regs[15][21]               ;
+; regs[2][17]                             ; Merged with regs[15][21]               ;
+; regs[12][17]                            ; Merged with regs[15][21]               ;
+; regs[1][17]                             ; Merged with regs[15][21]               ;
+; regs[8][17]                             ; Merged with regs[15][21]               ;
+; regs[7][25]                             ; Merged with regs[15][21]               ;
+; regs[8][9]                              ; Merged with regs[15][21]               ;
+; regs[11][25]                            ; Merged with regs[15][21]               ;
+; regs[7][9]                              ; Merged with regs[15][21]               ;
+; regs[13][25]                            ; Merged with regs[15][21]               ;
+; regs[6][25]                             ; Merged with regs[15][21]               ;
+; regs[11][9]                             ; Merged with regs[15][21]               ;
+; regs[6][9]                              ; Merged with regs[15][21]               ;
+; regs[14][25]                            ; Merged with regs[15][21]               ;
+; regs[5][25]                             ; Merged with regs[15][21]               ;
+; regs[10][25]                            ; Merged with regs[15][21]               ;
+; regs[5][9]                              ; Merged with regs[15][21]               ;
+; regs[13][9]                             ; Merged with regs[15][21]               ;
+; regs[4][25]                             ; Merged with regs[15][21]               ;
+; regs[10][9]                             ; Merged with regs[15][21]               ;
+; regs[4][9]                              ; Merged with regs[15][21]               ;
+; regs[15][9]                             ; Merged with regs[15][21]               ;
+; regs[3][25]                             ; Merged with regs[15][21]               ;
+; regs[9][25]                             ; Merged with regs[15][21]               ;
+; regs[3][9]                              ; Merged with regs[15][21]               ;
+; regs[12][25]                            ; Merged with regs[15][21]               ;
+; regs[2][25]                             ; Merged with regs[15][21]               ;
+; regs[9][9]                              ; Merged with regs[15][21]               ;
+; regs[2][9]                              ; Merged with regs[15][21]               ;
+; regs[14][9]                             ; Merged with regs[15][21]               ;
+; regs[1][25]                             ; Merged with regs[15][21]               ;
+; regs[8][25]                             ; Merged with regs[15][21]               ;
+; regs[1][9]                              ; Merged with regs[15][21]               ;
+; regs[12][9]                             ; Merged with regs[15][21]               ;
+; regs[8][13]                             ; Merged with regs[15][21]               ;
+; regs[12][5]                             ; Merged with regs[15][21]               ;
+; regs[7][29]                             ; Merged with regs[15][21]               ;
+; regs[8][5]                              ; Merged with regs[15][21]               ;
+; regs[11][29]                            ; Merged with regs[15][21]               ;
+; regs[7][21]                             ; Merged with regs[15][21]               ;
+; regs[13][29]                            ; Merged with regs[15][21]               ;
+; regs[7][13]                             ; Merged with regs[15][21]               ;
+; regs[11][21]                            ; Merged with regs[15][21]               ;
+; regs[7][5]                              ; Merged with regs[15][21]               ;
+; regs[14][29]                            ; Merged with regs[15][21]               ;
+; regs[6][29]                             ; Merged with regs[15][21]               ;
+; regs[11][13]                            ; Merged with regs[15][21]               ;
+; regs[6][21]                             ; Merged with regs[15][21]               ;
+; regs[13][21]                            ; Merged with regs[15][21]               ;
+; regs[6][13]                             ; Merged with regs[15][21]               ;
+; regs[11][5]                             ; Merged with regs[15][21]               ;
+; regs[6][5]                              ; Merged with regs[15][21]               ;
+; regs[15][13]                            ; Merged with regs[15][21]               ;
+; regs[5][29]                             ; Merged with regs[15][21]               ;
+; regs[10][29]                            ; Merged with regs[15][21]               ;
+; regs[5][21]                             ; Merged with regs[15][21]               ;
+; regs[13][13]                            ; Merged with regs[15][21]               ;
+; regs[5][13]                             ; Merged with regs[15][21]               ;
+; regs[10][21]                            ; Merged with regs[15][21]               ;
+; regs[5][5]                              ; Merged with regs[15][21]               ;
+; regs[14][21]                            ; Merged with regs[15][21]               ;
+; regs[4][29]                             ; Merged with regs[15][21]               ;
+; regs[10][13]                            ; Merged with regs[15][21]               ;
+; regs[4][21]                             ; Merged with regs[15][21]               ;
+; regs[13][5]                             ; Merged with regs[15][21]               ;
+; regs[4][13]                             ; Merged with regs[15][21]               ;
+; regs[10][5]                             ; Merged with regs[15][21]               ;
+; regs[4][5]                              ; Merged with regs[15][21]               ;
+; regs[3][29]                             ; Merged with regs[15][21]               ;
+; regs[9][29]                             ; Merged with regs[15][21]               ;
+; regs[3][21]                             ; Merged with regs[15][21]               ;
+; regs[12][29]                            ; Merged with regs[15][21]               ;
+; regs[3][13]                             ; Merged with regs[15][21]               ;
+; regs[9][21]                             ; Merged with regs[15][21]               ;
+; regs[3][5]                              ; Merged with regs[15][21]               ;
+; regs[14][13]                            ; Merged with regs[15][21]               ;
+; regs[2][29]                             ; Merged with regs[15][21]               ;
+; regs[9][13]                             ; Merged with regs[15][21]               ;
+; regs[2][21]                             ; Merged with regs[15][21]               ;
+; regs[12][21]                            ; Merged with regs[15][21]               ;
+; regs[15][30]                            ; Merged with regs[15][31]               ;
+; regs[15][27]                            ; Merged with regs[15][31]               ;
+; regs[15][24]                            ; Merged with regs[15][31]               ;
+; regs[15][21]                            ; Merged with regs[15][31]               ;
+; regs[15][31]                            ; Stuck at GND due to stuck port data_in ;
+; PC_FE[16..31]                           ; Lost fanout                            ;
+; Total Number of Removed Registers = 508 ;                                        ;
++-----------------------------------------+----------------------------------------+
+
+
++---------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                           ;
++---------------+---------------------------+-------------------------------------------+
+; Register name ; Reason for Removal        ; Registers Removed due to This Register    ;
++---------------+---------------------------+-------------------------------------------+
+; wregno_ID[3]  ; Stuck at GND              ; wregno_EX[3], wregno_MEM[3], regs[15][31] ;
+;               ; due to stuck port data_in ;                                           ;
+; wregno_ID[2]  ; Stuck at GND              ; wregno_EX[2], wregno_MEM[2]               ;
+;               ; due to stuck port data_in ;                                           ;
+; wregno_ID[1]  ; Stuck at GND              ; wregno_EX[1], wregno_MEM[1]               ;
+;               ; due to stuck port data_in ;                                           ;
+; wregno_ID[0]  ; Stuck at GND              ; wregno_EX[0], wregno_MEM[0]               ;
+;               ; due to stuck port data_in ;                                           ;
++---------------+---------------------------+-------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -255,14 +809,222 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 0     ;
-; Number of registers using Synchronous Clear  ; 0     ;
-; Number of registers using Synchronous Load   ; 0     ;
-; Number of registers using Asynchronous Clear ; 0     ;
+; Total registers                              ; 379   ;
+; Number of registers using Synchronous Clear  ; 76    ;
+; Number of registers using Synchronous Load   ; 32    ;
+; Number of registers using Asynchronous Clear ; 266   ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 0     ;
+; Number of registers using Clock Enable       ; 104   ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
+
+
++---------------------------------------------------+
+; Inverted Register Statistics                      ;
++-----------------------------------------+---------+
+; Inverted Register                       ; Fan out ;
++-----------------------------------------+---------+
+; HEX_out[0]                              ; 7       ;
+; HEX_out[3]                              ; 7       ;
+; HEX_out[2]                              ; 7       ;
+; HEX_out[7]                              ; 7       ;
+; HEX_out[5]                              ; 7       ;
+; HEX_out[10]                             ; 7       ;
+; HEX_out[11]                             ; 7       ;
+; HEX_out[9]                              ; 7       ;
+; HEX_out[15]                             ; 7       ;
+; HEX_out[14]                             ; 7       ;
+; HEX_out[12]                             ; 7       ;
+; HEX_out[18]                             ; 7       ;
+; HEX_out[19]                             ; 7       ;
+; HEX_out[17]                             ; 7       ;
+; HEX_out[23]                             ; 7       ;
+; HEX_out[21]                             ; 7       ;
+; HEX_out[22]                             ; 7       ;
+; HEX_out[20]                             ; 7       ;
+; PC_FE[8]                                ; 2       ;
+; dmem_rtl_0_bypass[32]                   ; 1       ;
+; dmem_rtl_0_bypass[52]                   ; 1       ;
+; dmem_rtl_0_bypass[38]                   ; 1       ;
+; dmem_rtl_0_bypass[50]                   ; 1       ;
+; dmem_rtl_0_bypass[48]                   ; 1       ;
+; dmem_rtl_0_bypass[64]                   ; 1       ;
+; dmem_rtl_0_bypass[62]                   ; 1       ;
+; dmem_rtl_0_bypass[60]                   ; 1       ;
+; dmem_rtl_0_bypass[58]                   ; 1       ;
+; dmem_rtl_0_bypass[56]                   ; 1       ;
+; dmem_rtl_0_bypass[54]                   ; 1       ;
+; dmem_rtl_0_bypass[44]                   ; 1       ;
+; dmem_rtl_0_bypass[76]                   ; 1       ;
+; dmem_rtl_0_bypass[74]                   ; 1       ;
+; dmem_rtl_0_bypass[70]                   ; 1       ;
+; dmem_rtl_0_bypass[68]                   ; 1       ;
+; dmem_rtl_0_bypass[46]                   ; 1       ;
+; dmem_rtl_0_bypass[42]                   ; 1       ;
+; dmem_rtl_0_bypass[40]                   ; 1       ;
+; dmem_rtl_0_bypass[72]                   ; 1       ;
+; dmem_rtl_0_bypass[66]                   ; 1       ;
+; dmem_rtl_0_bypass[92]                   ; 1       ;
+; dmem_rtl_0_bypass[90]                   ; 1       ;
+; dmem~30                                 ; 1       ;
+; dmem_rtl_0_bypass[88]                   ; 1       ;
+; dmem_rtl_0_bypass[87]                   ; 1       ;
+; dmem_rtl_0_bypass[86]                   ; 1       ;
+; dmem_rtl_0_bypass[84]                   ; 1       ;
+; dmem_rtl_0_bypass[82]                   ; 1       ;
+; dmem_rtl_0_bypass[80]                   ; 1       ;
+; dmem_rtl_0_bypass[78]                   ; 1       ;
+; dmem_rtl_0_bypass[36]                   ; 1       ;
+; dmem_rtl_0_bypass[34]                   ; 1       ;
+; dmem_rtl_0_bypass[30]                   ; 1       ;
+; Total number of inverted registers = 53 ;         ;
++-----------------------------------------+---------+
+
+
++----------------------------------------------+
+; Registers Packed Into Inferred Megafunctions ;
++----------------------+--------------+--------+
+; Register Name        ; Megafunction ; Type   ;
++----------------------+--------------+--------+
+; inst_FE[0..7,18..31] ; imem_rtl_0   ; RAM    ;
++----------------------+--------------+--------+
+
+
++--------------------------------------------+
+; Registers Added for RAM Pass-Through Logic ;
++-----------------------+--------------------+
+; Register Name         ; RAM Name           ;
++-----------------------+--------------------+
+; dmem_rtl_0_bypass[0]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[1]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[2]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[3]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[4]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[5]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[6]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[7]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[8]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[9]  ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[10] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[11] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[12] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[13] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[14] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[15] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[16] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[17] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[18] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[19] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[20] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[21] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[22] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[23] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[24] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[25] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[26] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[27] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[28] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[29] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[30] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[31] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[32] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[33] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[34] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[35] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[36] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[37] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[38] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[39] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[40] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[41] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[42] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[43] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[44] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[45] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[46] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[47] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[48] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[49] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[50] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[51] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[52] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[53] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[54] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[55] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[56] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[57] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[58] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[59] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[60] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[61] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[62] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[63] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[64] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[65] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[66] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[67] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[68] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[69] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[70] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[71] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[72] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[73] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[74] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[75] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[76] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[77] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[78] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[79] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[80] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[81] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[82] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[83] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[84] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[85] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[86] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[87] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[88] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[89] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[90] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[91] ; dmem_rtl_0         ;
+; dmem_rtl_0_bypass[92] ; dmem_rtl_0         ;
++-----------------------+--------------------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output      ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------+
+; 267:1              ; 12 bits   ; 2136 LEs      ; 96 LEs               ; 2040 LEs               ; Yes        ; |project3_frame|aluout_EX[20]   ;
+; 270:1              ; 4 bits    ; 720 LEs       ; 92 LEs               ; 628 LEs                ; Yes        ; |project3_frame|aluout_EX[31]   ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 16 LEs               ; 0 LEs                  ; No         ; |project3_frame|ShiftRight0     ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 16 LEs               ; 0 LEs                  ; No         ; |project3_frame|ShiftLeft0      ;
+; 4:1                ; 8 bits    ; 16 LEs        ; 16 LEs               ; 0 LEs                  ; No         ; |project3_frame|ShiftLeft0      ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |project3_frame|ShiftRight0     ;
+; 4:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |project3_frame|ShiftLeft0      ;
+; 4:1                ; 50 bits   ; 100 LEs       ; 100 LEs              ; 0 LEs                  ; No         ; |project3_frame|ShiftLeft0      ;
+; 267:1              ; 12 bits   ; 2136 LEs      ; 264 LEs              ; 1872 LEs               ; No         ; |project3_frame|aluout_EX_r[12] ;
+; 270:1              ; 2 bits    ; 360 LEs       ; 46 LEs               ; 314 LEs                ; No         ; |project3_frame|aluout_EX_r[3]  ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+---------------------------------+
+
+
++-----------------------------------------------------------------------------+
+; Source assignments for altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated ;
++---------------------------------+--------------------+------+---------------+
+; Assignment                      ; Value              ; From ; To            ;
++---------------------------------+--------------------+------+---------------+
+; OPTIMIZE_POWER_DURING_SYNTHESIS ; NORMAL_COMPILATION ; -    ; -             ;
++---------------------------------+--------------------+------+---------------+
+
+
++-----------------------------------------------------------------------------+
+; Source assignments for altsyncram:dmem_rtl_0|altsyncram_qgl1:auto_generated ;
++---------------------------------+--------------------+------+---------------+
+; Assignment                      ; Value              ; From ; To            ;
++---------------------------------+--------------------+------+---------------+
+; OPTIMIZE_POWER_DURING_SYNTHESIS ; NORMAL_COMPILATION ; -    ; -             ;
++---------------------------------+--------------------+------+---------------+
 
 
 +--------------------------------------------------------------------------------+
@@ -281,7 +1043,7 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; ADDRLEDR       ; 11111111111111111111000000100000 ; Unsigned Binary            ;
 ; ADDRKEY        ; 11111111111111111111000010000000 ; Unsigned Binary            ;
 ; ADDRSW         ; 11111111111111111111000010010000 ; Unsigned Binary            ;
-; IMEMINITFILE   ; tests/test1.mif                  ; String                     ;
+; IMEMINITFILE   ; tests/test2.mif                  ; String                     ;
 ; IMEMADDRBITS   ; 16                               ; Signed Integer             ;
 ; IMEMWORDBITS   ; 2                                ; Signed Integer             ;
 ; IMEMWORDS      ; 16384                            ; Signed Integer             ;
@@ -581,6 +1343,159 @@ Note: In order to hide this table in the UI and the text report file, please set
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
++--------------------------------------------------------------------------------------------------------------+
+; Parameter Settings for Inferred Entity Instance: altsyncram:imem_rtl_0                                       ;
++------------------------------------+--------------------------------------------------------+----------------+
+; Parameter Name                     ; Value                                                  ; Type           ;
++------------------------------------+--------------------------------------------------------+----------------+
+; BYTE_SIZE_BLOCK                    ; 8                                                      ; Untyped        ;
+; AUTO_CARRY_CHAINS                  ; ON                                                     ; AUTO_CARRY     ;
+; IGNORE_CARRY_BUFFERS               ; OFF                                                    ; IGNORE_CARRY   ;
+; AUTO_CASCADE_CHAINS                ; ON                                                     ; AUTO_CASCADE   ;
+; IGNORE_CASCADE_BUFFERS             ; OFF                                                    ; IGNORE_CASCADE ;
+; WIDTH_BYTEENA                      ; 1                                                      ; Untyped        ;
+; OPERATION_MODE                     ; ROM                                                    ; Untyped        ;
+; WIDTH_A                            ; 32                                                     ; Untyped        ;
+; WIDTHAD_A                          ; 14                                                     ; Untyped        ;
+; NUMWORDS_A                         ; 16384                                                  ; Untyped        ;
+; OUTDATA_REG_A                      ; UNREGISTERED                                           ; Untyped        ;
+; ADDRESS_ACLR_A                     ; NONE                                                   ; Untyped        ;
+; OUTDATA_ACLR_A                     ; NONE                                                   ; Untyped        ;
+; WRCONTROL_ACLR_A                   ; NONE                                                   ; Untyped        ;
+; INDATA_ACLR_A                      ; NONE                                                   ; Untyped        ;
+; BYTEENA_ACLR_A                     ; NONE                                                   ; Untyped        ;
+; WIDTH_B                            ; 1                                                      ; Untyped        ;
+; WIDTHAD_B                          ; 1                                                      ; Untyped        ;
+; NUMWORDS_B                         ; 1                                                      ; Untyped        ;
+; INDATA_REG_B                       ; CLOCK1                                                 ; Untyped        ;
+; WRCONTROL_WRADDRESS_REG_B          ; CLOCK1                                                 ; Untyped        ;
+; RDCONTROL_REG_B                    ; CLOCK1                                                 ; Untyped        ;
+; ADDRESS_REG_B                      ; CLOCK1                                                 ; Untyped        ;
+; OUTDATA_REG_B                      ; UNREGISTERED                                           ; Untyped        ;
+; BYTEENA_REG_B                      ; CLOCK1                                                 ; Untyped        ;
+; INDATA_ACLR_B                      ; NONE                                                   ; Untyped        ;
+; WRCONTROL_ACLR_B                   ; NONE                                                   ; Untyped        ;
+; ADDRESS_ACLR_B                     ; NONE                                                   ; Untyped        ;
+; OUTDATA_ACLR_B                     ; NONE                                                   ; Untyped        ;
+; RDCONTROL_ACLR_B                   ; NONE                                                   ; Untyped        ;
+; BYTEENA_ACLR_B                     ; NONE                                                   ; Untyped        ;
+; WIDTH_BYTEENA_A                    ; 1                                                      ; Untyped        ;
+; WIDTH_BYTEENA_B                    ; 1                                                      ; Untyped        ;
+; RAM_BLOCK_TYPE                     ; AUTO                                                   ; Untyped        ;
+; BYTE_SIZE                          ; 8                                                      ; Untyped        ;
+; READ_DURING_WRITE_MODE_MIXED_PORTS ; DONT_CARE                                              ; Untyped        ;
+; READ_DURING_WRITE_MODE_PORT_A      ; NEW_DATA_NO_NBE_READ                                   ; Untyped        ;
+; READ_DURING_WRITE_MODE_PORT_B      ; NEW_DATA_NO_NBE_READ                                   ; Untyped        ;
+; INIT_FILE                          ; db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif ; Untyped        ;
+; INIT_FILE_LAYOUT                   ; PORT_A                                                 ; Untyped        ;
+; MAXIMUM_DEPTH                      ; 0                                                      ; Untyped        ;
+; CLOCK_ENABLE_INPUT_A               ; NORMAL                                                 ; Untyped        ;
+; CLOCK_ENABLE_INPUT_B               ; NORMAL                                                 ; Untyped        ;
+; CLOCK_ENABLE_OUTPUT_A              ; NORMAL                                                 ; Untyped        ;
+; CLOCK_ENABLE_OUTPUT_B              ; NORMAL                                                 ; Untyped        ;
+; CLOCK_ENABLE_CORE_A                ; USE_INPUT_CLKEN                                        ; Untyped        ;
+; CLOCK_ENABLE_CORE_B                ; USE_INPUT_CLKEN                                        ; Untyped        ;
+; ENABLE_ECC                         ; FALSE                                                  ; Untyped        ;
+; ECC_PIPELINE_STAGE_ENABLED         ; FALSE                                                  ; Untyped        ;
+; WIDTH_ECCSTATUS                    ; 3                                                      ; Untyped        ;
+; DEVICE_FAMILY                      ; Cyclone V                                              ; Untyped        ;
+; CBXI_PARAMETER                     ; altsyncram_jkf1                                        ; Untyped        ;
++------------------------------------+--------------------------------------------------------+----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------------------------+
+; Parameter Settings for Inferred Entity Instance: altsyncram:dmem_rtl_0     ;
++------------------------------------+----------------------+----------------+
+; Parameter Name                     ; Value                ; Type           ;
++------------------------------------+----------------------+----------------+
+; BYTE_SIZE_BLOCK                    ; 8                    ; Untyped        ;
+; AUTO_CARRY_CHAINS                  ; ON                   ; AUTO_CARRY     ;
+; IGNORE_CARRY_BUFFERS               ; OFF                  ; IGNORE_CARRY   ;
+; AUTO_CASCADE_CHAINS                ; ON                   ; AUTO_CASCADE   ;
+; IGNORE_CASCADE_BUFFERS             ; OFF                  ; IGNORE_CASCADE ;
+; WIDTH_BYTEENA                      ; 1                    ; Untyped        ;
+; OPERATION_MODE                     ; DUAL_PORT            ; Untyped        ;
+; WIDTH_A                            ; 32                   ; Untyped        ;
+; WIDTHAD_A                          ; 14                   ; Untyped        ;
+; NUMWORDS_A                         ; 16384                ; Untyped        ;
+; OUTDATA_REG_A                      ; UNREGISTERED         ; Untyped        ;
+; ADDRESS_ACLR_A                     ; NONE                 ; Untyped        ;
+; OUTDATA_ACLR_A                     ; NONE                 ; Untyped        ;
+; WRCONTROL_ACLR_A                   ; NONE                 ; Untyped        ;
+; INDATA_ACLR_A                      ; NONE                 ; Untyped        ;
+; BYTEENA_ACLR_A                     ; NONE                 ; Untyped        ;
+; WIDTH_B                            ; 32                   ; Untyped        ;
+; WIDTHAD_B                          ; 14                   ; Untyped        ;
+; NUMWORDS_B                         ; 16384                ; Untyped        ;
+; INDATA_REG_B                       ; CLOCK1               ; Untyped        ;
+; WRCONTROL_WRADDRESS_REG_B          ; CLOCK1               ; Untyped        ;
+; RDCONTROL_REG_B                    ; CLOCK1               ; Untyped        ;
+; ADDRESS_REG_B                      ; CLOCK0               ; Untyped        ;
+; OUTDATA_REG_B                      ; UNREGISTERED         ; Untyped        ;
+; BYTEENA_REG_B                      ; CLOCK1               ; Untyped        ;
+; INDATA_ACLR_B                      ; NONE                 ; Untyped        ;
+; WRCONTROL_ACLR_B                   ; NONE                 ; Untyped        ;
+; ADDRESS_ACLR_B                     ; NONE                 ; Untyped        ;
+; OUTDATA_ACLR_B                     ; NONE                 ; Untyped        ;
+; RDCONTROL_ACLR_B                   ; NONE                 ; Untyped        ;
+; BYTEENA_ACLR_B                     ; NONE                 ; Untyped        ;
+; WIDTH_BYTEENA_A                    ; 1                    ; Untyped        ;
+; WIDTH_BYTEENA_B                    ; 1                    ; Untyped        ;
+; RAM_BLOCK_TYPE                     ; AUTO                 ; Untyped        ;
+; BYTE_SIZE                          ; 8                    ; Untyped        ;
+; READ_DURING_WRITE_MODE_MIXED_PORTS ; DONT_CARE            ; Untyped        ;
+; READ_DURING_WRITE_MODE_PORT_A      ; NEW_DATA_NO_NBE_READ ; Untyped        ;
+; READ_DURING_WRITE_MODE_PORT_B      ; NEW_DATA_NO_NBE_READ ; Untyped        ;
+; INIT_FILE                          ; tests/test2.mif      ; Untyped        ;
+; INIT_FILE_LAYOUT                   ; PORT_A               ; Untyped        ;
+; MAXIMUM_DEPTH                      ; 0                    ; Untyped        ;
+; CLOCK_ENABLE_INPUT_A               ; NORMAL               ; Untyped        ;
+; CLOCK_ENABLE_INPUT_B               ; NORMAL               ; Untyped        ;
+; CLOCK_ENABLE_OUTPUT_A              ; NORMAL               ; Untyped        ;
+; CLOCK_ENABLE_OUTPUT_B              ; NORMAL               ; Untyped        ;
+; CLOCK_ENABLE_CORE_A                ; USE_INPUT_CLKEN      ; Untyped        ;
+; CLOCK_ENABLE_CORE_B                ; USE_INPUT_CLKEN      ; Untyped        ;
+; ENABLE_ECC                         ; FALSE                ; Untyped        ;
+; ECC_PIPELINE_STAGE_ENABLED         ; FALSE                ; Untyped        ;
+; WIDTH_ECCSTATUS                    ; 3                    ; Untyped        ;
+; DEVICE_FAMILY                      ; Cyclone V            ; Untyped        ;
+; CBXI_PARAMETER                     ; altsyncram_qgl1      ; Untyped        ;
++------------------------------------+----------------------+----------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-------------------------------------------------------------------+
+; altsyncram Parameter Settings by Entity Instance                  ;
++-------------------------------------------+-----------------------+
+; Name                                      ; Value                 ;
++-------------------------------------------+-----------------------+
+; Number of entity instances                ; 2                     ;
+; Entity Instance                           ; altsyncram:imem_rtl_0 ;
+;     -- OPERATION_MODE                     ; ROM                   ;
+;     -- WIDTH_A                            ; 32                    ;
+;     -- NUMWORDS_A                         ; 16384                 ;
+;     -- OUTDATA_REG_A                      ; UNREGISTERED          ;
+;     -- WIDTH_B                            ; 1                     ;
+;     -- NUMWORDS_B                         ; 1                     ;
+;     -- ADDRESS_REG_B                      ; CLOCK1                ;
+;     -- OUTDATA_REG_B                      ; UNREGISTERED          ;
+;     -- RAM_BLOCK_TYPE                     ; AUTO                  ;
+;     -- READ_DURING_WRITE_MODE_MIXED_PORTS ; DONT_CARE             ;
+; Entity Instance                           ; altsyncram:dmem_rtl_0 ;
+;     -- OPERATION_MODE                     ; DUAL_PORT             ;
+;     -- WIDTH_A                            ; 32                    ;
+;     -- NUMWORDS_A                         ; 16384                 ;
+;     -- OUTDATA_REG_A                      ; UNREGISTERED          ;
+;     -- WIDTH_B                            ; 32                    ;
+;     -- NUMWORDS_B                         ; 16384                 ;
+;     -- ADDRESS_REG_B                      ; CLOCK0                ;
+;     -- OUTDATA_REG_B                      ; UNREGISTERED          ;
+;     -- RAM_BLOCK_TYPE                     ; AUTO                  ;
+;     -- READ_DURING_WRITE_MODE_MIXED_PORTS ; DONT_CARE             ;
++-------------------------------------------+-----------------------+
+
+
 +------------------------------------------+
 ; Port Connectivity Checks: "SevenSeg:ss0" ;
 +------+-------+----------+----------------+
@@ -635,13 +1550,13 @@ Note: In order to hide this table in the UI and the text report file, please set
 +------+-------+----------+----------------+
 
 
-+----------------------------------------------------------------------------------------------------------------+
-; Port Connectivity Checks: "SXT:mysxt"                                                                          ;
-+------+--------+----------+-------------------------------------------------------------------------------------+
-; Port ; Type   ; Severity ; Details                                                                             ;
-+------+--------+----------+-------------------------------------------------------------------------------------+
-; OUT  ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
-+------+--------+----------+-------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "SXT:mysxt"                                                                                 ;
++-------------+--------+----------+-------------------------------------------------------------------------------------+
+; Port        ; Type   ; Severity ; Details                                                                             ;
++-------------+--------+----------+-------------------------------------------------------------------------------------+
+; OUT[31..30] ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
++-------------+--------+----------+-------------------------------------------------------------------------------------+
 
 
 +-----------------------------------------------------+
@@ -649,13 +1564,35 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; arriav_lcell_comb     ; 2                           ;
-;     normal            ; 2                           ;
-;         0 data inputs ; 2                           ;
+; arriav_ff             ; 379                         ;
+;     CLR               ; 87                          ;
+;     CLR SCLR          ; 76                          ;
+;     CLR SLD           ; 32                          ;
+;     ENA               ; 33                          ;
+;     ENA CLR           ; 71                          ;
+;     plain             ; 80                          ;
+; arriav_lcell_comb     ; 661                         ;
+;     arith             ; 45                          ;
+;         1 data inputs ; 12                          ;
+;         2 data inputs ; 33                          ;
+;     extend            ; 4                           ;
+;         7 data inputs ; 4                           ;
+;     normal            ; 580                         ;
+;         0 data inputs ; 1                           ;
+;         1 data inputs ; 32                          ;
+;         2 data inputs ; 19                          ;
+;         3 data inputs ; 24                          ;
+;         4 data inputs ; 111                         ;
+;         5 data inputs ; 128                         ;
+;         6 data inputs ; 265                         ;
+;     shared            ; 32                          ;
+;         2 data inputs ; 32                          ;
 ; boundary_port         ; 68                          ;
+; generic_pll           ; 1                           ;
+; stratixv_ram_block    ; 108                         ;
 ;                       ;                             ;
-; Max LUT depth         ; 0.00                        ;
-; Average LUT depth     ; 0.00                        ;
+; Max LUT depth         ; 8.00                        ;
+; Average LUT depth     ; 3.52                        ;
 +-----------------------+-----------------------------+
 
 
@@ -664,7 +1601,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:00     ;
+; Top            ; 00:00:08     ;
 +----------------+--------------+
 
 
@@ -674,125 +1611,69 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 18.0.0 Build 614 04/24/2018 SJ Lite Edition
-    Info: Processing started: Tue Sep 17 23:14:23 2019
+    Info: Processing started: Thu Sep 26 12:47:12 2019
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off project3 -c project3_frame
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
-Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
 Info (12021): Found 1 design units, including 1 entities, in source file pll.v
-    Info (12023): Found entity 1: Pll File: C:/Users/caoji/Desktop/project3/Pll.v Line: 8
+    Info (12023): Found entity 1: Pll File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll.v Line: 8
 Info (12021): Found 1 design units, including 1 entities, in source file pll/pll_0002.v
-    Info (12023): Found entity 1: Pll_0002 File: C:/Users/caoji/Desktop/project3/Pll/Pll_0002.v Line: 2
+    Info (12023): Found entity 1: Pll_0002 File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll/Pll_0002.v Line: 2
 Info (12021): Found 1 design units, including 1 entities, in source file sevenseg.v
-    Info (12023): Found entity 1: SevenSeg File: C:/Users/caoji/Desktop/project3/SevenSeg.v Line: 1
+    Info (12023): Found entity 1: SevenSeg File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v Line: 1
 Info (12021): Found 2 design units, including 2 entities, in source file project3_frame.v
-    Info (12023): Found entity 1: project3_frame File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 1
-    Info (12023): Found entity 2: SXT File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 392
+    Info (12023): Found entity 1: project3_frame File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 1
+    Info (12023): Found entity 2: SXT File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 507
 Info (12021): Found 1 design units, including 1 entities, in source file tb_project3.v
-    Info (12023): Found entity 1: tb_project3 File: C:/Users/caoji/Desktop/project3/tb_project3.v Line: 3
+    Info (12023): Found entity 1: tb_project3 File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v Line: 3
+Warning (10236): Verilog HDL Implicit Net warning at project3_frame.v(228): created implicit net for "wrenno_ID_w" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 228
 Info (12127): Elaborating entity "project3_frame" for the top level hierarchy
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(96): object "inst_FE_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 96
-Warning (10858): Verilog HDL warning at project3_frame.v(97): object stall_pipe used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 97
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(144): object "op1_ID_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 144
-Warning (10858): Verilog HDL warning at project3_frame.v(148): object rs_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 148
-Warning (10858): Verilog HDL warning at project3_frame.v(149): object rt_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 149
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(151): object "regval1_ID_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 151
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(152): object "regval2_ID_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 152
-Warning (10858): Verilog HDL warning at project3_frame.v(154): object is_br_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 154
-Warning (10858): Verilog HDL warning at project3_frame.v(155): object is_jmp_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 155
-Warning (10858): Verilog HDL warning at project3_frame.v(156): object rd_mem_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 156
-Warning (10858): Verilog HDL warning at project3_frame.v(157): object wr_mem_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 157
-Warning (10858): Verilog HDL warning at project3_frame.v(158): object wr_reg_ID_w used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 158
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(159): object "ctrlsig_ID_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 159
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(161): object "wr_reg_EX_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 161
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(162): object "wr_reg_MEM_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 162
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(165): object "PC_ID" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 165
-Warning (10858): Verilog HDL warning at project3_frame.v(169): object immval_ID used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 169
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(173): object "wregno_ID" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 173
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(177): object "inst_ID" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 177
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(221): object "is_br_EX_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 221
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(222): object "is_jmp_EX_w" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 222
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(226): object "br_cond_EX" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 226
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(229): object "aluout_EX_r" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 229
-Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(296): object "inst_MEM" assigned a value but never read File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 296
-Warning (10858): Verilog HDL warning at project3_frame.v(383): object LEDR_out used but never assigned File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 383
-Warning (10850): Verilog HDL warning at project3_frame.v(111): number of words (67) in memory file does not match the number of elements in the address range [0:16383] File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 111
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(133): inferring latch(es) for variable "inst_FE", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 133
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(201): inferring latch(es) for variable "op1_ID", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 201
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(201): inferring latch(es) for variable "op2_ID", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 201
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(201): inferring latch(es) for variable "regval1_ID", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 201
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(201): inferring latch(es) for variable "regval2_ID", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 201
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(201): inferring latch(es) for variable "ctrlsig_ID", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 201
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "inst_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "aluout_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "wregno_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "ctrlsig_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "mispred_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "pcgood_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(272): inferring latch(es) for variable "regval2_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Warning (10030): Net "LEDR_out" at project3_frame.v(383) has no driver or initial value, using a default initial value '0' File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 383
-Info (10041): Inferred latch for "regval2_EX[0]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[1]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[2]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[3]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[4]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[5]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[6]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[7]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[8]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[9]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[10]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[11]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[12]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[13]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[14]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[15]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[16]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[17]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[18]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[19]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[20]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[21]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[22]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "regval2_EX[23]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "ctrlsig_EX[1]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[0]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[1]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[2]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[3]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[4]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[5]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[6]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[7]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[8]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[9]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[10]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[11]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[12]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[13]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[14]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[15]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[16]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[17]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[18]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[19]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[20]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[21]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[22]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[23]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[24]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[25]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[26]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[27]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[28]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[29]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[30]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (10041): Inferred latch for "aluout_EX[31]" at project3_frame.v(272) File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 272
-Info (12128): Elaborating entity "Pll" for hierarchy "Pll:myPll" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 87
-Info (12128): Elaborating entity "Pll_0002" for hierarchy "Pll:myPll|Pll_0002:pll_inst" File: C:/Users/caoji/Desktop/project3/Pll.v Line: 20
-Info (12128): Elaborating entity "altera_pll" for hierarchy "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i" File: C:/Users/caoji/Desktop/project3/Pll/Pll_0002.v Line: 85
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(228): object "wrenno_ID_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 228
+Warning (10858): Verilog HDL warning at project3_frame.v(165): object wregno_ID_w used but never assigned File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 165
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(167): object "wr_reg_MEM_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 167
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(173): object "PC_ID" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 173
+Warning (10858): Verilog HDL warning at project3_frame.v(177): object immval_ID used but never assigned File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 177
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(265): object "is_jmp_EX_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 265
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(269): object "br_cond_EX" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 269
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(281): object "rd_EX_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 281
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(283): object "rt_EX_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 283
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(284): object "is_op2_EX" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 284
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(392): object "inst_MEM" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 392
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(405): object "rd_MEM_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 405
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(407): object "rt_MEM_w" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 407
+Warning (10036): Verilog HDL or VHDL warning at project3_frame.v(408): object "is_op2_MEM" assigned a value but never read File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 408
+Warning (10858): Verilog HDL warning at project3_frame.v(498): object LEDR_out used but never assigned File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 498
+Warning (10850): Verilog HDL warning at project3_frame.v(112): number of words (70) in memory file does not match the number of elements in the address range [0:16383] File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 112
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(206): truncated value with size 32 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 206
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(210): truncated value with size 32 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 210
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(211): truncated value with size 32 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 211
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(212): truncated value with size 32 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 212
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(213): truncated value with size 32 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 213
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(228): truncated value with size 4 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 228
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(235): truncated value with size 32 to match size of target (1) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 235
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(318): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 318
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(319): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 319
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(320): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 320
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(321): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 321
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(322): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 322
+Warning (10764): Verilog HDL warning at project3_frame.v(326): converting signed shift amount to unsigned File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 326
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(326): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 326
+Warning (10764): Verilog HDL warning at project3_frame.v(327): converting signed shift amount to unsigned File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 327
+Warning (10230): Verilog HDL assignment warning at project3_frame.v(327): truncated value with size 63 to match size of target (32) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 327
+Warning (10240): Verilog HDL Always Construct warning at project3_frame.v(362): inferring latch(es) for variable "mispred_EX", which holds its previous value in one or more paths through the always construct File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 362
+Warning (10030): Net "imem.data_a" at project3_frame.v(106) has no driver or initial value, using a default initial value '0' File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 106
+Warning (10030): Net "imem.waddr_a" at project3_frame.v(106) has no driver or initial value, using a default initial value '0' File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 106
+Warning (10030): Net "wregno_ID_w" at project3_frame.v(165) has no driver or initial value, using a default initial value '0' File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 165
+Warning (10030): Net "immval_ID" at project3_frame.v(177) has no driver or initial value, using a default initial value '0' File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 177
+Warning (10030): Net "LEDR_out" at project3_frame.v(498) has no driver or initial value, using a default initial value '0' File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 498
+Warning (10030): Net "imem.we_a" at project3_frame.v(106) has no driver or initial value, using a default initial value '0' File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 106
+Info (10041): Inferred latch for "mispred_EX" at project3_frame.v(362) File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 362
+Info (12128): Elaborating entity "Pll" for hierarchy "Pll:myPll" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 88
+Info (12128): Elaborating entity "Pll_0002" for hierarchy "Pll:myPll|Pll_0002:pll_inst" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll.v Line: 20
+Info (12128): Elaborating entity "altera_pll" for hierarchy "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll/Pll_0002.v Line: 85
 Info (10008): Verilog HDL or VHDL information: EDA Netlist Writer cannot regroup multidimensional array "wire_to_nowhere_64" into its bus
-Info (12130): Elaborated megafunction instantiation "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i" File: C:/Users/caoji/Desktop/project3/Pll/Pll_0002.v Line: 85
-Info (12133): Instantiated megafunction "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i" with the following parameter: File: C:/Users/caoji/Desktop/project3/Pll/Pll_0002.v Line: 85
+Info (12130): Elaborated megafunction instantiation "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll/Pll_0002.v Line: 85
+Info (12133): Instantiated megafunction "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i" with the following parameter: File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll/Pll_0002.v Line: 85
     Info (12134): Parameter "fractional_vco_multiplier" = "false"
     Info (12134): Parameter "reference_clock_frequency" = "50.0 MHz"
     Info (12134): Parameter "operation_mode" = "direct"
@@ -853,64 +1734,126 @@ Info (12133): Instantiated megafunction "Pll:myPll|Pll_0002:pll_inst|altera_pll:
     Info (12134): Parameter "duty_cycle17" = "50"
     Info (12134): Parameter "pll_type" = "General"
     Info (12134): Parameter "pll_subtype" = "General"
-Info (12128): Elaborating entity "SXT" for hierarchy "SXT:mysxt" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 188
-Info (12128): Elaborating entity "SevenSeg" for hierarchy "SevenSeg:ss5" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 367
+Info (12128): Elaborating entity "SXT" for hierarchy "SXT:mysxt" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 202
+Info (12128): Elaborating entity "SevenSeg" for hierarchy "SevenSeg:ss5" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 482
+Warning (113031): 192 out of 16384 addresses are reinitialized. The latest initialized data will replace the existing data. There are 192 warnings found, and 10 warnings are reported. File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tests/test2.mif Line: 1
+    Warning (113030): Memory Initialization File address 64 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 15
+    Warning (113030): Memory Initialization File address 65 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 16
+    Warning (113030): Memory Initialization File address 66 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 17
+    Warning (113030): Memory Initialization File address 67 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 18
+    Warning (113030): Memory Initialization File address 68 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 19
+    Warning (113030): Memory Initialization File address 69 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 20
+    Warning (113030): Memory Initialization File address 70 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 21
+    Warning (113030): Memory Initialization File address 71 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 21
+    Warning (113030): Memory Initialization File address 72 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 21
+    Warning (113030): Memory Initialization File address 73 is reinitialized File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/ Line: 21
+Warning (276020): Inferred RAM node "dmem_rtl_0" from synchronous design logic.  Pass-through logic has been added to match the read-during-write behavior of the original design.
+Info (19000): Inferred 2 megafunctions from design logic
+    Info (276029): Inferred altsyncram megafunction from the following design logic: "imem_rtl_0" 
+        Info (286033): Parameter OPERATION_MODE set to ROM
+        Info (286033): Parameter WIDTH_A set to 32
+        Info (286033): Parameter WIDTHAD_A set to 14
+        Info (286033): Parameter NUMWORDS_A set to 16384
+        Info (286033): Parameter OUTDATA_REG_A set to UNREGISTERED
+        Info (286033): Parameter ADDRESS_ACLR_A set to NONE
+        Info (286033): Parameter OUTDATA_ACLR_A set to NONE
+        Info (286033): Parameter INDATA_ACLR_A set to NONE
+        Info (286033): Parameter WRCONTROL_ACLR_A set to NONE
+        Info (286033): Parameter INIT_FILE set to db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif
+    Info (276029): Inferred altsyncram megafunction from the following design logic: "dmem_rtl_0" 
+        Info (286033): Parameter OPERATION_MODE set to DUAL_PORT
+        Info (286033): Parameter WIDTH_A set to 32
+        Info (286033): Parameter WIDTHAD_A set to 14
+        Info (286033): Parameter NUMWORDS_A set to 16384
+        Info (286033): Parameter WIDTH_B set to 32
+        Info (286033): Parameter WIDTHAD_B set to 14
+        Info (286033): Parameter NUMWORDS_B set to 16384
+        Info (286033): Parameter ADDRESS_ACLR_A set to NONE
+        Info (286033): Parameter OUTDATA_REG_B set to UNREGISTERED
+        Info (286033): Parameter ADDRESS_ACLR_B set to NONE
+        Info (286033): Parameter OUTDATA_ACLR_B set to NONE
+        Info (286033): Parameter ADDRESS_REG_B set to CLOCK0
+        Info (286033): Parameter INDATA_ACLR_A set to NONE
+        Info (286033): Parameter WRCONTROL_ACLR_A set to NONE
+        Info (286033): Parameter INIT_FILE set to tests/test2.mif
+Info (12130): Elaborated megafunction instantiation "altsyncram:imem_rtl_0"
+Info (12133): Instantiated megafunction "altsyncram:imem_rtl_0" with the following parameter:
+    Info (12134): Parameter "OPERATION_MODE" = "ROM"
+    Info (12134): Parameter "WIDTH_A" = "32"
+    Info (12134): Parameter "WIDTHAD_A" = "14"
+    Info (12134): Parameter "NUMWORDS_A" = "16384"
+    Info (12134): Parameter "OUTDATA_REG_A" = "UNREGISTERED"
+    Info (12134): Parameter "ADDRESS_ACLR_A" = "NONE"
+    Info (12134): Parameter "OUTDATA_ACLR_A" = "NONE"
+    Info (12134): Parameter "INDATA_ACLR_A" = "NONE"
+    Info (12134): Parameter "WRCONTROL_ACLR_A" = "NONE"
+    Info (12134): Parameter "INIT_FILE" = "db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif"
+Info (12021): Found 1 design units, including 1 entities, in source file db/altsyncram_jkf1.tdf
+    Info (12023): Found entity 1: altsyncram_jkf1 File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 29
+Warning (127007): Memory Initialization File or Hexadecimal (Intel-Format) File "C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif" contains "don't care" values -- overwriting them with 0s File: c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altsyncram.tdf Line: 791
+Warning (127007): Memory Initialization File or Hexadecimal (Intel-Format) File "C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif" contains "don't care" values -- overwriting them with 0s File: c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altsyncram.tdf Line: 791
+Warning (127007): Memory Initialization File or Hexadecimal (Intel-Format) File "C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif" contains "don't care" values -- overwriting them with 0s File: c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altsyncram.tdf Line: 791
+Warning (127007): Memory Initialization File or Hexadecimal (Intel-Format) File "C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/project3_frame.ram0_project3_frame_aafa3dba.hdl.mif" contains "don't care" values -- overwriting them with 0s File: c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altsyncram.tdf Line: 791
+Info (12021): Found 1 design units, including 1 entities, in source file db/mux_2hb.tdf
+    Info (12023): Found entity 1: mux_2hb File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/mux_2hb.tdf Line: 22
+Info (12130): Elaborated megafunction instantiation "altsyncram:dmem_rtl_0"
+Info (12133): Instantiated megafunction "altsyncram:dmem_rtl_0" with the following parameter:
+    Info (12134): Parameter "OPERATION_MODE" = "DUAL_PORT"
+    Info (12134): Parameter "WIDTH_A" = "32"
+    Info (12134): Parameter "WIDTHAD_A" = "14"
+    Info (12134): Parameter "NUMWORDS_A" = "16384"
+    Info (12134): Parameter "WIDTH_B" = "32"
+    Info (12134): Parameter "WIDTHAD_B" = "14"
+    Info (12134): Parameter "NUMWORDS_B" = "16384"
+    Info (12134): Parameter "ADDRESS_ACLR_A" = "NONE"
+    Info (12134): Parameter "OUTDATA_REG_B" = "UNREGISTERED"
+    Info (12134): Parameter "ADDRESS_ACLR_B" = "NONE"
+    Info (12134): Parameter "OUTDATA_ACLR_B" = "NONE"
+    Info (12134): Parameter "ADDRESS_REG_B" = "CLOCK0"
+    Info (12134): Parameter "INDATA_ACLR_A" = "NONE"
+    Info (12134): Parameter "WRCONTROL_ACLR_A" = "NONE"
+    Info (12134): Parameter "INIT_FILE" = "tests/test2.mif"
+Info (12021): Found 1 design units, including 1 entities, in source file db/altsyncram_qgl1.tdf
+    Info (12023): Found entity 1: altsyncram_qgl1 File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_qgl1.tdf Line: 33
+Info (12021): Found 1 design units, including 1 entities, in source file db/decode_5la.tdf
+    Info (12023): Found entity 1: decode_5la File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/decode_5la.tdf Line: 22
+Info (12021): Found 1 design units, including 1 entities, in source file db/decode_u0a.tdf
+    Info (12023): Found entity 1: decode_u0a File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/decode_u0a.tdf Line: 22
 Warning (14284): Synthesized away the following node(s):
-    Warning (14285): Synthesized away the following PLL node(s):
-        Warning (14320): Synthesized away node "Pll:myPll|Pll_0002:pll_inst|altera_pll:altera_pll_i|outclk_wire[0]" File: c:/intelfpga_lite/18.0/quartus/libraries/megafunctions/altera_pll.v Line: 748
+    Warning (14285): Synthesized away the following RAM node(s):
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a8" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 207
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a9" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 228
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a10" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 249
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a11" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 270
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a12" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 291
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a13" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 312
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a14" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 333
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a15" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 354
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a16" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 375
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a17" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 396
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a40" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 879
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a41" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 900
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a42" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 921
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a43" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 942
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a44" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 963
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a45" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 984
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a46" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 1005
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a47" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 1026
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a48" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 1047
+        Warning (14320): Synthesized away node "altsyncram:imem_rtl_0|altsyncram_jkf1:auto_generated|ram_block1a49" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/db/altsyncram_jkf1.tdf Line: 1068
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "HEX0[0]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX0[1]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX0[2]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX0[3]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX0[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX0[5]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX0[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 6
-    Warning (13410): Pin "HEX1[0]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX1[1]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX1[2]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX1[3]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX1[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX1[5]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX1[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 7
-    Warning (13410): Pin "HEX2[0]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX2[1]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX2[2]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX2[3]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX2[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX2[5]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX2[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 8
-    Warning (13410): Pin "HEX3[0]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX3[1]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX3[2]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX3[3]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX3[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX3[5]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX3[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 9
-    Warning (13410): Pin "HEX4[0]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX4[1]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX4[2]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX4[3]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX4[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX4[5]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX4[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 10
-    Warning (13410): Pin "HEX5[0]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "HEX5[1]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "HEX5[2]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "HEX5[3]" is stuck at VCC File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "HEX5[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "HEX5[5]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "HEX5[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 11
-    Warning (13410): Pin "LEDR[0]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[1]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[2]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[3]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[4]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[5]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[6]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[7]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[8]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
-    Warning (13410): Pin "LEDR[9]" is stuck at GND File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[0]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[1]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[2]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[3]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[4]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[5]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[6]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[7]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[8]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+    Warning (13410): Pin "LEDR[9]" is stuck at GND File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 13
+Info (286030): Timing-Driven Synthesis is running
+Info (17049): 16 registers lost all their fanouts during netlist optimizations.
 Warning (20013): Ignored 24 assignments for entity "DE0_CV" -- entity does not exist in design
     Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity DE0_CV -section_id Top was ignored
     Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity DE0_CV -section_id Top was ignored
@@ -987,31 +1930,28 @@ Warning (20013): Ignored 24 assignments for entity "project2_frame" -- entity do
     Warning (20014): Assignment for entity set_global_assignment -name PARTITION_EXTRACT_HARD_BLOCK_NODES ON -entity project2_frame -section_id Top was ignored
     Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity project2_frame -section_id Top was ignored
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
-    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
-Warning (21074): Design contains 16 input pin(s) that do not drive logic
-    Warning (15610): No output dependent on input pin "CLOCK_50" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 2
-    Warning (15610): No output dependent on input pin "RESET_N" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 3
-    Warning (15610): No output dependent on input pin "KEY[0]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 4
-    Warning (15610): No output dependent on input pin "KEY[1]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 4
-    Warning (15610): No output dependent on input pin "KEY[2]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 4
-    Warning (15610): No output dependent on input pin "KEY[3]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 4
-    Warning (15610): No output dependent on input pin "SW[0]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[1]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[2]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[3]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[4]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[5]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[6]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[7]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[8]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-    Warning (15610): No output dependent on input pin "SW[9]" File: C:/Users/caoji/Desktop/project3/project3_frame.v Line: 5
-Info (21057): Implemented 68 device resources after synthesis - the final resource count might be different
+    Info (16011): Adding 5 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
+Warning (21074): Design contains 10 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "SW[0]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[1]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[2]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[3]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[4]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[5]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[6]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[7]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[8]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+    Warning (15610): No output dependent on input pin "SW[9]" File: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v Line: 5
+Info (21057): Implemented 1113 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 16 input pins
     Info (21059): Implemented 52 output pins
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 189 warnings
-    Info: Peak virtual memory: 4990 megabytes
-    Info: Processing ended: Tue Sep 17 23:14:45 2019
-    Info: Elapsed time: 00:00:22
-    Info: Total CPU time (on all processors): 00:00:35
+    Info (21061): Implemented 936 logic cells
+    Info (21064): Implemented 108 RAM segments
+    Info (21065): Implemented 1 PLLs
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 176 warnings
+    Info: Peak virtual memory: 4981 megabytes
+    Info: Processing ended: Thu Sep 26 12:48:04 2019
+    Info: Elapsed time: 00:00:52
+    Info: Total CPU time (on all processors): 00:01:05
 
 
