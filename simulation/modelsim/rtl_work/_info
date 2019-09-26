@@ -9,113 +9,113 @@ z2
 cModel Technology
 Z0 dC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/simulation/modelsim
 vPll
-Z1 !s110 1568910571
+!s110 1569516842
 !i10b 1
 !s100 z07[<FZ7HIao9E[A3SH8d0
 I=Bz?J>ZDb0b8a0]Yb3UaQ1
-Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z1 VDg1SIo80bB@j0V0VzS_@n1
 R0
 w1456177786
 8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo
 FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo
 L0 32
-Z3 OV;L;10.5b;63
+Z2 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z4 !s108 1568910571.000000
+Z3 !s108 1569516842.000000
 !s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo|
 !s90 -reportprogress|300|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo|
 !i113 1
-Z5 tCvgOpt 0
+Z4 tCvgOpt 0
 n@pll
 vproject3_frame
-Z6 !s110 1568910572
+Z5 !s110 1569516843
 !i10b 1
-!s100 b:nKQc69LFjd^H6n<?zHh3
-IRP?3WiYYRTF8ATZI9<0oQ3
-R2
+!s100 fLSoP];4VOfdVe_L;UJh@1
+I4IE_fKQ74[1<FjW0TTiEJ2
+R1
 R0
-Z7 w1568776453
-Z8 8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v
-Z9 FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v
+Z6 w1569516429
+Z7 8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v
+Z8 FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v
 L0 1
-R3
+R2
 r1
 !s85 0
 31
-Z10 !s108 1568910572.000000
-Z11 !s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v|
-Z12 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v|
+Z9 !s108 1569516843.000000
+Z10 !s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v|
+Z11 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v|
 !i113 1
-Z13 o-vlog01compat -work work
-Z14 !s92 -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3
-R5
+Z12 o-vlog01compat -work work
+Z13 !s92 -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3
+R4
 vSevenSeg
-R1
+R5
 !i10b 1
 !s100 6U9_D4W_?>BAiUofmj`EP3
 I[7?CY2QCA3o`QQlChAFJH1
-R2
+R1
 R0
 w1568760674
 8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v
 FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v
 L0 1
-R3
+R2
 r1
 !s85 0
 31
-R4
+R3
 !s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v|
 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v|
 !i113 1
+R12
 R13
-R14
-R5
+R4
 n@seven@seg
 vSXT
-R6
+R5
 !i10b 1
-!s100 OmY0lFVJKHgPKR;_1kY6F1
-I8YAa?4GF=Q]<z2CW<0b_T2
-R2
+!s100 `jab4UeagnL^O6>J@YMSQ2
+InkR`^BObFL5oBXJXeDZe>1
+R1
 R0
+R6
 R7
 R8
-R9
-L0 392
-R3
+L0 507
+R2
 r1
 !s85 0
 31
+R9
 R10
 R11
-R12
 !i113 1
+R12
 R13
-R14
-R5
+R4
 n@s@x@t
 vtb_project3
-R6
+!s110 1569516844
 !i10b 1
 !s100 A`k3LU]gYD?8KNL6CWcBP1
 IP5g6XM>]k@6kch7]Bo@M@1
-R2
+R1
 R0
 w1568769172
 8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v
 FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v
 L0 3
-R3
+R2
 r1
 !s85 0
 31
-R10
+R9
 !s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v|
 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/tb_project3.v|
 !i113 1
+R12
 R13
-R14
-R5
+R4

@@ -12,9 +12,10 @@ module project3_frame(
   output [9:0] LEDR
 );
 
+	//todo: define a global NOP variable?
   parameter DBITS    = 32;
   parameter INSTSIZE = 32'd4;
-  parameter INSTBITS = 32;
+  parameter INSTBITS = 32; //instruction bits
   parameter REGNOBITS = 4;
   parameter REGWORDS = (1 << REGNOBITS);
   parameter IMMBITS  = 16;
@@ -25,7 +26,7 @@ module project3_frame(
   parameter ADDRSW   = 32'hFFFFF090;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test1.mif";
+  parameter IMEMINITFILE = "tests/test2.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
   
   parameter IMEMADDRBITS = 16;
@@ -95,7 +96,7 @@ module project3_frame(
   wire [DBITS-1:0] pcpred_FE;
   wire [DBITS-1:0] inst_FE_w;
   wire stall_pipe;
-  wire mispred_EX_w;
+  wire mispred_EX_w; // we do not need to worry about mispredictions until part 2
   
   reg [DBITS-1:0] pcgood_EX;
   reg [DBITS-1:0] PC_FE;
@@ -108,7 +109,7 @@ module project3_frame(
   // This statement is used to initialize the I-MEM
   // during simulation using Model-Sim
   initial begin
-    $readmemh("tests/test1.hex", imem);
+    $readmemh("tests/test2.hex", imem); 
   end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
@@ -125,7 +126,7 @@ module project3_frame(
   end
 
   // This is the value of "incremented PC", computed in the FE stage
-  assign pcplus_FE = PC_FE + INSTSIZE;
+  assign pcplus_FE = PC_FE + INSTSIZE; // PC + 4
   // This is the predicted value of the PC that we use to fetch the next instruction
   assign pcpred_FE = pcplus_FE;
 
@@ -135,11 +136,11 @@ module project3_frame(
       inst_FE <= {INSTBITS{1'b0}};
     else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
-		// What does inst_FE represent?
-		inst_FE <= inst_FE_w;
-		// assign the values of stall_pipe and mispred_EX_w here?
-		// OR, if there is a misprediction or stall, assign the inst_FE to something else
-		
+		if (stall_pipe)
+			//inst_FE <= stays the same or don't enable anything
+			PC_FE <= PC_FE;
+		else
+			inst_FE <= inst_FE_w;		
 	 end
   end
 
@@ -164,6 +165,9 @@ module project3_frame(
   wire [REGNOBITS-1:0] wregno_ID_w;
   wire wr_reg_EX_w;
   wire wr_reg_MEM_w;
+  wire is_alui_operation;
+  wire is_op2_ID;
+  wire send_nop;
   
   // Register file
   reg [DBITS-1:0] PC_ID;
@@ -187,6 +191,8 @@ module project3_frame(
   assign rd_ID_w = inst_FE[11:8];
   assign rs_ID_w = inst_FE[7:4];
   assign rt_ID_w = inst_FE[3:0];
+  assign is_alui_operation = inst_FE[31];
+  assign is_op2_ID = op1_ID_w == OP1_ALUR;
   
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -200,37 +206,55 @@ module project3_frame(
   assign is_br_ID_w = (op1_ID_w === OP1_BEQ 
 							|| op1_ID_w === OP1_BLT
 							|| op1_ID_w === OP1_BLE
-							|| op1_ID_w === 0P1_BNE) ? 1 : 0;
+							|| op1_ID_w === OP1_BNE) ? 1 : 0;
   assign is_jmp_ID_w = (op1_ID_w === OP1_JAL) ? 1 : 0;
-  assign rd_mem_ID_w = ?
-  assign wr_mem_ID_w = ?
-  assign wr_reg_ID_w = ?
+  assign rd_mem_ID_w = (op1_ID_w === OP1_LW) ? 1 : 0; // are we reading from memory?
+  assign wr_mem_ID_w = (op1_ID_w === OP1_SW) ? 1 : 0; // are we writing to memory?
+  assign wr_reg_ID_w = (is_op2_ID				 // any OP2 writes to a register
+							|| is_alui_operation 	 // any alui operation writes to a register
+							|| op1_ID_w == OP1_JAL	 // JAL and LW also write to a register
+							|| op1_ID_w == OP1_LW) ? 1 : 0; // are we writing to a register
+							
+  //wregno is the register number that will be written to by store
+//  always begin // added always
+//		if (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW)
+//			assign wregno_ID_w = rt_ID_w;
+//		else if (is_op2_ID)
+//			assign wregno_ID_w = rd_ID_w;
+//		else
+//			assign wregno_ID_w = 0; // is this right? We are not writing to a register in this case
+//  end
   
+  assign wrenno_ID_w = (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW) ? rt_ID_w : rd_ID_w;
+  
+  // concatenates everything together
+  // to be put in buffers/registers
   assign ctrlsig_ID_w = {is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, wr_mem_ID_w, wr_reg_ID_w};
   
   // TODO: Specify stall condition
-   assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0; // is this correct?
+  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0;
 
   // ID_latch
   always @ (posedge clk or posedge reset) begin
-    if(reset) begin
-      PC_ID	 <= {DBITS{1'b0}};
-		inst_ID	 <= {INSTBITS{1'b0}};
-      op1_ID	 <= {OP1BITS{1'b0}};
-      op2_ID	 <= {OP2BITS{1'b0}};
+    if(reset ) begin // || send_nop
+      PC_ID	 		<= {DBITS{1'b0}};
+		inst_ID	 	<= {INSTBITS{1'b0}};
+      op1_ID	 	<= {OP1BITS{1'b0}};
+      op2_ID	 	<= {OP2BITS{1'b0}};
       regval1_ID  <= {DBITS{1'b0}};
       regval2_ID  <= {DBITS{1'b0}};
-      wregno_ID	 <= {REGNOBITS{1'b0}};
-      ctrlsig_ID <= 5'h0;
+      wregno_ID	<= {REGNOBITS{1'b0}};
+      ctrlsig_ID 	<= 5'h0;
     end else begin
-      PC_ID	 <= PC_FE;
+      PC_ID	 		<= PC_FE;
 		// TODO: Specify ID latches
-		inst_ID	 <= inst_FE;
-      op1_ID	 <= op1_ID_w;
-      op2_ID	 <= op2_ID_w;
+		inst_ID	 	<= inst_FE;
+      op1_ID	 	<= op1_ID_w;
+      op2_ID	 	<= op2_ID_w;
       regval1_ID  <= regval1_ID_w;
       regval2_ID  <= regval2_ID_w;
-      wregno_ID	 <= // is this value of Rd?
+      wregno_ID	<= wregno_ID_w;
+		ctrlsig_ID 	<= ctrlsig_ID_w;
     end
   end
 
@@ -248,7 +272,31 @@ module project3_frame(
   reg signed [DBITS-1:0] aluout_EX_r;
   reg [DBITS-1:0] aluout_EX;
   reg [DBITS-1:0] regval2_EX;
+  
+  //added
+//  reg pcgood_EX_reg;
+//  assign pcgood_EX_reg_w = pcgood_EX_reg;
+  
+  wire [OP1BITS-1:0] op1_EX_w;
+  wire [REGNOBITS-1:0] rd_EX_w;
+  wire [REGNOBITS-1:0] rs_EX_w;
+  wire [REGNOBITS-1:0] rt_EX_w;
+  wire is_op2_EX;
+  
+  assign op1_EX_w = inst_ID[31:26];
+  assign rd_EX_w = inst_ID[11:8];
+  assign rt_EX_w = inst_ID[3:0];
+  assign is_op2_EX = op1_EX_w == OP1_ALUR;
 
+//  always begin // added always
+//		if (is_op2_EX)
+//			assign send_nop = ((rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	
+//		else
+//			assign send_nop = ((rt_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	  
+//  end
+  
+//  assign send_nop = (
+  
   always @ (op1_ID or regval1_ID or regval2_ID) begin
     case (op1_ID)
       OP1_BEQ : br_cond_EX = (regval1_ID == regval2_ID);
@@ -267,17 +315,17 @@ module project3_frame(
 			// TODO: assign all the things here:
 			OP2_LE    : aluout_EX_r = {31'b0, regval1_ID <= regval2_ID};
 			OP2_NE    : aluout_EX_r = {31'b0, regval1_ID != regval2_ID};
- 			OP2_ADD    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
-  			OP2_AND    : aluout_EX_r = {31'b0, regval1_ID & regval2_ID};
+ 			OP2_ADD   : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
+  			OP2_AND   : aluout_EX_r = {31'b0, regval1_ID & regval2_ID};
  			OP2_OR    : aluout_EX_r = {31'b0, regval1_ID | regval2_ID};
- 			OP2_XOR    : aluout_EX_r = {31'b0, regval1_ID xor regval2_ID};
- 			OP2_SUB    : aluout_EX_r = {31'b0, regval1_ID - regval2_ID};
- 			OP2_NAND    : aluout_EX_r = {31'b0, !(regval1_ID & regval2_ID)};
- 			OP2_NOR    : aluout_EX_r = {31'b0, !(regval1_ID | regval2_ID)};
- 			OP2_NXOR    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};
- 			OP2_RSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID}; // rd = SEXT(rs >> (rt) )
- 			OP2_LSHF    : aluout_EX_r = {31'b0, regval1_ID + regval2_ID};  // rd = rs << (rt) 
-			//todo: use powerpoint example to create a left shift and right shift module?ss
+ 			OP2_XOR   : aluout_EX_r = {31'b0, regval1_ID ^ regval2_ID};
+ 			OP2_SUB   : aluout_EX_r = {31'b0, regval1_ID - regval2_ID};
+ 			OP2_NAND  : aluout_EX_r = {31'b0, !(regval1_ID & regval2_ID)};
+ 			OP2_NOR   : aluout_EX_r = {31'b0, !(regval1_ID | regval2_ID)};
+ 			OP2_NXOR  : aluout_EX_r = {31'b0, !(regval1_ID ^ regval2_ID)};
+ 			OP2_RSHF  : aluout_EX_r = {31'b0, regval1_ID >> regval2_ID}; // todo: rd = SEXT(rs >> (rt) )
+ 			OP2_LSHF  : aluout_EX_r = {31'b0, regval1_ID << regval2_ID};  // todo: rd = rs << (rt) 
+			//todo: use powerpoint example to create a left shift and right shift module?
 	default	 : aluout_EX_r = {DBITS{1'b0}};
       endcase
     else if(op1_ID == OP1_LW || op1_ID == OP1_SW || op1_ID == OP1_ADDI)
@@ -295,33 +343,40 @@ module project3_frame(
   assign is_br_EX_w = ctrlsig_ID[4];
   assign is_jmp_EX_w = ctrlsig_ID[3];
   assign wr_reg_EX_w = ctrlsig_ID[0];
-  
+    
   // TODO: Specify signals such as mispred_EX_w, pcgood_EX_w
   // what do these mean??
   // assign mispred_EX_w = ... ;
-  // assign pcgood_EX_w = ... ;
   
-  // put in some always block:
-  if (op1_ID_w === OP1_BEQ || op1_ID_w === OP1_BLT || op1_ID_w === OP1_BLE || op1_ID_w === 0P1_BNE)
-		assign pcgood_EX_w = aluout_EX_r + 4 * sxt_imm_ID_w;
-  else if (op1_ID_1w == OP1_JAL) 
-		assign pcgood_EX_w = RS + 4 * sxt(imm); // should some of this be calculated in ALU or done here?
-  end
+  // calculates the new pc value for BR or JAL:
+//  always begin // added always
+//		if (is_br_EX_w)
+//			assign pcgood_EX = pcplus_FE + (4 * sxt_imm_ID_w); //BUT we don't need to worry about mispredicitons?
+//		else if (is_jmp_EX_w) 
+//			assign pcgood_EX = regval1_ID + (4 * sxt_imm_ID_w); // should some of this be calculated in ALU or done here?
+//  end
   
+  assign pcgood_EX_w = is_br_EX_w ? pcplus_FE + (4 * sxt_imm_ID_w) : regval1_ID + (4 * sxt_imm_ID_w);
 
   // EX_latch
   always @ (posedge clk or posedge reset) begin
     if(reset) begin
-	   inst_EX	 <= {INSTBITS{1'b0}};
-      aluout_EX	 <= {DBITS{1'b0}};
-      wregno_EX	 <= {REGNOBITS{1'b0}};
-      ctrlsig_EX <= 3'h0;
-      mispred_EX <= 1'b0;
-		pcgood_EX  <= {DBITS{1'b0}};
+	   inst_EX	 	<= {INSTBITS{1'b0}};
+      aluout_EX	<= {DBITS{1'b0}};
+      wregno_EX	<= {REGNOBITS{1'b0}};
+      ctrlsig_EX 	<= 3'h0;
+      mispred_EX 	<= 1'b0;
+		pcgood_EX  	<= {DBITS{1'b0}};
 		regval2_EX	<= {DBITS{1'b0}};
     end else begin
 		// TODO: Specify EX latches
-		// ...
+		inst_EX	 	<= inst_ID; 
+      aluout_EX	<= aluout_EX_r;
+      wregno_EX	<= wregno_ID;
+      ctrlsig_EX 	<= {rd_mem_ID_w, ctrlsig_ID[1], wr_reg_EX_w}; // MEM stage needs: read mem, write mem, and write reg 
+    //mispred_EX 	<= 1'b0;
+		pcgood_EX  	<= pcgood_EX_w;
+		regval2_EX	<= regval2_ID; // pass this along for SW
     end
   end
   
@@ -345,6 +400,25 @@ module project3_frame(
   assign rd_mem_MEM_w = ctrlsig_EX[2];
   assign wr_mem_MEM_w = ctrlsig_EX[1];
   assign wr_reg_MEM_w = ctrlsig_EX[0];
+  
+  wire [OP1BITS-1:0] op1_MEM_w;
+  wire [REGNOBITS-1:0] rd_MEM_w;
+  wire [REGNOBITS-1:0] rs_MEM_w;
+  wire [REGNOBITS-1:0] rt_MEM_w;
+  wire is_op2_MEM;
+  
+  assign op1_MEM_w = inst_EX[31:26];
+  assign rd_MEM_w = inst_EX[11:8];
+  assign rt_MEM_w = inst_EX[3:0];
+  assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
+
+//  always begin // added always
+//		if (is_op2_MEM)
+//			assign send_nop = ((rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) ? 1 : 0;	
+//		else
+//			assign send_nop = ((rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w)) ? 1 : 0;	  
+//  end
+  
   // Read from D-MEM
   assign rd_val_MEM_w = (memaddr_MEM_w == ADDRKEY) ? {{(DBITS-KEYBITS){1'b0}}, ~KEY} :
 									dmem[memaddr_MEM_w[DMEMADDRBITS-1:DMEMWORDBITS]];
