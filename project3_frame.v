@@ -292,10 +292,10 @@ module project3_frame(
 //		if (is_op2_EX)
 //			assign send_nop = ((rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	
 //		else
-//			assign send_nop = ((rt_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	  
+//			assign send_nop = ((rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w)) ? 1 : 0;	  
 //  end
-  
-//  assign send_nop = (
+  assign send_nop = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
   
   always @ (op1_ID or regval1_ID or regval2_ID) begin
     case (op1_ID)
@@ -355,9 +355,9 @@ module project3_frame(
 //		else if (is_jmp_EX_w) 
 //			assign pcgood_EX = regval1_ID + (4 * sxt_imm_ID_w); // should some of this be calculated in ALU or done here?
 //  end
-  
-  //THIS will not work
-  assign pcgood_EX_w = is_br_EX_w ? pcplus_FE + (4 * sxt_imm_ID_w) : regval1_ID + (4 * sxt_imm_ID_w);
+//  
+  // TODO: fix this, it will not work
+  assign pcgood_EX_w = is_br_EX_w ? (pcplus_FE + (4 * sxt_imm_ID_w)) : (is_jmp_EX_w ? (regval1_ID + (4 * sxt_imm_ID_w)) : 0);
 
   // EX_latch
   always @ (posedge clk or posedge reset) begin
@@ -413,12 +413,15 @@ module project3_frame(
   assign rt_MEM_w = inst_EX[3:0];
   assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
   
-  always @ (posedge clk) begin
-    if (is_op2_MEM)
-			assign send_nop = ((rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) ? 1 : 0;	
-		else
-			assign send_nop = ((rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w)) ? 1 : 0;	  
-  end
+//  always @ (posedge clk) begin
+//    if (is_op2_MEM) begin
+//			assign send_nop = ((rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) ? 1 : 0;	
+//	 else
+//			assign send_nop = ((rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w)) ? 1 : 0;	  
+//  end
+
+  assign send_nop = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) || (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
+
 
   // Read from D-MEM
   assign rd_val_MEM_w = (memaddr_MEM_w == ADDRKEY) ? {{(DBITS-KEYBITS){1'b0}}, ~KEY} :
