@@ -114,7 +114,7 @@ module project3_frame(
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
   
-  always @ (posedge clk or posedge reset) begin
+  always @ (posedge clk or posedge reset) begin // this needs to be upadted 
     if(reset)
       PC_FE <= STARTPC;
     else if(mispred_EX)
@@ -326,8 +326,8 @@ module project3_frame(
  			OP2_RSHF  : aluout_EX_r = {31'b0, regval1_ID >> regval2_ID}; // todo: rd = SEXT(rs >> (rt) )
  			OP2_LSHF  : aluout_EX_r = {31'b0, regval1_ID << regval2_ID};  // todo: rd = rs << (rt) 
 			//todo: use powerpoint example to create a left shift and right shift module?
-	default	 : aluout_EX_r = {DBITS{1'b0}};
-      endcase
+		default	 : aluout_EX_r = {DBITS{1'b0}};
+	  endcase
     else if(op1_ID == OP1_LW || op1_ID == OP1_SW || op1_ID == OP1_ADDI)
       aluout_EX_r = regval1_ID + immval_ID;
     else if(op1_ID == OP1_ANDI)
@@ -356,8 +356,18 @@ module project3_frame(
 //			assign pcgood_EX = regval1_ID + (4 * sxt_imm_ID_w); // should some of this be calculated in ALU or done here?
 //  end
 //  
-  // TODO: fix this, it will not work
-  assign pcgood_EX_w = is_br_EX_w ? (pcplus_FE + (4 * sxt_imm_ID_w)) : (is_jmp_EX_w ? (regval1_ID + (4 * sxt_imm_ID_w)) : 0);
+  // TODO: fix this, it will not work (wil this?)
+  //assign pcgood_EX_w = is_br_EX_w ? (pcplus_FE + (4 * sxt_imm_ID_w)) : (is_jmp_EX_w ? (regval1_ID + (4 * sxt_imm_ID_w)) : 0);
+  assign pcgood_EX_w = ((op1_ID == OP1_BEQ
+							|| op1_ID == OP1_BLT
+							|| op1_ID == OP1_BLE
+							|| op1_ID == OP1_BNE) ? (PC_ID + (immval_ID << 2)) : 
+							((op1_ID == OP1_JAL) ? (regval1_ID + (immval_ID << 2)) : 0));
+  
+  assign mispred_EX_w = ((op1_ID == OP1_BEQ
+							|| op1_ID == OP1_BLT
+							|| op1_ID == OP1_BLE
+							|| op1_ID == OP1_BNE) ? br_cond_EX : ((op1_ID == OP1_JAL) ? 1 : 0));
 
   // EX_latch
   always @ (posedge clk or posedge reset) begin
