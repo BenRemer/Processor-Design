@@ -106,15 +106,14 @@ module project3_frame(
   reg [DBITS-1:0] imem [IMEMWORDS-1:0];
   reg mispred_EX;
   
-  // This statement is used to initialize the I-MEM
-  // during simulation using Model-Sim
+  // This statement is used to initialize the I-MEM during simulation using Model-Sim
   initial begin
     $readmemh("tests/test2.hex", imem); 
   end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
   
-  always @ (posedge clk or posedge reset) begin // this needs to be upadted 
+  always @ (posedge clk or posedge reset) begin // TODO: this needs to be upadted 
     if(reset)
       PC_FE <= STARTPC;
     else if(mispred_EX)
@@ -132,15 +131,12 @@ module project3_frame(
 
   // FE_latch
   always @ (posedge clk or posedge reset) begin
-    if(reset)
+    if(reset) begin
       inst_FE <= {INSTBITS{1'b0}};
-    else begin
+//		PC_FE <= {DBITS{1'b0}}; 
+    end else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
-		if (stall_pipe)
-			//inst_FE <= stays the same or don't enable anything
-			PC_FE <= PC_FE;
-		else
-			inst_FE <= inst_FE_w;		
+			inst_FE <= stall_pipe ? inst_FE_w : {INSTBITS{1'b0}};
 	 end
   end
 
@@ -168,6 +164,8 @@ module project3_frame(
   wire is_alui_operation;
   wire is_op2_ID;
   wire send_nop;
+  wire send_nop_EX_w;
+  wire send_nop_MEM_w;
   
   // Register file
   reg [DBITS-1:0] PC_ID;
@@ -192,7 +190,7 @@ module project3_frame(
   assign rs_ID_w = inst_FE[7:4];
   assign rt_ID_w = inst_FE[3:0];
   assign is_alui_operation = inst_FE[31];
-  assign is_op2_ID = op1_ID_w == OP1_ALUR;
+  assign is_op2_ID = (op1_ID_w == OP1_ALUR); // if op1 is all zeros, we know it is op2
   
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -210,33 +208,40 @@ module project3_frame(
   assign is_jmp_ID_w = (op1_ID_w === OP1_JAL) ? 1 : 0;
   assign rd_mem_ID_w = (op1_ID_w === OP1_LW) ? 1 : 0; // are we reading from memory?
   assign wr_mem_ID_w = (op1_ID_w === OP1_SW) ? 1 : 0; // are we writing to memory?
-  assign wr_reg_ID_w = (is_op2_ID				 // any OP2 writes to a register
-							|| is_alui_operation 	 // any alui operation writes to a register
-							|| op1_ID_w == OP1_JAL	 // JAL and LW also write to a register
-							|| op1_ID_w == OP1_LW) ? 1 : 0; // are we writing to a register
+  assign wr_reg_ID_w = (is_op2_ID				 			// any OP2 writes to a register
+							|| is_alui_operation 	 			// any alui operation writes to a register
+							|| op1_ID_w == OP1_JAL	 			// JAL and LW also write to a register
+							|| op1_ID_w == OP1_LW) ? 1 : 0;  // are we writing to a register
 							
   //wregno is the register number that will be written to by store
-//  always begin // added always
-//		if (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW)
-//			assign wregno_ID_w = rt_ID_w;
-//		else if (is_op2_ID)
-//			assign wregno_ID_w = rd_ID_w;
-//		else
-//			assign wregno_ID_w = 0; // is this right? We are not writing to a register in this case
-//  end
+  assign wregno_ID_w = (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
   
-  assign wrenno_ID_w = (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW) ? rt_ID_w : rd_ID_w;
-  
-  // concatenates everything together
-  // to be put in buffers/registers
+  // concatenates everything together to be put in buffers/registers later
   assign ctrlsig_ID_w = {is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, wr_mem_ID_w, wr_reg_ID_w};
   
   // TODO: Specify stall condition
   assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0;
 
+  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+						
+  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
+							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;
+
+  assign send_nop = (send_nop_EX_w || send_nop_MEM_w);
+
   // ID_latch
   always @ (posedge clk or posedge reset) begin
-    if(reset ) begin // || send_nop
+    if(reset) begin 
+      PC_ID	 		<= {DBITS{1'b0}};
+		inst_ID	 	<= {INSTBITS{1'b0}};
+      op1_ID	 	<= {OP1BITS{1'b0}};
+      op2_ID	 	<= {OP2BITS{1'b0}};
+      regval1_ID  <= {DBITS{1'b0}};
+      regval2_ID  <= {DBITS{1'b0}};
+      wregno_ID	<= {REGNOBITS{1'b0}};
+      ctrlsig_ID 	<= 5'h0;
+	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
       PC_ID	 		<= {DBITS{1'b0}};
 		inst_ID	 	<= {INSTBITS{1'b0}};
       op1_ID	 	<= {OP1BITS{1'b0}};
@@ -273,7 +278,7 @@ module project3_frame(
   reg [DBITS-1:0] aluout_EX;
   reg [DBITS-1:0] regval2_EX;
   
-  //added
+  //TODO: added by Benny?
 //  reg pcgood_EX_reg;
 //  assign pcgood_EX_reg_w = pcgood_EX_reg;
   
@@ -288,15 +293,9 @@ module project3_frame(
   assign rt_EX_w = inst_ID[3:0];
   assign is_op2_EX = op1_EX_w == OP1_ALUR;
 
-//  always begin // added always
-//		if (is_op2_EX)
-//			assign send_nop = ((rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) ? 1 : 0;	
-//		else
-//			assign send_nop = ((rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w)) ? 1 : 0;	  
-//  end
-  assign send_nop = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
-							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
-  
+//  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+//							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+
   always @ (op1_ID or regval1_ID or regval2_ID) begin
     case (op1_ID)
       OP1_BEQ : br_cond_EX = (regval1_ID == regval2_ID);
@@ -325,7 +324,7 @@ module project3_frame(
  			OP2_NXOR  : aluout_EX_r = {31'b0, !(regval1_ID ^ regval2_ID)};
  			OP2_RSHF  : aluout_EX_r = {31'b0, regval1_ID >> regval2_ID}; // todo: rd = SEXT(rs >> (rt) )
  			OP2_LSHF  : aluout_EX_r = {31'b0, regval1_ID << regval2_ID};  // todo: rd = rs << (rt) 
-			//todo: use powerpoint example to create a left shift and right shift module?
+			//TODO: use powerpoint example to create a left shift and right shift module?
 		default	 : aluout_EX_r = {DBITS{1'b0}};
 	  endcase
     else if(op1_ID == OP1_LW || op1_ID == OP1_SW || op1_ID == OP1_ADDI)
@@ -345,29 +344,12 @@ module project3_frame(
   assign wr_reg_EX_w = ctrlsig_ID[0];
     
   // TODO: Specify signals such as mispred_EX_w, pcgood_EX_w
-  // what do these mean??
-  // assign mispred_EX_w = ... ;
-  
   // calculates the new pc value for BR or JAL:
-//  always begin // added always
-//		if (is_br_EX_w)
-//			assign pcgood_EX = pcplus_FE + (4 * sxt_imm_ID_w); //BUT we don't need to worry about mispredicitons?
-//		else if (is_jmp_EX_w) 
-//			assign pcgood_EX = regval1_ID + (4 * sxt_imm_ID_w); // should some of this be calculated in ALU or done here?
-//  end
-//  
   // TODO: fix this, it will not work (wil this?)
   //assign pcgood_EX_w = is_br_EX_w ? (pcplus_FE + (4 * sxt_imm_ID_w)) : (is_jmp_EX_w ? (regval1_ID + (4 * sxt_imm_ID_w)) : 0);
-  assign pcgood_EX_w = ((op1_ID == OP1_BEQ
-							|| op1_ID == OP1_BLT
-							|| op1_ID == OP1_BLE
-							|| op1_ID == OP1_BNE) ? (PC_ID + (immval_ID << 2)) : 
-							((op1_ID == OP1_JAL) ? (regval1_ID + (immval_ID << 2)) : 0));
+  assign pcgood_EX_w = (is_br_EX_w ? (PC_ID + (sxt_imm_ID_w << 2)) : ((is_jmp_EX_w) ? (regval1_ID + (sxt_imm_ID_w << 2)) : 0));
   
-  assign mispred_EX_w = ((op1_ID == OP1_BEQ
-							|| op1_ID == OP1_BLT
-							|| op1_ID == OP1_BLE
-							|| op1_ID == OP1_BNE) ? br_cond_EX : ((op1_ID == OP1_JAL) ? 1 : 0));
+  assign mispred_EX_w = ((is_br_EX_w) ? br_cond_EX : ((is_jmp_EX_w) ? 1 : 0));
 
   // EX_latch
   always @ (posedge clk or posedge reset) begin
@@ -385,7 +367,7 @@ module project3_frame(
       aluout_EX	<= aluout_EX_r;
       wregno_EX	<= wregno_ID;
       ctrlsig_EX 	<= {rd_mem_ID_w, ctrlsig_ID[1], wr_reg_EX_w}; // MEM stage needs: read mem, write mem, and write reg 
-    //mispred_EX 	<= 1'b0;
+		mispred_EX 	<= mispred_EX_w;
 		pcgood_EX  	<= pcgood_EX_w;
 		regval2_EX	<= regval2_ID; // pass this along for SW
     end
@@ -423,15 +405,8 @@ module project3_frame(
   assign rt_MEM_w = inst_EX[3:0];
   assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
   
-//  always @ (posedge clk) begin
-//    if (is_op2_MEM) begin
-//			assign send_nop = ((rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) ? 1 : 0;	
-//	 else
-//			assign send_nop = ((rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w)) ? 1 : 0;	  
-//  end
-
-  assign send_nop = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) || (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
-
+//  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
+//							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
 
   // Read from D-MEM
   assign rd_val_MEM_w = (memaddr_MEM_w == ADDRKEY) ? {{(DBITS-KEYBITS){1'b0}}, ~KEY} :
