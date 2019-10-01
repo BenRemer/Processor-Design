@@ -497,9 +497,9 @@ module project3_frame(
 	 end
   end
   
-  reg [DBITS-1:0] num_instructions;
+  reg [DBITS-1:0] num_instructions = 0;
   
-  always @ (negedge clk or posedge reset) begin
+  always @ (posedge clk) begin
 		num_instructions <= num_instructions + 1;
   end
 
