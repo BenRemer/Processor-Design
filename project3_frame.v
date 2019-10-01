@@ -26,7 +26,7 @@ module project3_frame(
   parameter ADDRSW   = 32'hFFFFF090;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test2.mif";
+  parameter IMEMINITFILE = "tests/test1.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
   
   parameter IMEMADDRBITS = 16;
@@ -108,7 +108,7 @@ module project3_frame(
   
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
   initial begin
-    $readmemh("tests/test2.hex", imem); 
+    $readmemh("tests/test1.hex", imem); 
   end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
@@ -136,7 +136,7 @@ module project3_frame(
 //		PC_FE <= {DBITS{1'b0}}; 
     end else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
-			inst_FE <= stall_pipe ? inst_FE_w : {INSTBITS{1'b0}};
+			inst_FE <= stall_pipe ? {INSTBITS{1'b0}} : inst_FE_w;
 	 end
   end
 
@@ -346,6 +346,8 @@ module project3_frame(
   assign is_br_EX_w = ctrlsig_ID[4];
   assign is_jmp_EX_w = ctrlsig_ID[3];
   assign wr_reg_EX_w = ctrlsig_ID[0];
+  
+  
     
   // TODO: Specify signals such as mispred_EX_w, pcgood_EX_w
   // calculates the new pc value for BR or JAL:
@@ -370,7 +372,7 @@ module project3_frame(
 		inst_EX	 	<= inst_ID; 
       aluout_EX	<= aluout_EX_r;
       wregno_EX	<= wregno_ID;
-      ctrlsig_EX 	<= {rd_mem_ID_w, ctrlsig_ID[1], wr_reg_EX_w}; // MEM stage needs: read mem, write mem, and write reg 
+      ctrlsig_EX 	<= {ctrlsig_ID[2], ctrlsig_ID[1], ctrlsig_ID[0]}; // MEM stage needs: read mem, write mem, and write reg 
 		mispred_EX 	<= mispred_EX_w;
 		pcgood_EX  	<= pcgood_EX_w;
 		regval2_EX	<= regval2_ID; // pass this along for SW
