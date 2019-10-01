@@ -26,7 +26,7 @@ module project3_frame(
   parameter ADDRSW   = 32'hFFFFF090;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test1.mif";
+  parameter IMEMINITFILE = "tests/test2.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
   
   parameter IMEMADDRBITS = 16;
@@ -213,7 +213,7 @@ module project3_frame(
 							|| op1_ID_w == OP1_JAL	 			// JAL and LW also write to a register
 							|| op1_ID_w == OP1_LW) ? 1 : 0;  // are we writing to a register
 							
-  //wregno is the register number that will be written to by store
+  //wregno is the register number that will be written to
   assign wregno_ID_w = (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
   
   // concatenates everything together to be put in buffers/registers later
@@ -263,6 +263,7 @@ module project3_frame(
       regval2_ID  <= regval2_ID_w;
       wregno_ID	<= wregno_ID_w;
 		ctrlsig_ID 	<= ctrlsig_ID_w;
+		immval_ID 	<= sxt_imm_ID_w;
     end
   end
 
@@ -294,7 +295,7 @@ module project3_frame(
   assign op1_EX_w = inst_ID[31:26];
   assign rd_EX_w = inst_ID[11:8];
   assign rt_EX_w = inst_ID[3:0];
-  assign is_op2_EX = op1_EX_w == OP1_ALUR;
+  assign is_op2_EX = (op1_EX_w == OP1_ALUR);
 
   // Maybe error
   assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
