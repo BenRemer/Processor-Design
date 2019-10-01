@@ -497,6 +497,13 @@ module project3_frame(
 	 end
   end
   
+  reg [DBITS-1:0] num_instructions;
+  
+  always @ (negedge clk or posedge reset) begin
+		num_instructions <= num_instructions + 1;
+  end
+
+  
   /*** STALL ***/
   //**************************************************************
   assign stall_pipe = (is_br_ID_w || is_jmp_ID_w || br_cond_EX == 1 || is_jmp_EX_w) ? 1 : 0;
@@ -507,7 +514,7 @@ module project3_frame(
 //  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
 //							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;
 
-  assign send_nop = (send_nop_EX_w || send_nop_MEM_w);
+  assign send_nop = (send_nop_EX_w || send_nop_MEM_w) && num_instructions >= 3;
 //******************************************************************
   
   /*** I/O ***/
