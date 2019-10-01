@@ -26,7 +26,7 @@ module project3_frame(
   parameter ADDRSW   = 32'hFFFFF090;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test2.mif";
+  parameter IMEMINITFILE = "tests/test1.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
   
   parameter IMEMADDRBITS = 16;
@@ -108,7 +108,8 @@ module project3_frame(
   
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
   initial begin
-    $readmemh("tests/test1.hex", imem); 
+    $readmemh("tests/test1.hex", imem);
+	 $readmemh("tests/test1.hex", dmem); 
   end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
@@ -214,7 +215,7 @@ module project3_frame(
 							|| op1_ID_w == OP1_LW) ? 1 : 0;  // are we writing to a register
 							
   //wregno is the register number that will be written to
-  assign wregno_ID_w = (is_jmp_ID_w || is_alui_operation || op1_ID_w == OP1_LW) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
+  assign wregno_ID_w = (is_jmp_ID_w || op1_ID_w == OP1_LW || is_alui_operation) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
   
   // concatenates everything together to be put in buffers/registers later
   assign ctrlsig_ID_w = {is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, wr_mem_ID_w, wr_reg_ID_w};
@@ -244,15 +245,15 @@ module project3_frame(
       regval2_ID  <= {DBITS{1'b0}};
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
-	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
-      PC_ID	 		<= {DBITS{1'b0}};
-		inst_ID	 	<= {INSTBITS{1'b0}};
-      op1_ID	 	<= {OP1BITS{1'b0}};
-      op2_ID	 	<= {OP2BITS{1'b0}};
-      regval1_ID  <= {DBITS{1'b0}};
-      regval2_ID  <= {DBITS{1'b0}};
-      wregno_ID	<= {REGNOBITS{1'b0}};
-      ctrlsig_ID 	<= 5'h0;
+//	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
+//      PC_ID	 		<= {DBITS{1'b0}};
+//		inst_ID	 	<= {INSTBITS{1'b0}};
+//      op1_ID	 	<= {OP1BITS{1'b0}};
+//      op2_ID	 	<= {OP2BITS{1'b0}};
+//      regval1_ID  <= {DBITS{1'b0}};
+//      regval2_ID  <= {DBITS{1'b0}};
+//      wregno_ID	<= {REGNOBITS{1'b0}};
+//      ctrlsig_ID 	<= 5'h0;
     end else begin
       PC_ID	 		<= PC_FE;
 		// TODO: Specify ID latches
