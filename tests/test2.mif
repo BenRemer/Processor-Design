@@ -20,3 +20,5 @@ BEGIN
     0045 : 20fffa00; --> 0114 : br 	Done
     [0046..3fff] : dead;
 END;
+
+; Copy the last important instructions into .hex file and insert 64 NOPs before

@@ -107,22 +107,22 @@ module project3_frame(
   reg mispred_EX;
   
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
-//  initial begin
-//    $readmemh("tests/test1.hex", imem);
-//	 $readmemh("tests/test1.hex", dmem); 
-//  end
+  initial begin
+    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
+	 $readmemh("tests/test3.hex", dmem); 
+  end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
   
   always @ (posedge clk or posedge reset) begin // TODO: this needs to be upadted 
-    if(reset)
+    if(reset) //TODO: consider br_cond_EX when assgning the next PC
       PC_FE <= STARTPC;
-    else if(mispred_EX)
+    else if(mispred_EX) // this can be taken out essentially
       PC_FE <= pcgood_EX; // assign to what was caclulated in EX stage
     else if(!stall_pipe)
-      PC_FE <= pcpred_FE; // if no stall, assign to the predicted pc (i.e. the regular incremented pc)
-    else
-      PC_FE <= PC_FE;
+      PC_FE <= pcpred_FE; // if no stall, assign to the predicted pc (i.e. the regular incremented pc)		
+	 else
+      PC_FE <= PC_FE; // doesn't change
   end
 
   // This is the value of "incremented PC", computed in the FE stage
@@ -134,7 +134,6 @@ module project3_frame(
   always @ (posedge clk or posedge reset) begin
     if(reset) begin
       inst_FE <= {INSTBITS{1'b0}};
-//		PC_FE <= {DBITS{1'b0}}; 
     end else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
 			inst_FE <= stall_pipe ? {INSTBITS{1'b0}} : inst_FE_w;
@@ -164,6 +163,7 @@ module project3_frame(
   wire wr_reg_MEM_w;
   wire is_alui_operation;
   wire is_op2_ID;
+  wire is_op1_ID;
   wire send_nop;
   wire send_nop_EX_w;
   wire send_nop_MEM_w;
@@ -192,6 +192,7 @@ module project3_frame(
   assign rt_ID_w = inst_FE[3:0];
   assign is_alui_operation = inst_FE[31];
   assign is_op2_ID = (op1_ID_w == OP1_ALUR); // if op1 is all zeros, we know it is op2
+  assign is_op1_ID = !is_op2_ID;
   
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -223,7 +224,7 @@ module project3_frame(
   // TODO: Specify stall condition
   // These break modlesim- is_op2_EX
  //**************************************************************
-  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0;
+  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0; // or send_nop
 //
 //  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
 //							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
@@ -245,15 +246,16 @@ module project3_frame(
       regval2_ID  <= {DBITS{1'b0}};
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
-//	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
-//      PC_ID	 		<= {DBITS{1'b0}};
-//		inst_ID	 	<= {INSTBITS{1'b0}};
-//      op1_ID	 	<= {OP1BITS{1'b0}};
-//      op2_ID	 	<= {OP2BITS{1'b0}};
-//      regval1_ID  <= {DBITS{1'b0}};
-//      regval2_ID  <= {DBITS{1'b0}};
-//      wregno_ID	<= {REGNOBITS{1'b0}};
-//      ctrlsig_ID 	<= 5'h0;
+	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
+	 // TODO: Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
+      PC_ID	 		<= {DBITS{1'b0}};
+		inst_ID	 	<= {INSTBITS{1'b0}};
+      op1_ID	 	<= {OP1BITS{1'b0}};
+      op2_ID	 	<= {OP2BITS{1'b0}};
+      regval1_ID  <= {DBITS{1'b0}};
+      regval2_ID  <= {DBITS{1'b0}};
+      wregno_ID	<= {REGNOBITS{1'b0}};
+      ctrlsig_ID 	<= 5'h0;
     end else begin
       PC_ID	 		<= PC_FE;
 		// TODO: Specify ID latches
@@ -292,15 +294,22 @@ module project3_frame(
   wire [REGNOBITS-1:0] rs_EX_w;
   wire [REGNOBITS-1:0] rt_EX_w;
   wire is_op2_EX;
+  wire is_op1_EX;
   
   assign op1_EX_w = inst_ID[31:26];
   assign rd_EX_w = inst_ID[11:8];
   assign rt_EX_w = inst_ID[3:0];
   assign is_op2_EX = (op1_EX_w == OP1_ALUR);
+  assign is_op1_EX = !is_op2_EX;
 
   // Maybe error
-  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
-							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+//  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+//							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+
+  assign send_nop_EX_w =   (is_op1_EX && is_op1_ID && rt_EX_w == rs_ID_w)
+								|| (is_op1_EX && is_op2_ID && (rt_EX_w == rs_ID_w || rt_EX_w == rt_ID_w))
+								|| (is_op2_EX && is_op1_ID && rd_EX_w == rs_ID_w)
+								|| (is_op2_EX && is_op2_ID && (rd_EX_w == rs_ID_w || rd_EX_w == rt_ID_w));
 
   always @ (op1_ID or regval1_ID or regval2_ID) begin
     case (op1_ID)
@@ -348,8 +357,6 @@ module project3_frame(
   assign is_br_EX_w = ctrlsig_ID[4];
   assign is_jmp_EX_w = ctrlsig_ID[3];
   assign wr_reg_EX_w = ctrlsig_ID[0];
-  
-  
     
   // TODO: Specify signals such as mispred_EX_w, pcgood_EX_w
   // calculates the new pc value for BR or JAL:
@@ -357,8 +364,10 @@ module project3_frame(
   //assign pcgood_EX_w = is_br_EX_w ? (pcplus_FE + (4 * sxt_imm_ID_w)) : (is_jmp_EX_w ? (regval1_ID + (4 * sxt_imm_ID_w)) : 0);
   assign pcgood_EX_w = (is_br_EX_w ? (PC_ID + (sxt_imm_ID_w << 2)) : ((is_jmp_EX_w) ? (regval1_ID + (sxt_imm_ID_w << 2)) : 0));
   
-  assign mispred_EX_w = ((is_br_EX_w) ? br_cond_EX : ((is_jmp_EX_w) ? 1 : 0));
-
+  // if branch, check if branch taken
+  // if jump, no need to check, we know it is taken
+  assign mispred_EX_w = ((is_br_EX_w) ? br_cond_EX : ((is_jmp_EX_w) ? 1 : 0)); 
+  
   // EX_latch
   always @ (posedge clk or posedge reset) begin
     if(reset) begin
@@ -407,15 +416,22 @@ module project3_frame(
   wire [REGNOBITS-1:0] rs_MEM_w;
   wire [REGNOBITS-1:0] rt_MEM_w;
   wire is_op2_MEM;
+  wire is_op1_MEM;
   
   assign op1_MEM_w = inst_EX[31:26];
   assign rd_MEM_w = inst_EX[11:8];
   assign rt_MEM_w = inst_EX[3:0];
   assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
-  
+  assign is_op1_MEM = !is_op2_MEM;
+
   // Maybe Error
-  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
-							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
+//  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
+//							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
+
+  assign send_nop_MEM_w =  (is_op1_MEM && is_op1_ID && rt_MEM_w == rs_ID_w)
+								|| (is_op1_MEM && is_op2_ID && (rt_MEM_w == rs_ID_w || rt_MEM_w == rt_ID_w))
+								|| (is_op2_MEM && is_op1_ID && rd_MEM_w == rs_ID_w)
+								|| (is_op2_MEM && is_op2_ID && (rd_MEM_w == rs_ID_w || rd_MEM_w == rt_ID_w));
 
   // Read from D-MEM
   assign rd_val_MEM_w = (memaddr_MEM_w == ADDRKEY) ? {{(DBITS-KEYBITS){1'b0}}, ~KEY} :
