@@ -107,10 +107,10 @@ module project3_frame(
   reg mispred_EX;
   
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
-  initial begin
-    $readmemh("tests/test1.hex", imem);
-	 $readmemh("tests/test1.hex", dmem); 
-  end
+//  initial begin
+//    $readmemh("tests/test1.hex", imem);
+//	 $readmemh("tests/test1.hex", dmem); 
+//  end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
   
