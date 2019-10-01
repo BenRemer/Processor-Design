@@ -26,7 +26,7 @@ module project3_frame(
   parameter ADDRSW   = 32'hFFFFF090;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test3.mif";
+  parameter IMEMINITFILE = "tests/test2.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
   
   parameter IMEMADDRBITS = 16;
@@ -223,15 +223,15 @@ module project3_frame(
   // TODO: Specify stall condition
   // These break modlesim- is_op2_EX
  //**************************************************************
-  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w) ? 1 : 0;
-//
-//  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
-//							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
-//						
-//  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
-//							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;
-//
-  assign send_nop = (send_nop_EX_w || send_nop_MEM_w);
+//  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w || br_cond_EX == 1 || is_jmp_EX_w || send_nop) ? 1 : 0;
+////
+////  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+////							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+////						
+////  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
+////							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;
+////
+//  assign send_nop = (send_nop_EX_w || send_nop_MEM_w);
 //******************************************************************
 
   // ID_latch
@@ -245,15 +245,15 @@ module project3_frame(
       regval2_ID  <= {DBITS{1'b0}};
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
-//	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
-//      PC_ID	 		<= {DBITS{1'b0}};
-//		inst_ID	 	<= {INSTBITS{1'b0}};
-//      op1_ID	 	<= {OP1BITS{1'b0}};
-//      op2_ID	 	<= {OP2BITS{1'b0}};
-//      regval1_ID  <= {DBITS{1'b0}};
-//      regval2_ID  <= {DBITS{1'b0}};
-//      wregno_ID	<= {REGNOBITS{1'b0}};
-//      ctrlsig_ID 	<= 5'h0;
+	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
+      PC_ID	 		<= {DBITS{1'b0}};
+		inst_ID	 	<= {INSTBITS{1'b0}};
+      op1_ID	 	<= {OP1BITS{1'b0}};
+      op2_ID	 	<= {OP2BITS{1'b0}};
+      regval1_ID  <= {DBITS{1'b0}};
+      regval2_ID  <= {DBITS{1'b0}};
+      wregno_ID	<= {REGNOBITS{1'b0}};
+      ctrlsig_ID 	<= 5'h0;
     end else begin
       PC_ID	 		<= PC_FE;
 		// TODO: Specify ID latches
@@ -299,8 +299,8 @@ module project3_frame(
   assign is_op2_EX = (op1_EX_w == OP1_ALUR);
 
   // Maybe error
-  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
-							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+//  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+//							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
 
   always @ (op1_ID or regval1_ID or regval2_ID) begin
     case (op1_ID)
@@ -414,8 +414,8 @@ module project3_frame(
   assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
   
   // Maybe Error
-  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
-							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
+//  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
+//							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;	
 
   // Read from D-MEM
   assign rd_val_MEM_w = (memaddr_MEM_w == ADDRKEY) ? {{(DBITS-KEYBITS){1'b0}}, ~KEY} :
@@ -472,6 +472,18 @@ module project3_frame(
 	 end
   end
   
+  /*** STALL ***/
+  //**************************************************************
+  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w || br_cond_EX == 1 || is_jmp_EX_w) ? 1 : 0;
+
+  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
+							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
+						
+  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
+							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;
+
+  assign send_nop = (send_nop_EX_w || send_nop_MEM_w);
+//******************************************************************
   
   /*** I/O ***/
   // Create and connect HEX register
