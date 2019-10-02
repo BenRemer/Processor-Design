@@ -26,7 +26,7 @@ module project3_frame(
   parameter ADDRSW   = 32'hFFFFF090;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test2.mif";
+  parameter IMEMINITFILE = "tests/test3.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
   
   parameter IMEMADDRBITS = 16;
@@ -107,10 +107,10 @@ module project3_frame(
   reg mispred_EX;
   
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
-  initial begin
-    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
-	 $readmemh("tests/test3.hex", dmem); 
-  end
+//  initial begin
+//    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
+//	 $readmemh("tests/test3.hex", dmem); 
+//  end
     
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
   
@@ -136,7 +136,12 @@ module project3_frame(
       inst_FE <= {INSTBITS{1'b0}};
     end else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
-			inst_FE <= stall_pipe ? {INSTBITS{1'b0}} : inst_FE_w;
+//		inst_FE <= stall_pipe ? {INSTBITS{1'b0}} : inst_FE_w;
+		if(stall_pipe) begin
+			inst_FE <= {INSTBITS{1'b0}};
+		end else begin
+			inst_FE <= inst_FE_w;
+		end
 	 end
   end
 
@@ -182,6 +187,8 @@ module project3_frame(
   reg [REGNOBITS-1:0] wregno_EX;
   reg [REGNOBITS-1:0] wregno_MEM;
   reg [INSTBITS-1:0] inst_ID;
+  reg [INSTBITS-1:0] inst_ID_temp;
+  reg [DBITS-1:0]	PC_ID_temp;
 
   // TODO: Specify signals such as op*_ID_w, imm_ID_w, r*_ID_w
   assign op1_ID_w = inst_FE[31:26];
@@ -191,8 +198,8 @@ module project3_frame(
   assign rs_ID_w = inst_FE[7:4];
   assign rt_ID_w = inst_FE[3:0];
   assign is_alui_operation = inst_FE[31];
-  assign is_op2_ID = (op1_ID_w == OP1_ALUR); // if op1 is all zeros, we know it is op2
-  assign is_op1_ID = !is_op2_ID;
+  assign is_op2_ID = ((op1_ID_w == OP1_ALUR) && !stall_pipe) ? 1 : 0; // if op1 is all zeros, we know it is op2
+  assign is_op1_ID = ((is_op2_ID == 0) && !stall_pipe) ? 1 : 0;
   
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -255,7 +262,8 @@ module project3_frame(
       regval2_ID  <= {DBITS{1'b0}};
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
-	 end else if(send_nop) begin // for some reason reset goes first and alone by convention 
+//		allow_nops 	<= 0;
+	 end else if(stall_pipe) begin // for some reason reset goes first and alone by convention 
 	 // TODO: Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
       PC_ID	 		<= {DBITS{1'b0}};
 		inst_ID	 	<= {INSTBITS{1'b0}};
@@ -265,6 +273,16 @@ module project3_frame(
       regval2_ID  <= {DBITS{1'b0}};
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
+//	 end else if(stall_pipe) begin
+//      PC_ID_temp	<= PC_FE;
+//		inst_ID_temp<= inst_FE;
+////      op1_ID	 	<= op1_ID;
+////      op2_ID	 	<= op2_ID;
+////      regval1_ID  <= regval1_ID;
+////      regval2_ID  <= regval2_ID;
+////      wregno_ID	<= wregno_ID;
+////		ctrlsig_ID 	<= ctrlsig_ID;
+////		immval_ID 	<= immval_ID;
     end else begin
       PC_ID	 		<= PC_FE;
 		// TODO: Specify ID latches
@@ -396,6 +414,7 @@ module project3_frame(
 		mispred_EX 	<= mispred_EX_w;
 		pcgood_EX  	<= pcgood_EX_w;
 		regval2_EX	<= regval2_ID; // pass this along for SW
+		allow_nops  <= 1;
     end
   end
   
@@ -497,16 +516,17 @@ module project3_frame(
 	 end
   end
   
-  reg [DBITS-1:0] num_instructions = 0;
+//  reg [DBITS-1:0] num_instructions = 0;
+  reg allow_nops = 0;
   
-  always @ (posedge clk) begin
-		num_instructions <= num_instructions + 1;
-  end
+//  always @ (posedge clk) begin
+//		num_instructions <= num_instructions + 1;
+//  end
 
   
   /*** STALL ***/
   //**************************************************************
-  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w || br_cond_EX == 1 || is_jmp_EX_w) ? 1 : 0;
+  assign stall_pipe = (is_br_ID_w || is_jmp_ID_w || br_cond_EX == 1 || is_jmp_EX_w || send_nop_EX_w || send_nop_MEM_w) ? 1 : 0;
 //
 //  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w)) 
 //							|| (!is_op2_EX && (rt_EX_w == rs_ID_w) || (rt_EX_w == rt_ID_w))) ? 1 : 0;	
@@ -514,7 +534,7 @@ module project3_frame(
 //  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w)) 
 //							|| (!is_op2_MEM && (rt_MEM_w == rs_ID_w) || (rt_MEM_w == rt_ID_w))) ? 1 : 0;
 
-  assign send_nop = (send_nop_EX_w || send_nop_MEM_w) && num_instructions >= 3;
+  assign send_nop = ((send_nop_EX_w || send_nop_MEM_w) && allow_nops) ? 1 : 0;
 //******************************************************************
   
   /*** I/O ***/
