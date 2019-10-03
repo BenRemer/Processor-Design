@@ -67,6 +67,7 @@ module project3_frame(
   parameter OP2_NXOR = 8'b00101110;
   parameter OP2_RSHF = 8'b00110000;
   parameter OP2_LSHF = 8'b00110001;
+  parameter OP2_NOP 	= 8'b00000000;
 
   parameter HEXBITS  = 24;
   parameter LEDRBITS = 10;
@@ -107,10 +108,10 @@ module project3_frame(
   reg mispred_EX;
 
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
-  initial begin
-    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
-	 $readmemh("tests/test3.hex", dmem);
-  end
+//  initial begin
+//    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
+//	 $readmemh("tests/test3.hex", dmem);
+//  end
 
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
 
@@ -119,7 +120,7 @@ module project3_frame(
       PC_FE <= STARTPC;
     else if(mispred_EX) // This represents a branch taken or jmp in EX stage
       PC_FE <= pcgood_EX; // assign to what was caclulated in EX stage
-    else if(!stall_pipe)  
+    else if(!stall_pipe || !send_nop)   // maybe &&?
       PC_FE <= pcpred_FE; // if no stall, assign to the incremented pc (PC + 4)
 	 else
       PC_FE <= PC_FE; // if stall, PC_FE stays the same
@@ -137,7 +138,7 @@ module project3_frame(
     end else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
 //		inst_FE <= stall_pipe ? {INSTBITS{1'b0}} : inst_FE_w;
-		if(stall_pipe) begin
+		if(stall_pipe || send_nop) begin
 			inst_FE <= inst_FE; // set it to itself so it stays here{INSTBITS{1'b0}};
 		end else begin
 			inst_FE <= inst_FE_w;
@@ -198,8 +199,8 @@ module project3_frame(
   assign rs_ID_w = inst_FE[7:4];
   assign rt_ID_w = inst_FE[3:0];
   assign is_alui_operation = inst_FE[31];
-  assign is_op2_ID = (op1_ID_w == OP1_ALUR && !stall_pipe) ? 1 : 0; // if op1 is all zeros, we know it is op2
-  assign is_op1_ID = (is_op2_ID == 0 && !stall_pipe)  ? 1 : 0;
+  assign is_op2_ID = ((op1_ID_w == OP1_ALUR) && (op2_ID_w != OP2_NOP))  ? 1 : 0; // if op1 is all zeros, we know it is op2
+  assign is_op1_ID = (op1_ID_w != OP1_ALUR) ? 1 : 0;
 
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -263,7 +264,7 @@ module project3_frame(
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
 //		allow_nops 	<= 0;
-	 end else if(stall_pipe) begin // for some reason reset goes first and alone by convention
+	 end else if(stall_pipe || send_nop) begin // for some reason reset goes first and alone by convention
 	 // TODO: Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
       PC_ID	 		<= {DBITS{1'b0}};
 		inst_ID	 	<= {INSTBITS{1'b0}};
@@ -317,6 +318,7 @@ module project3_frame(
 //  assign pcgood_EX_reg_w = pcgood_EX_reg;
 
   wire [OP1BITS-1:0] op1_EX_w;
+  wire [OP2BITS-1:0] op2_EX_w;
   wire [REGNOBITS-1:0] rd_EX_w;
   wire [REGNOBITS-1:0] rs_EX_w;
   wire [REGNOBITS-1:0] rt_EX_w;
@@ -324,10 +326,11 @@ module project3_frame(
   wire is_op1_EX;
 
   assign op1_EX_w = inst_ID[31:26];
+  assign op2_EX_w = inst_ID[25:18];
   assign rd_EX_w = inst_ID[11:8];
   assign rt_EX_w = inst_ID[3:0];
-  assign is_op2_EX = (op1_EX_w == OP1_ALUR);
-  assign is_op1_EX = !is_op2_EX;
+  assign is_op2_EX = (op1_EX_w == OP1_ALUR) && (op2_EX_w != OP2_NOP);
+  assign is_op1_EX = op1_EX_w != OP1_ALUR;
 
   // Maybe error
 //  assign send_nop_EX_w = ((is_op2_EX && (rd_EX_w == rs_ID_w) || (rd_EX_w == rt_ID_w))
@@ -440,6 +443,7 @@ module project3_frame(
   assign wr_reg_MEM_w = ctrlsig_EX[0];
 
   wire [OP1BITS-1:0] op1_MEM_w;
+  wire [OP2BITS-1:0] op2_MEM_w;
   wire [REGNOBITS-1:0] rd_MEM_w;
   wire [REGNOBITS-1:0] rs_MEM_w;
   wire [REGNOBITS-1:0] rt_MEM_w;
@@ -447,10 +451,11 @@ module project3_frame(
   wire is_op1_MEM;
 
   assign op1_MEM_w = inst_EX[31:26];
+  assign op2_MEM_w = inst_EX[25:18];
   assign rd_MEM_w = inst_EX[11:8];
   assign rt_MEM_w = inst_EX[3:0];
-  assign is_op2_MEM = op1_MEM_w == OP1_ALUR;
-  assign is_op1_MEM = !is_op2_MEM;
+  assign is_op2_MEM = (op1_MEM_w == OP1_ALUR) && (op2_MEM_w != OP2_NOP);
+  assign is_op1_MEM = op1_MEM_w != OP1_ALUR;
 
   // Maybe Error
 //  assign send_nop_MEM_w = ((is_op2_MEM && (rd_MEM_w == rs_ID_w) || (rd_MEM_w == rt_ID_w))
