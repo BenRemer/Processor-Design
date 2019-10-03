@@ -27,7 +27,7 @@ module project3_frame(
   parameter NOP		= 32'b0;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test1.mif";
+  parameter IMEMINITFILE = "tests/test5.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
 
   parameter IMEMADDRBITS = 16;
