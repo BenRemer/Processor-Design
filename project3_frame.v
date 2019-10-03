@@ -27,7 +27,7 @@ module project3_frame(
   parameter NOP		= 32'b0;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test5.mif";
+  parameter IMEMINITFILE = "tests/test3.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
 
   parameter IMEMADDRBITS = 16;
@@ -109,10 +109,10 @@ module project3_frame(
   reg mispred_EX;
 
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
-//  initial begin
-//    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
-//	 $readmemh("tests/test3.hex", dmem);
-//  end
+  initial begin
+    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
+	 $readmemh("tests/test3.hex", dmem);
+  end
 
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
 
