@@ -7,7 +7,7 @@
 	; bad PC goes here
 	.ORG 0x0
 	br	BadPC
-	
+
 BadPC:
 	; for bad PC, display BAD on HEX
 	andi	zero,zero,0x0
@@ -24,5 +24,5 @@ Done:
 	addi	zero,s2,0x1
 	addi	zero,s2,0x1
 	addi	zero,s2,0x1
-	sw	s1,HEX(zero) 
+	sw	s1,HEX(zero)
 	br 	Done

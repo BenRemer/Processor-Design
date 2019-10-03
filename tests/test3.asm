@@ -9,7 +9,7 @@
 	; bad PC goes here
 	.ORG 0x0
 	br	BadPC
-	
+
 BadPC:
 	; for bad PC, display BAD on HEX
 	andi	zero,zero,0x0
