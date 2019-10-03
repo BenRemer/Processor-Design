@@ -24,9 +24,10 @@ module project3_frame(
   parameter ADDRLEDR = 32'hFFFFF020;
   parameter ADDRKEY  = 32'hFFFFF080;
   parameter ADDRSW   = 32'hFFFFF090;
+  parameter NOP		= 32'b0;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test5.mif";
+  parameter IMEMINITFILE = "tests/test3.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
 
   parameter IMEMADDRBITS = 16;
@@ -138,8 +139,10 @@ module project3_frame(
     end else begin
 	   // TODO: Specify inst_FE considering misprediction and stall
 //		inst_FE <= stall_pipe ? {INSTBITS{1'b0}} : inst_FE_w;
-		if(stall_pipe || send_nop) begin
+		if(send_nop) begin
 			inst_FE <= inst_FE; // set it to itself so it stays here{INSTBITS{1'b0}};
+		end else if (stall_pipe) begin
+			inst_FE <= NOP;
 		end else begin
 			inst_FE <= inst_FE_w;
 		end
@@ -264,7 +267,7 @@ module project3_frame(
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
 //		allow_nops 	<= 0;
-	 end else if(stall_pipe || send_nop) begin // for some reason reset goes first and alone by convention
+	 end else if(send_nop) begin // for some reason reset goes first and alone by convention
 	 // TODO: Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
       PC_ID	 		<= {DBITS{1'b0}};
 		inst_ID	 	<= {INSTBITS{1'b0}};
