@@ -26,7 +26,7 @@ module project3_frame(
   parameter NOP		= 32'b0;
 
   // test file location
-  parameter IMEMINITFILE = "tests/test3.mif";
+  parameter IMEMINITFILE = "part2-tests/test.mif";
   //parameter IMEMINITFILE = "fmedian2.mif";
 
   parameter IMEMADDRBITS = 16;
@@ -113,8 +113,8 @@ module project3_frame(
 
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
   initial begin
-    $readmemh("tests/test3.hex", imem); //TODO: change sim/model/tests/*.hex
-	 $readmemh("tests/test3.hex", dmem);
+    $readmemh("part2-tests/test.hex", imem); //TODO: change sim/model/tests/*.hex
+	 $readmemh("part2-tests/test.hex", dmem);
   end
 
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
@@ -316,7 +316,7 @@ module project3_frame(
   always @ (op1_ID or op2_ID or regval1_ID or regval2_ID or immval_ID) begin
     if(op1_ID == OP1_ALUR)
       case (op2_ID)
-			OP2_EQ	 : aluout_EX_r = {31'b0, regval1_ID == regval2_ID};
+			OP2_EQ	 : aluout_EX_r = {31'b0, regval1_ID === regval2_ID}; //changed to triple equals
 			OP2_LT	 : aluout_EX_r = {31'b0, regval1_ID < regval2_ID};
 			OP2_LE    : aluout_EX_r = {31'b0, regval1_ID <= regval2_ID};
 			OP2_NE    : aluout_EX_r = {31'b0, regval1_ID != regval2_ID};
@@ -341,6 +341,8 @@ module project3_frame(
       aluout_EX_r = regval1_ID | immval_ID;
     else if(op1_ID == OP1_XORI)
       aluout_EX_r = regval1_ID ^ immval_ID;
+	 else if(op1_ID == OP1_JAL)
+		aluout_EX_r = PC_ID + 4;
     else
       aluout_EX_r = {DBITS{1'b0}};
   end
@@ -508,8 +510,14 @@ module project3_frame(
 
   reg [9:0] LEDR_out;
 
-  // ...
-
+  // If the code stores a word into the memory address of our LEDR I/O device, then output the value to LEDR
+  always @ (posedge clk or posedge reset) begin
+    if(reset)
+	   LEDR_out <= 10'b0;
+	 else if(wr_mem_MEM_w && (memaddr_MEM_w == ADDRLEDR))
+      LEDR_out <= regval2_EX[LEDRBITS-1:0];
+  end
+  
   assign LEDR = LEDR_out;
 
 endmodule
