@@ -112,8 +112,8 @@ module project3_frame(
 
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
 //  initial begin
-//    $readmemh("part2-tests/test.hex", imem); //TODO: change sim/model/tests/*.hex
-//	 $readmemh("part2-tests/test.hex", dmem);
+//    $readmemh("part2-tests/fmedian2.hex", imem); //TODO: change sim/model/tests/*.hex
+//	 $readmemh("part2-tests/fmedian2.hex", dmem);
 //  end
 
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
@@ -473,6 +473,7 @@ module project3_frame(
 
   /***** STALL **************************************/
 
+  //We check wrregno_ID because whatever is in the ID latch is actually in the EX stage!
   wire read_rs = (rs_ID_w != 0) && ((wregno_MEM == rs_ID_w) 
 		|| (wregno_EX == rs_ID_w) 
 		|| (wregno_ID == rs_ID_w)); 
