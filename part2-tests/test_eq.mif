@@ -1,0 +1,16 @@
+DEPTH = 16384;
+WIDTH = 32;
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+CONTENT
+BEGIN
+    [0000..00ff] : dead;
+    0040 : 80000107; --> 0100 : addi    Zero,s0,1
+    0041 : 80000177; --> 0104 : addi    s0,s0,1
+    0042 : 80000177; --> 0108 : addi    s0, s0,1
+    0043 : 80000177; --> 010c : addi    s0,s0,1
+    0044 : 68f02007; --> 0110 : sw      s0,LEDR(Zero)
+    0045 : 68f00007; --> 0114 : sw      s0,HEX(Zero)
+    0046 : 20fffd00; --> 0118 : br      Loop
+    [0047..3fff] : dead;
+END;
