@@ -1,0 +1,4 @@
+Original: 1 min and 08 seconds
+With Pll: 51 seconds with 66.87 MHz, 34 seconds with 100 MHz
+With Forwarding: 1 min and 08 seconds
+With Both: 34 seconds

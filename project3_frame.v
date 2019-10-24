@@ -90,6 +90,21 @@ module project3_frame(
 
   assign reset = !locked;
 
+   wire [DBITS-1:0] aluout_EX_w;
+	// Forward EX
+	wire forward_from_exstage_rs;
+	wire forward_from_exstage_rt;
+	wire forward_from_exstage;
+	
+	// Forward MEM
+	wire forward_from_memstage_rs;
+	wire forward_from_memstage_rt;
+	wire forward_from_memstage;
+	
+	// Forward WB
+	wire forward_from_wbstage_rs;
+	wire forward_from_wbstage_rt;
+	wire forward_from_wbstage;
 
   //*** FETCH STAGE ***//
   // The PC register and update logic
@@ -112,8 +127,8 @@ module project3_frame(
 
   // This statement is used to initialize the I-MEM during simulation using Model-Sim
 //  initial begin
-//    $readmemh("part2-tests/test.hex", imem); //TODO: change sim/model/tests/*.hex
-//	 $readmemh("part2-tests/test.hex", dmem);
+//    $readmemh("part2-tests/fmedian2.hex", imem); //TODO: change sim/model/tests/*.hex
+//	 $readmemh("part2-tests/fmedian2.hex", dmem);
 //  end
 
   assign inst_FE_w = imem[PC_FE[IMEMADDRBITS-1:IMEMWORDBITS]];
@@ -252,18 +267,77 @@ module project3_frame(
       regval2_ID  <= {DBITS{1'b0}};
       wregno_ID	<= {REGNOBITS{1'b0}};
       ctrlsig_ID 	<= 5'h0;
-    end else begin
-      PC_ID	 		<= PC_FE;
+	 end else begin
+		PC_ID	 		<= PC_FE;
 		inst_ID	 	<= inst_FE;
       op1_ID	 	<= op1_ID_w;
       op2_ID	 	<= op2_ID_w;
-      regval1_ID  <= regval1_ID_w;
-      regval2_ID  <= regval2_ID_w;
       wregno_ID	<= wregno_ID_w;
 		ctrlsig_ID 	<= ctrlsig_ID_w;
 		immval_ID 	<= sxt_imm_ID_w;
-    end
-  end
+		if (forward_from_exstage_rs) begin
+			regval1_ID  <= aluout_EX_w;
+		end else if (forward_from_memstage_rs) begin
+			regval1_ID  <= rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX;
+		end else if (forward_from_wbstage_rs) begin
+			regval1_ID  <= regval_MEM;
+		end else begin
+			regval1_ID  <= regval1_ID_w;
+		end
+		
+		if (forward_from_exstage_rt) begin
+			regval2_ID  <= aluout_EX_w;
+		end else if (forward_from_memstage_rt) begin
+			regval2_ID  <= rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX;
+		end else if (forward_from_wbstage_rt) begin
+			regval2_ID  <= regval_MEM;
+		end else begin
+			regval2_ID  <= regval2_ID_w;
+		end
+	 end
+	end
+//	 end else if (forward_from_exstage) begin
+//		PC_ID	 		<= PC_FE;
+//		inst_ID	 	<= inst_FE;
+//      op1_ID	 	<= op1_ID_w;
+//      op2_ID	 	<= op2_ID_w;
+//      regval1_ID  <= forward_from_exstage_rs ? aluout_EX_w : regval1_ID_w;
+//      regval2_ID  <= forward_from_exstage_rt ? aluout_EX_w :regval2_ID_w;
+//      wregno_ID	<= wregno_ID_w;
+//		ctrlsig_ID 	<= ctrlsig_ID_w;
+//		immval_ID 	<= sxt_imm_ID_w;
+//	 end else if (forward_from_memstage) begin
+//		PC_ID	 		<= PC_FE;
+//		inst_ID	 	<= inst_FE;
+//      op1_ID	 	<= op1_ID_w;
+//      op2_ID	 	<= op2_ID_w;
+//      regval1_ID  <= forward_from_memstage_rs ? (rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX) : regval1_ID_w;
+//      regval2_ID  <= forward_from_memstage_rt ? (rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX) : regval2_ID_w;
+//      wregno_ID	<= wregno_ID_w;
+//		ctrlsig_ID 	<= ctrlsig_ID_w;
+//		immval_ID 	<= sxt_imm_ID_w;
+//	end else if (forward_from_wbstage) begin
+//		PC_ID	 		<= PC_FE;
+//		inst_ID	 	<= inst_FE;
+//      op1_ID	 	<= op1_ID_w;
+//      op2_ID	 	<= op2_ID_w;
+//      regval1_ID  <= forward_from_wbstage_rs ? regval_MEM : regval1_ID_w;
+//      regval2_ID  <= forward_from_wbstage_rt ? regval_MEM : regval2_ID_w;
+//      wregno_ID	<= wregno_ID_w;
+//		ctrlsig_ID 	<= ctrlsig_ID_w;
+//		immval_ID 	<= sxt_imm_ID_w;
+//    end else begin
+//      PC_ID	 		<= PC_FE;
+//		inst_ID	 	<= inst_FE;
+//      op1_ID	 	<= op1_ID_w;
+//      op2_ID	 	<= op2_ID_w;
+//      regval1_ID  <= regval1_ID_w;
+//      regval2_ID  <= regval2_ID_w;
+//      wregno_ID	<= wregno_ID_w;
+//		ctrlsig_ID 	<= ctrlsig_ID_w;
+//		immval_ID 	<= sxt_imm_ID_w;
+//    end
+//  end
 
 
   //*** AGEN/EXEC STAGE ***//
@@ -337,7 +411,8 @@ module project3_frame(
     else
       aluout_EX_r = {DBITS{1'b0}};
   end
-
+  
+  assign aluout_EX_w = aluout_EX_r;
   assign is_br_EX_w = ctrlsig_ID[4];
   assign is_jmp_EX_w = ctrlsig_ID[3];
   assign wr_reg_EX_w = ctrlsig_ID[0];
@@ -473,7 +548,8 @@ module project3_frame(
 
   /***** STALL **************************************/
 
-  wire read_rs = (rs_ID_w != 0) && ((wregno_MEM == rs_ID_w) 
+  //We check wrregno_ID because whatever is in the ID latch is actually in the EX stage!
+  wire read_rs = (rs_ID_w != 0) && ((wregno_MEM == rs_ID_w) // mem is wb, ex is mem, id is ex
 		|| (wregno_EX == rs_ID_w) 
 		|| (wregno_ID == rs_ID_w)); 
 		
@@ -481,14 +557,37 @@ module project3_frame(
 		|| (wregno_EX == rt_ID_w) 
 		|| (wregno_ID == rt_ID_w));
   
-  assign stall_pipe = ((is_op2_ID && (read_rs || read_rt)) 
-		||(is_br_ID_w && (read_rs || read_rt)) 
+  assign stall_pipe = ((is_br_ID_w && (read_rs || read_rt)) 
 		||(is_jmp_ID_w && (read_rs)) 
-		||(rd_mem_ID_w && (read_rs)) 
-		||(is_alui_operation && (read_rs))
-		||(wr_mem_ID_w && (read_rs || read_rt)));
+		||(ctrlsig_ID[2] && ((wregno_ID == rs_ID_w) || (wregno_ID == rt_ID_w))));//rd_mem_ID_w && (read_rs))));// && ctrlsig_ID[2] && (wregno_ID == rs_ID_w)));
+		//||(is_alui_operation && (read_rs))
+		//||(wr_mem_ID_w && (read_rs || read_rt)));
+		//(is_op2_ID && (read_rs || read_rt)) 
 		
-//******************************************************************
+	//******************************************************************
+
+	/*********FORWARDING*****************************************/	
+	//aluout_EX_r // output value ex
+	//rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX; // output value mem
+	//regval_mem // output wb
+	
+	// Forward EX
+	assign forward_from_exstage_rs = ((rs_ID_w != 0)&&(wregno_ID == rs_ID_w)) ? 1 : 0;
+	assign forward_from_exstage_rt = ((rt_ID_w != 0) && (wregno_ID == rt_ID_w)) ? 1 : 0; 
+	assign forward_from_exstage = (forward_from_exstage_rs || forward_from_exstage_rt) ? 1 : 0;
+	
+	// Forward MEM
+	assign forward_from_memstage_rs = ((rs_ID_w != 0) && (wregno_EX == rs_ID_w)) ? 1 : 0;
+	assign forward_from_memstage_rt = ((rt_ID_w != 0) && (wregno_EX == rt_ID_w)) ? 1 : 0;
+	assign forward_from_memstage = (forward_from_memstage_rs || forward_from_memstage_rs) ? 1 : 0;
+	
+	// Forward WB
+	assign forward_from_wbstage_rs = ((rs_ID_w != 0)&&(wregno_MEM == rs_ID_w)) ? 1 : 0;
+	assign forward_from_wbstage_rt = ((rt_ID_w != 0)&&(wregno_MEM == rt_ID_w)) ? 1 : 0;
+	assign forward_from_wbstage = (forward_from_wbstage_rs || forward_from_wbstage_rs) ? 1 : 0;
+	
+
+	//*******************************************************/
 
   /*** I/O ***/
   // Create and connect HEX register
