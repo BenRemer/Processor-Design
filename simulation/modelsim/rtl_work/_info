@@ -1,0 +1,77 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/simulation/modelsim
+vPll
+Z1 !s110 1571707743
+!i10b 1
+!s100 hgII4452WAWTc75oQO=781
+I3P^?1boa_cbT30JW6F;_a3
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1571701106
+8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo
+FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo
+L0 31
+Z3 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z4 !s108 1571707743.000000
+!s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo|
+!s90 -reportprogress|300|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo|
+!i113 1
+Z5 tCvgOpt 0
+n@pll
+vSevenSeg
+R1
+!i10b 1
+!s100 6U9_D4W_?>BAiUofmj`EP3
+I[7?CY2QCA3o`QQlChAFJH1
+R2
+R0
+w1568760674
+8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v
+FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v
+L0 1
+R3
+r1
+!s85 0
+31
+R4
+!s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v|
+!i113 1
+Z6 o-vlog01compat -work work
+Z7 !s92 -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3
+R5
+n@seven@seg
+vSXT
+R1
+!i10b 1
+!s100 ^VmYeS54<fF;H_;ek`Ah62
+I[=<Ng9EQS3aPBKf[MGh]32
+R2
+R0
+w1571707286
+8C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v
+FC:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v
+L0 598
+R3
+r1
+!s85 0
+31
+R4
+!s107 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3|C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v|
+!i113 1
+R6
+R7
+R5
+n@s@x@t

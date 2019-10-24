@@ -1,0 +1,63 @@
+# Reading C:/intelFPGA_lite/18.0/modelsim_ase/tcl/vsim/pref.tcl
+# do project3_frame_run_msim_rtl_verilog.do
+# if ![file isdirectory project3_frame_iputf_libs] {
+# 	file mkdir project3_frame_iputf_libs
+# }
+# 
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Model Technology ModelSim - Intel FPGA Edition vmap 10.5b Lib Mapping Utility 2016.10 Oct  5 2016
+# vmap work rtl_work 
+# Copying C:/intelFPGA_lite/18.0/modelsim_ase/win32aloem/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# 
+###### Libraries for IPUTF cores 
+###### End libraries for IPUTF cores 
+###### MIF file copy and HDL compilation commands for IPUTF cores 
+# 
+# 
+# vlog "C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo"
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 21:29:03 on Oct 21,2019
+# vlog -reportprogress 300 C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/Pll_sim/Pll.vo 
+# -- Compiling module Pll
+# 
+# Top level modules:
+# 	Pll
+# End time: 21:29:03 on Oct 21,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3 {C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v}
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 21:29:03 on Oct 21,2019
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3" C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/SevenSeg.v 
+# -- Compiling module SevenSeg
+# 
+# Top level modules:
+# 	SevenSeg
+# End time: 21:29:03 on Oct 21,2019, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3 {C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v}
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 21:29:03 on Oct 21,2019
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3" C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v 
+# -- Compiling module project3_frame
+# ** Error: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(285): (vlog-2730) Undefined variable: 'rd_mem_MEM_w'.
+# ** Error: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(285): (vlog-2730) Undefined variable: 'rd_val_MEM_w'.
+# ** Error: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(285): (vlog-2730) Undefined variable: 'aluout_EX'.
+# ** Error: C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(295): (vlog-2730) Undefined variable: 'regval_MEM'.
+# ** Error (suppressible): C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(325): (vlog-2388) 'aluout_EX' already declared in this scope (project3_frame).
+# ** Error (suppressible): C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(431): (vlog-2388) 'rd_mem_MEM_w' already declared in this scope (project3_frame).
+# ** Error (suppressible): C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(435): (vlog-2388) 'rd_val_MEM_w' already declared in this scope (project3_frame).
+# ** Error (suppressible): C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3/project3_frame.v(438): (vlog-2388) 'regval_MEM' already declared in this scope (project3_frame).
+# -- Compiling module SXT
+# End time: 21:29:03 on Oct 21,2019, Elapsed time: 0:00:00
+# Errors: 8, Warnings: 0
+# ** Error: C:/intelFPGA_lite/18.0/modelsim_ase/win32aloem/vlog failed.
+# Error in macro ./project3_frame_run_msim_rtl_verilog.do line 20
+# C:/intelFPGA_lite/18.0/modelsim_ase/win32aloem/vlog failed.
+#     while executing
+# "vlog -vlog01compat -work work +incdir+C:/Users/benar/OneDrive/Documents/School/ProcessorDesign/project3 {C:/Users/benar/OneDrive/Documents/School/Proc..."
