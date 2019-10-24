@@ -559,7 +559,7 @@ module project3_frame(
   
   assign stall_pipe = ((is_br_ID_w && (read_rs || read_rt)) 
 		||(is_jmp_ID_w && (read_rs)) 
-		||(ctrlsig_ID[2] && (wregno_ID == rs_ID_w)));//rd_mem_ID_w && (read_rs))));// && ctrlsig_ID[2] && (wregno_ID == rs_ID_w)));
+		||(ctrlsig_ID[2] && ((wregno_ID == rs_ID_w) || (wregno_ID == rt_ID_w))));//rd_mem_ID_w && (read_rs))));// && ctrlsig_ID[2] && (wregno_ID == rs_ID_w)));
 		//||(is_alui_operation && (read_rs))
 		//||(wr_mem_ID_w && (read_rs || read_rt)));
 		//(is_op2_ID && (read_rs || read_rt)) 
