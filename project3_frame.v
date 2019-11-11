@@ -90,7 +90,36 @@ module project3_frame(
 
   assign reset = !locked;
 
-   wire [DBITS-1:0] aluout_EX_w;
+/*********INTERRUPTS*****************************************/	
+
+  wire [(DBITS-1):0] abus;
+  tri  [(DBITS-1):0] dbus;
+  wire               we;
+
+  wire intr_timer;
+  wire intr_keys;
+  wire intr_sws;
+
+  // TODO: add a new system register file or individual registers for the 4 special registers
+  // RA, IHA == 32 bits; IDN == idk; PCS == 2 bits {OIE, IE}  
+
+  // Attach some sort of a device
+  // Timer #(.BITS(DBITS), .BASE(32'hF0000020), ...) timer( .ABUS(abus),.DBUS(dbus),.WE(we),.INTR(intr_timer),.CLK(clk),.LOCK(lock),.INIT(init),.DEBUG());
+  //TODO: instantiate a new timer device here (as well as other devices)
+
+  // Interrupt priority encoder (to be sent to the IDN register)
+  wire [3:0] intnum=
+    intr_timer ? 4'h1:
+    intr_keys  ? 4'h2:
+    intr_sws   ? 4'h3:
+                 4'hF;
+
+  // basically represents the processor IRQ (or-ing all the devices together)
+  wire intreq=(!reset) && (PCS[0]&&(intr_timer||intr_keys||intr_sws)))
+
+/**************************************************/	
+
+  wire [DBITS-1:0] aluout_EX_w;
 	// Forward EX
 	wire forward_from_exstage_rs;
 	wire forward_from_exstage_rt;

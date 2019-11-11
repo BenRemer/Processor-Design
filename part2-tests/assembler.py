@@ -236,6 +236,20 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
 
                 bin32 = opcode + '00' + imm + rs + rt # bin32
 
+            if t[0] in SYS_TYPE:
+                
+                if t[0] == 'reti':
+                    
+                    bin32 = opcode + '000000000000000000' # bin32
+
+                else:
+                    
+                    dest = regs[t[1].lower()] # could be regular or system register
+
+                    source = regs[t[2].lower()] # could be regular or system register
+
+                    bin32 = opcode + dest + source + '0000000000' # bin32
+
             hex8 = hex(int(bin32,2))[2:].zfill(8) # hex8
 
 
@@ -292,9 +306,9 @@ regs = {
 
     'r10'   :   '1010',
 
-    'r11'   :   '1011',
+    'r11'   :   '1011', # (system stack pointer)
 
-    'r12'   :   '1100',
+    'r12'   :   '1100', # (jal target - slide 23 lecture 16 interrupts)
 
     'r13'   :   '1101',
 
@@ -324,6 +338,10 @@ regs = {
 
     's2'    :   '1001', # r9
 
+    'ssp'   :   '1011', # r11 (system stack pointer)
+
+    'jaltg':   '1100', # r12 (jal target - slide 23 lecture 16 interrupts)
+
     'fp'    :   '1101', # r13
 
     'sp'    :   '1110', # r14
@@ -333,8 +351,8 @@ regs = {
 }
 
 
-
 EXT = '000000'
+SYS_EXT = '111111' # represents 6'h3F
 
 opcodes = {
 
@@ -388,8 +406,26 @@ opcodes = {
 
     'sw'    :   '011010',
 
+    'reti' :   SYS_EXT +  '00000001',
+    
+    'rsr'  :   SYS_EXT +  '00000010',
+    
+    'wsr'  :   SYS_EXT +  '00000011',
+
 }
 
+"""
+
+RETI (opcode2 is 1)
+{6’h3F, 8’h1, 18’b0}
+
+RSR Rx, Sx (opcode2 is 2)
+{6’h3F, 8’h2, rd, ss, 10’b0,}
+
+WSR Sx, Rx (opcode2 is 3)
+{6’h3F, 8’h3, sd, rs, 10’b0}
+
+"""
 
 
 EXT_TYPE        = ('eq','lt','le','ne','add','and','or','xor','sub','nand','nor','nxor','rshf','lshf')
@@ -404,6 +440,7 @@ IMM_TYPE_JAL    = ('jal',)
 
 IMM_TYPE_MEM    = ('lw','sw')
 
+SYS_TYPE        = ('reti', 'rsr', 'wsr')
 
 
 main() # run main script
