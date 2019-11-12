@@ -2,6 +2,12 @@ db/*
 incremental_db/*
 simulation/*
 output_files/*
-project3_frame_nativelink_simulation.rpt
 .vscode/*
 t
+*.qws
+project3_frame_nativelink_simulation.rpt
+project3_frame_nativelink_simulation-ben-Surface-Book.rpt
+Pll-ben-Surface-Book.v
+Pll_sim-ben-Surface-Book.f
+Pll-ben-Surface-Book.qip
+Timing-ben-Surface-Book.txt
