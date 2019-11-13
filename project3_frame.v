@@ -3,6 +3,7 @@
 `include "devices/Key.v"
 `include "devices/Led.v"
 `include "devices/Switch.v"
+`include "devices/SignExtend.v"
 
 module project3_frame(
   input        CLOCK_50,
@@ -118,6 +119,7 @@ module project3_frame(
   
   wire [DBITS-1:0] intr_ret_addr; // Interrupt return address
   reg [DBITS-1:0] sys_regs [3:0]; // 4 registers of width 32
+  // RA, IHA == 32 bits; IDN == idk; PCS == 2 bits {OIE, IE}  
 
   wire [(DBITS-1):0] abus;	// address bus
   tri  [(DBITS-1):0] dbus;	// data bus
@@ -126,15 +128,7 @@ module project3_frame(
   wire intr_timer;
   wire intr_keys;
   wire intr_sws;
-  
 
-
-  // TODO: add a new system register file or individual registers for the 4 special registers
-  // RA, IHA == 32 bits; IDN == idk; PCS == 2 bits {OIE, IE}  
-
-  // Attach some sort of a device
-  // Timer #(.BITS(DBITS), .BASE(32'hF0000020), ...) timer( .ABUS(abus),.DBUS(dbus),.WE(we),.INTR(intr_timer),.CLK(clk),.LOCK(lock),.INIT(init),.DEBUG());
-  //TODO: instantiate a new timer device here (as well as other devices)
 
   // Interrupt priority encoder (to be sent to the IDN register)
   wire [3:0] intnum=
@@ -143,9 +137,7 @@ module project3_frame(
     intr_sws   ? 4'h3:
                  4'hF;
 
-  // basically represents the processor IRQ (or-ing all the devices together)
-  wire intreq;
-//  wire intreq = (!reset) && (PCS[0]&&(intr_timer||intr_keys||intr_sws)))
+  wire intreq; // represents the processor IRQ (or-ing all the devices together)
 
 /**************************************************/	
 
@@ -255,11 +247,12 @@ module project3_frame(
   wire is_alui_operation;
   wire is_op2_ID;
   wire is_op1_ID;
-  wire ss_ID_w;
-  wire sd_ID_w;
-  wire sys_regval_ID_w;
+  wire [1:0] ss_ID_w;
+  wire [1:0] sd_ID_w;
+  wire [DBITS-1:0] sys_regval_ID_w;
   wire is_sys_instr_ID_w;
-  wire wr_sys_sd_ID_w;
+  wire is_wr_sys_ID_w;
+  wire is_rd_sys_ID_w;
   wire is_reti_ID_w;
 
   // Register file
@@ -292,7 +285,7 @@ module project3_frame(
   assign is_alui_operation = inst_FE[31];
   assign is_op2_ID = ((op1_ID_w == OP1_ALUR) && (op2_ID_w != OP2_NOP))  ? 1 : 0; // if op1 is all zeros, we know it is op2
   assign is_op1_ID = (op1_ID_w != OP1_ALUR) ? 1 : 0;
-  assign ss_ID_w = inst_FE[11:10];
+  assign ss_ID_w = inst_FE[11:10]; //TODO: we might need to adjust these
   assign sd_ID_w = inst_FE[15:14];
 
   // Read register values
@@ -317,11 +310,13 @@ module project3_frame(
 							|| op1_ID_w == OP1_JAL	 			// JAL and LW also write to a register
 							|| op1_ID_w == OP1_LW) ? 1 : 0;  // are we writing to a register
   assign is_sys_instr_ID_w = (op1_ID_w == OP1_SYS);
-  assign wr_sys_sd_ID_w = (op2_ID_w == OP2_WSR);
+  assign is_wr_sys_ID_w = (op2_ID_w == OP2_WSR);
+  assign is_rd_sys_ID_w = (op2_ID_w == OP2_RSR);
   assign is_reti_ID_w = is_sys_instr_ID_w && (op2_ID_w == OP2_RETI);
 
   //wregno is the register number that will be written to
-  assign wregno_ID_w = is_sys_instr_ID_w ? (wr_sys_sd_ID_w ? sd_ID_w : rd_ID_w) : 
+  // TODO: we must sign extend the system regnos, but still, we have to make sure forwarding doesn't work
+  assign wregno_ID_w = is_sys_instr_ID_w ? (is_wr_sys_ID_w ? sd_ID_w : rd_ID_w) : 
 		(is_jmp_ID_w || op1_ID_w == OP1_LW || is_alui_operation) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
 
   // concatenates everything together to be put in buffers/registers later {4:0}
@@ -365,7 +360,7 @@ module project3_frame(
 		immval_ID 	<= sxt_imm_ID_w;
 		is_sys_inst_ID <= is_sys_instr_ID_w;
       is_reti_ID 	<= is_reti_ID_w;
-		sys_regval_ID <= wr_sys_sd_ID_w ? sys_regval_ID_w : regval1_ID_w;
+		sys_regval_ID <= is_wr_sys_ID_w ? sys_regval_ID_w : regval1_ID_w; // why not just put in 0?
 		if (forward_from_exstage_rs) begin
 			regval1_ID  <= aluout_EX_w;
 		end else if (forward_from_memstage_rs) begin
@@ -580,6 +575,9 @@ module project3_frame(
   wire rd_mem_MEM_w;
   wire wr_mem_MEM_w;
 
+  wire wr_sys_MEM_w;
+  reg wr_sys_MEM;
+
   wire [DBITS-1:0] memaddr_MEM_w;
   wire [DBITS-1:0] rd_val_MEM_w;
 
@@ -599,6 +597,8 @@ module project3_frame(
     inst_EX  != NOP ? PC_EX : ( // valid instruction in MEM stage
     inst_ID  != NOP ? (mispred_EX_w ? pcgood_EX_w : PC_ID) : PC_FE)); // valid instruction in EX stage, or default to ID/RR PC
 	 
+  assign wr_sys_MEM_w = wr_sys_EX;
+ // SYS_REGS_latch
  always @(posedge clk or posedge reset) begin
   	if (reset) begin
   		sys_regs[0] <= {DBITS{1'b0}};
@@ -613,8 +613,8 @@ module project3_frame(
           10 IRA - Save return address
           11 IDN - Save interrupting device ID number
         */
-        sys_regs[0][0] <= 0;
-        sys_regs[0][1] <= sys_regs[0][0];
+        sys_regs[0][0] <= 0; //disable interrupts while we handle this interrupt
+        sys_regs[0][1] <= sys_regs[0][0]; //put current IE into OIE
         sys_regs[1] <= INTRPC;
         sys_regs[2] <= intr_ret_addr;
         sys_regs[3] <=  intr_timer ? TIMER_ID :
@@ -622,13 +622,12 @@ module project3_frame(
                         intr_sw ? SWITCH_ID : {DBITS{1'bz}};
       end else if (is_sys_inst_EX) begin
         if (wr_sys_EX)
-          sys_regs[wregno_EX] = sys_regval_EX;
+          sys_regs[wregno_EX] = sys_regval_EX; //write to the correct system register
         if (is_reti_EX)
-          sys_regs[0][0] <= sys_regs[0][1];
+          sys_regs[0][0] <= sys_regs[0][1];  //restore the IE to what is stored in the OIE
       end
     end
   end
-
 
   assign memaddr_MEM_w = aluout_EX;
   assign rd_mem_MEM_w = ctrlsig_EX[2];
@@ -667,18 +666,21 @@ module project3_frame(
       regval_MEM  <= {DBITS{1'b0}};
       wregno_MEM  <= {REGNOBITS{1'b0}};
       ctrlsig_MEM <= 1'b0;
+      wr_sys_MEM <= 1'b0;
 		PC_MEM <= {DBITS{1'b0}};
 	 end else if(intreq) begin
 		inst_MEM		<= {INSTBITS{1'b0}};
       regval_MEM  <= {DBITS{1'b0}};
       wregno_MEM  <= {REGNOBITS{1'b0}};
       ctrlsig_MEM <= 1'b0;
+      wr_sys_MEM <= 1'b0;
 		PC_MEM <= {DBITS{1'b0}};
     end else begin
 		inst_MEM		<= inst_EX;
       regval_MEM  <= rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX;
       wregno_MEM  <= wregno_EX;
       ctrlsig_MEM <= ctrlsig_EX[0];
+      wr_sys_MEM <= wr_sys_MEM_w;
 		PC_MEM		<= PC_EX;
     end
   end
@@ -741,19 +743,25 @@ module project3_frame(
 	//regval_mem // output wb
 	
 	// Forward EX
-	assign forward_from_exstage_rs = ((rs_ID_w != 0)&&(wregno_ID == rs_ID_w)) ? 1 : 0;
+  // Don't forward if EX instruction is a sys_write or ID/RR instruction is a sys_read
+	assign forward_from_exstage_rs = ((rs_ID_w != 0) && (wregno_ID == rs_ID_w)) ? 1 : 0;
 	assign forward_from_exstage_rt = ((rt_ID_w != 0) && (wregno_ID == rt_ID_w)) ? 1 : 0; 
-	assign forward_from_exstage = (forward_from_exstage_rs || forward_from_exstage_rt) ? 1 : 0;
+	assign forward_from_exstage = (forward_from_exstage_rs || forward_from_exstage_rt) 
+                                  && !is_rd_sys_ID_w && !wr_sys_EX_w ? 1 : 0;
 	
 	// Forward MEM
+  // Don't forward if MEM instruction is a sys_write or ID/RR instruction is a sys_read
 	assign forward_from_memstage_rs = ((rs_ID_w != 0) && (wregno_EX == rs_ID_w)) ? 1 : 0;
 	assign forward_from_memstage_rt = ((rt_ID_w != 0) && (wregno_EX == rt_ID_w)) ? 1 : 0;
-	assign forward_from_memstage = (forward_from_memstage_rs || forward_from_memstage_rs) ? 1 : 0;
+	assign forward_from_memstage = (forward_from_memstage_rs || forward_from_memstage_rs) 
+                                  && !is_rd_sys_ID_w && !wr_sys_EX ? 1 : 0;
 	
 	// Forward WB
-	assign forward_from_wbstage_rs = ((rs_ID_w != 0)&&(wregno_MEM == rs_ID_w)) ? 1 : 0;
-	assign forward_from_wbstage_rt = ((rt_ID_w != 0)&&(wregno_MEM == rt_ID_w)) ? 1 : 0;
-	assign forward_from_wbstage = (forward_from_wbstage_rs || forward_from_wbstage_rs) ? 1 : 0;
+  // Don't forward if WB instruction is a sys_write or ID/RR instruction is a sys_read
+	assign forward_from_wbstage_rs = ((rs_ID_w != 0) && (wregno_MEM == rs_ID_w)) ? 1 : 0;
+	assign forward_from_wbstage_rt = ((rt_ID_w != 0) && (wregno_MEM == rt_ID_w)) ? 1 : 0;
+	assign forward_from_wbstage = (forward_from_wbstage_rs || forward_from_wbstage_rs) 
+                                && !is_rd_sys_ID_w && !wr_sys_MEM ? 1 : 0;
 	
 
 	//*******************************************************/
@@ -793,59 +801,51 @@ module project3_frame(
   wire [31:0] regval2_MEM_w;
 
   assign regval2_MEM_w = (wr_mem_MEM_w) ? regval2_EX : {DBITS{1'bz}};
+
+  assign abus = memaddr_MEM_w;
+  assign dbus = regval2_MEM_w;
+  assign we = wr_mem_MEM_w;
   
   KEY_DEVICE #(.WBITS(DBITS), .DBITS(KEYDBITS), .CBITS(CTRLBITS), .BASE(ADDRKEY)) KEY_d(
     .KEY(KEY),
-    .ABUS(memaddr_MEM_w),
-    .DBUS(regval2_MEM_w),
-    .WE(wr_mem_MEM_w),
+    .ABUS(abus),
+    .DBUS(dbus),
+    .WE(we),
     .INTR(intr_key),
     .CLK(clk),.RESET(reset)
   );
 
   SW_DEVICE #(.WBITS(DBITS), .DBITS(SWITCHDBITS), .CBITS(CTRLBITS), .BASE(ADDRSW)) SW_d(
     .SW(SW),
-    .ABUS(memaddr_MEM_w),
-    .DBUS(regval2_MEM_w),
-    .WE(wr_mem_MEM_w),
+    .ABUS(abus),
+    .DBUS(dbus),
+    .WE(we),
     .INTR(intr_sw),
     .CLK(clk),.RESET(reset)
   );
 
   TIMER_DEVICE #(.WBITS(DBITS), .CBITS(CTRLBITS), .BASE(ADDRTIMER)) TIMER_d(
-    .ABUS(memaddr_MEM_w),
-    .DBUS(regval2_MEM_w),
-    .WE(wr_mem_MEM_w),
+    .ABUS(abus),
+    .DBUS(dbus),
+    .WE(we),
     .INTR(intr_timer),
     .CLK(clk),.RESET(reset)
   );
   
   LED_DEVICE #(.BITS(DBITS), .BASE(ADDRLEDR)) LED_d(
     .LEDR(LEDR),
-    .ABUS(memaddr_MEM_w),
-    .DBUS(regval2_MEM_w),
-    .WE(wr_mem_MEM_w),
+    .ABUS(abus),
+    .DBUS(dbus),
+    .WE(we),
     .CLK(clk),.RESET(reset)
   );
 
   HEX_DEVICE #(.BITS(DBITS), .BASE(ADDRHEX)) HEX_d(
     .HEX({HEX5, HEX4, HEX3, HEX2, HEX1, HEX0}),
-    .ABUS(memaddr_MEM_w),
-    .DBUS(regval2_MEM_w),
-    .WE(wr_mem_MEM_w),
+    .ABUS(abus),
+    .DBUS(dbus),
+    .WE(we),
     .CLK(clk),.RESET(reset)
   );
 
 endmodule
-
-
-module SXT(IN, OUT);
-  parameter IBITS = 16;
-  parameter OBITS = 32;
-
-  input  [IBITS-1:0] IN;
-  output [OBITS-1:0] OUT;
-
-  assign OUT = {{(OBITS-IBITS){IN[IBITS-1]}}, IN};
-endmodule
-
