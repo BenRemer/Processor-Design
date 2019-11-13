@@ -202,6 +202,10 @@ module project3_frame(
       PC_FE <= pcgood_EX; // assign to what was caclulated in EX stage
     else if(!stall_pipe)   // maybe &&?
       PC_FE <= pcpred_FE; // if no stall, assign to the incremented pc (PC + 4)
+	 else if(reti)
+    PC_FE <= sys_regs[2]; 
+    // Take from IRA sys_reg: holds the starting PC of all instructions that 
+    // were still in the pipeline when the interrupt came
 	 else
       PC_FE <= PC_FE; // if stall, PC_FE stays the same
   end
@@ -589,10 +593,11 @@ module project3_frame(
   
   assign intreq = (intr_key || intr_sw || intr_timer) && sys_regs[0][0];
   assign reti = is_reti_EX;
+  // option 1: save the good pc from each stage and flush all stages before this pc
   assign intr_ret_addr = 
-    inst_MEM 	!= NOP ? PC_MEM : (
-    inst_EX 	!= NOP ? PC_EX : (
-    inst_ID 	!= NOP ? (mispred_EX_w ? pcgood_EX_w : PC_ID) : PC_FE));
+    inst_MEM != NOP ? PC_MEM : ( // valid instruction in WB stage
+    inst_EX  != NOP ? PC_EX : ( // valid instruction in MEM stage
+    inst_ID  != NOP ? (mispred_EX_w ? pcgood_EX_w : PC_ID) : PC_FE)); // valid instruction in EX stage, or default to ID/RR PC
 	 
  always @(posedge clk or posedge reset) begin
   	if (reset) begin
