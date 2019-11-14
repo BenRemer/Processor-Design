@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 18.0 614 win32 2019.10.23.21:22:28
+# ACDS 18.0 614 win32 2019.11.14.12:24:32
 # ----------------------------------------
 # Auto-generated simulation script rivierapro_setup.tcl
 # ----------------------------------------
