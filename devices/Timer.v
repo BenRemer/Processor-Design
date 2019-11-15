@@ -2,13 +2,16 @@ module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
   parameter WBITS; // passed in as 32
   parameter CBITS; // passed in as 5
   parameter BASE; // passed in address
-  parameter ONE_MS = 90000;
+  parameter ONE_MS = 15000; // 15,000,000 cycles per second ==> 15,000 cycles per millisecond
 
   input wire [WBITS-1:0] ABUS;
   inout wire [WBITS-1:0] DBUS;
   input wire WE,CLK,RESET;
   output wire INTR;
 
+  // LIM is passed a value in milliseconds to count to
+  // CNT represents the number of ms we've already counted to get to LIM
+  // CLK_COUNT represents the number of clock ticks to get to 1 ms
   reg [CBITS-1:0] CTRL;
   reg [WBITS-1:0] CNT, LIM, CLK_COUNT;
 
@@ -39,7 +42,6 @@ module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
       else if (wr_ctrl)       //if writing to tctl
         CTRL <= {DBUS[4:2], DBUS[1] && CTRL[1], CTRL[0]}; // 4 is IE, 1 is overrun, 0 is ready (data change has been detected)
       else if (CLK_COUNT >= ONE_MS) begin     //number of clocks in 1 ms
-        // CLK_COUNT <= 0;
         CNT <= CNT + 1;
       end else if ((CNT >= LIM - 1) && (LIM != 0)) begin //if counter reached
         CNT <= 0;
@@ -59,7 +61,3 @@ module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
 
   assign INTR = CTRL[0] && CTRL[4];
 endmodule
-
-// LIM is passed a value in milliseconds to count to
-// CNT represents the number of ms we've already counted to get to LIM
-// CLK_COUNT represents the number of clock ticks to get to 1 ms

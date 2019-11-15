@@ -1,0 +1,29 @@
+DEPTH = 16384;
+WIDTH = 32;
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+CONTENT
+BEGIN
+    [0000..001f] : dead;
+    0008 : 1f025c00; --> 0020 : RSR		T0, IDN
+    0009 : 48000006; --> 0024 : LW 		T1, TI(Zero)
+    000a : 20000156; --> 0028 : BEQ 	T0, T1, TimerHandler
+    000b : 7c040000; --> 002c : RETI
+    000c : 80000104; --> 0030 : ADDI    Zero, A3, 1
+    000d : 68f00004; --> 0034 : SW		A3, HEX(Zero)
+    000e : 20000000; --> 0038 : BR 		EndInterruptHandler
+    000f : 7c040000; --> 003c : RETI
+    [0010..00ff] : dead;
+    0040 : 00980000; --> 0100 : XOR		Zero, Zero, Zero
+    0041 : 68f00000; --> 0104 : SW		Zero, HEX(Zero)
+    0042 : 80006408; --> 0108 : ADDI 	Zero, S1, 100
+    0043 : 00900400; --> 010c : AND     A3, Zero, Zero
+    0044 : 68f10408; --> 0110 : SW 		S1, TIMERLIM(Zero)
+    0045 : 80001005; --> 0114 : ADDI 	Zero, T0, 16
+    0046 : 68f10805; --> 0118 : SW 		T0, TIMERCTRL(Zero)
+    0047 : 1f025000; --> 011c : RSR 	T0, PCS
+    0048 : 94000155; --> 0120 : ORI		T0, T0, 1
+    0049 : 94000155; --> 0124 : WSR 	PCS, T0
+    004a : 20ffff00; --> 0128 : BR		InfiniteLoop
+    [004b..3fff] : dead;
+END;
