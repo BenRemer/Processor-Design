@@ -17,8 +17,8 @@ InterruptHandler:
 	RETI
 
 TimerHandler: 
-    ADDI    A3, A3, 1                 ; increment A3
-    SW		A3, HEX(Zero)				
+    ;ADDI    A3, A3, 1                 ; increment A3
+    ;SW		A3, HEX(Zero)				
     RETI
 
 ; Processor Initialization
@@ -35,4 +35,6 @@ TimerHandler:
 	WSR 	PCS, T0
 
 InfiniteLoop:
+	ADDI    A3, A3, 1                 ; increment A3
+    SW		A3, HEX(Zero)
 	BR		InfiniteLoop 				; Main Loop. Interrupts should occur here.

@@ -43,6 +43,7 @@ module project3_frame(
   // test file location
 //  parameter IMEMINITFILE = "part2-tests/test.mif";
   // parameter IMEMINITFILE = "part2-tests/fmedian2.mif";
+//   parameter IMEMINITFILE = "part2-tests/xmax.mif";
   parameter IMEMINITFILE = "in_class_assignment_11_14/blink.mif";
 
   parameter IMEMADDRBITS = 16;
@@ -196,7 +197,7 @@ module project3_frame(
     else if(!stall_pipe)   // maybe &&?
       PC_FE <= pcpred_FE; // if no stall, assign to the incremented pc (PC + 4)
 	 else if(reti)
-    PC_FE <= sys_regs[2]; 
+		PC_FE <= sys_regs[2]; 
     // Take from IRA sys_reg: holds the starting PC of all instructions that 
     // were still in the pipeline when the interrupt came
 	 else
@@ -289,10 +290,15 @@ module project3_frame(
   assign ss_ID_w = inst_FE[13:10];
   assign sd_ID_w = inst_FE[17:14];
 
+  assign is_sys_instr_ID_w = (op1_ID_w == OP1_SYS);
+  assign is_wr_sys_ID_w = (op1_ID_w == OP1_SYS) && (op2_ID_w == OP2_WSR);
+  assign is_rd_sys_ID_w = (op1_ID_w == OP1_SYS) && (op2_ID_w == OP2_RSR);
+  assign is_reti_ID_w = (op1_ID_w == OP1_SYS) && (op2_ID_w == OP2_RETI);
+  
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
   assign regval2_ID_w = regs[rt_ID_w];
-  assign sys_regval_ID_w = sys_regs[ss_ID_w];
+  assign sys_regval_ID_w = is_rd_sys_ID_w ? sys_regs[ss_ID_w] : (is_wr_sys_ID_w ? regs[ss_ID_w] : 4'b0);
 
   // Sign extension
   SXT mysxt (.IN(imm_ID_w), .OUT(sxt_imm_ID_w));
@@ -310,10 +316,7 @@ module project3_frame(
 							|| is_alui_operation 	 			// any alui operation writes to a register
 							|| op1_ID_w == OP1_JAL	 			// JAL and LW also write to a register
 							|| op1_ID_w == OP1_LW) ? 1 : 0;  // are we writing to a register
-  assign is_sys_instr_ID_w = (op1_ID_w == OP1_SYS);
-  assign is_wr_sys_ID_w = (op2_ID_w == OP2_WSR);
-  assign is_rd_sys_ID_w = (op2_ID_w == OP2_RSR);
-  assign is_reti_ID_w = is_sys_instr_ID_w && (op2_ID_w == OP2_RETI);
+  
 
   //wregno is the register number that will be written to
   // TODO: we must sign extend the system regnos, but still, we have to make sure forwarding doesn't work
@@ -362,7 +365,8 @@ module project3_frame(
 		immval_ID 	<= sxt_imm_ID_w;
 		is_sys_inst_ID <= is_sys_instr_ID_w;
       is_reti_ID 	<= is_reti_ID_w;
-		sys_regval_ID <= is_wr_sys_ID_w ? regval1_ID_w : sys_regval_ID_w; // If we are writing to sys_reg, write in a regular_reg; If we are reading from a system_
+		sys_regval_ID <= sys_regval_ID_w; // If we are writing to sys_reg, write in a regular_reg; If we are reading from a system_
+		
 		if (forward_from_exstage_rs) begin
 			regval1_ID  <= aluout_EX_w;
 		end else if (forward_from_memstage_rs) begin
@@ -687,9 +691,13 @@ module project3_frame(
   wire read_rt = (rt_ID_w != 0) && ((wregno_MEM == rt_ID_w) 
 		|| (wregno_EX == rt_ID_w) 
 		|| (wregno_ID == rt_ID_w));
+
+  wire read_ss = (ss_ID_w != 0) && ((wregno_MEM == ss_ID_w) 
+		|| (wregno_EX == ss_ID_w) 
+		|| (wregno_ID == ss_ID_w));
   
   assign stall_pipe = (
-    is_rd_sys_ID_w ||
+    ((is_rd_sys_ID_w || is_wr_sys_ID_w) && read_ss)||
     (is_br_ID_w && (read_rs || read_rt)) 
 		||(is_jmp_ID_w && (read_rs)) 
 		||(ctrlsig_ID[2] && ((wregno_ID == rs_ID_w) || (wregno_ID == rt_ID_w)))
@@ -709,21 +717,21 @@ module project3_frame(
   // Don't forward if EX instruction is a sys_write or ID/RR instruction is a sys_read
 	assign forward_from_exstage_rs = ((rs_ID_w != 0) && (wregno_ID == rs_ID_w)) ? 1 : 0;
 	assign forward_from_exstage_rt = ((rt_ID_w != 0) && (wregno_ID == rt_ID_w)) ? 1 : 0; 
-	assign forward_from_exstage = (forward_from_exstage_rs || forward_from_exstage_rt) && !is_rd_sys_ID_w ? 1 : 0;
+	assign forward_from_exstage = (forward_from_exstage_rs || forward_from_exstage_rt) && !is_sys_instr_ID_w ? 1 : 0;
                                   // && !is_rd_sys_ID_w && !wr_sys_EX_w ? 1 : 0;
 	
 	// Forward MEM
   // Don't forward if MEM instruction is a sys_write or ID/RR instruction is a sys_read
 	assign forward_from_memstage_rs = ((rs_ID_w != 0) && (wregno_EX == rs_ID_w)) ? 1 : 0;
 	assign forward_from_memstage_rt = ((rt_ID_w != 0) && (wregno_EX == rt_ID_w)) ? 1 : 0;
-	assign forward_from_memstage = (forward_from_memstage_rs || forward_from_memstage_rs) && !is_rd_sys_ID_w ? 1 : 0;
+	assign forward_from_memstage = (forward_from_memstage_rs || forward_from_memstage_rs) && !is_sys_instr_ID_w ? 1 : 0;
                                   // && !is_rd_sys_ID_w && !wr_sys_EX ? 1 : 0;
 	
 	// Forward WB
   // Don't forward if WB instruction is a sys_write or ID/RR instruction is a sys_read
 	assign forward_from_wbstage_rs = ((rs_ID_w != 0) && (wregno_MEM == rs_ID_w)) ? 1 : 0;
 	assign forward_from_wbstage_rt = ((rt_ID_w != 0) && (wregno_MEM == rt_ID_w)) ? 1 : 0;
-	assign forward_from_wbstage = (forward_from_wbstage_rs || forward_from_wbstage_rs) && !is_rd_sys_ID_w ? 1 : 0;
+	assign forward_from_wbstage = (forward_from_wbstage_rs || forward_from_wbstage_rs) && !is_sys_instr_ID_w ? 1 : 0;
                                 // && !is_rd_sys_ID_w && !wr_sys_MEM ? 1 : 0;
 	
 
