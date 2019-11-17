@@ -242,13 +242,21 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
                     
                     bin32 = opcode + '000000000000000000' # bin32
 
-                else:
-                    
-                    dest = regs[t[1].lower()] # could be regular or system register
+                elif t[0] == 'rsr':
+    
+                    regular_destination = regs[t[1].lower()];
 
-                    source = regs[t[2].lower()] # could be regular or system register
+                    system_source = special_regs[t[2].lower()];
 
-                    bin32 = opcode + dest + source + '0000000000' # bin32
+                    bin32 = opcode + regular_destination + system_source + '0000000000' # bin32
+
+                elif t[0] == 'wrs':
+
+                    system_destination = special_regs[t[1].lower()];
+
+                    regular_source = regs[t[2].lower()];
+            		
+                    bin32 = opcode + system_destination + regular_source + '0000000000' # bin32
 
             hex8 = hex(int(bin32,2))[2:].zfill(8) # hex8
 
@@ -350,9 +358,20 @@ regs = {
 
 }
 
+special_regs = {
+	
+	'pcs'	:	'0000', # Process control and status
+
+	'iha'	:	'0001', # Interrupt handler address
+
+	'ira'	:	'0010', # Interrupt return address
+
+	'idn'	:	'0011', # Interrupt device ID
+}
+
 
 EXT = '000000'
-SYS_EXT = '111111' # represents 6'h3F
+SYS_EXT = '011111' # represents 6'h1F so we continue to check ALUI operations with the MSB (bit 31) of the instruction
 
 opcodes = {
 
@@ -417,13 +436,13 @@ opcodes = {
 """
 
 RETI (opcode2 is 1)
-{6’h3F, 8’h1, 18’b0}
+{6’h1F, 8’h1, 18’b0}
 
 RSR Rx, Sx (opcode2 is 2)
-{6’h3F, 8’h2, rd, ss, 10’b0,}
+{6’h1F, 8’h2, rd, ss, 10’b0,}
 
 WSR Sx, Rx (opcode2 is 3)
-{6’h3F, 8’h3, sd, rs, 10’b0}
+{6’h1F, 8’h3, sd, rs, 10’b0}
 
 """
 
