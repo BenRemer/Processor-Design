@@ -4,6 +4,7 @@
 `include "devices/Led.v"
 `include "devices/Switch.v"
 `include "devices/SignExtend.v"
+`include "devices/SevenSeg.v"
 
 module project3_frame(
   input        CLOCK_50,
@@ -130,14 +131,6 @@ module project3_frame(
   wire intr_keys;
   wire intr_sws;
 
-
-  // Interrupt priority encoder (to be sent to the IDN register)
-  wire [3:0] intnum=
-    intr_timer ? 4'h1:
-    intr_keys  ? 4'h2:
-    intr_sws   ? 4'h3:
-                 4'hF;
-
   wire intreq; // represents the processor IRQ (or-ing all the devices together)
 
 /**************************************************/	
@@ -190,7 +183,7 @@ module project3_frame(
     if(reset)
       PC_FE <= STARTPC;
 	 else if(intreq)
-		PC_FE <= INTRPC;	// set to 0x20
+		PC_FE <= sys_regs[1];	// IHA, set to 0x20
     else if(mispred_EX) // This represents a branch taken or jmp in EX stage
       PC_FE <= pcgood_EX; // assign to what was caclulated in EX stage
     else if(!stall_pipe)   // maybe &&?
@@ -198,7 +191,7 @@ module project3_frame(
 	 else if(reti)
     PC_FE <= sys_regs[2]; 
     // Take from IRA sys_reg: holds the starting PC of all instructions that 
-    // were still in the pipeline when the interrupt came
+    // were still in the pipeline when the interrupt occured
 	 else
       PC_FE <= PC_FE; // if stall, PC_FE stays the same
   end
@@ -362,8 +355,9 @@ module project3_frame(
 		immval_ID 	<= sxt_imm_ID_w;
 		is_sys_inst_ID <= is_sys_instr_ID_w;
       is_reti_ID 	<= is_reti_ID_w;
-		sys_regval_ID <= is_wr_sys_ID_w ? regval1_ID_w : sys_regval_ID_w; // If we are writing to sys_reg, write in a regular_reg; If we are reading from a system_
-		if (forward_from_exstage_rs) begin
+    // If we are writing to sys_reg, write in a regular_reg; If we are reading from a system_
+		sys_regval_ID <= is_wr_sys_ID_w ? regval1_ID_w : sys_regval_ID_w; 
+    if (forward_from_exstage_rs) begin
 			regval1_ID  <= aluout_EX_w;
 		end else if (forward_from_memstage_rs) begin
 			regval1_ID  <= rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX;
@@ -579,6 +573,7 @@ module project3_frame(
         sys_regs[3] <=  intr_timer ? TIMER_ID :
                         intr_key ? KEY_ID :
                         intr_sw ? SWITCH_ID : {DBITS{1'bz}};
+        // ^ Interrupt priority encoder ^                  
       end else if (is_sys_inst_EX) begin
         if (wr_sys_EX)
           sys_regs[wregno_EX] = sys_regval_EX; //write regular register value to the correct system register

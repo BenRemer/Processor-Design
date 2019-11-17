@@ -40,7 +40,7 @@ module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
       else if (wr_lim)       //if writing to tlim
         LIM <= DBUS;
       else if (wr_ctrl)       //if writing to tctl
-        CTRL <= {DBUS[4:2], DBUS[1] && CTRL[1], CTRL[0]}; // 4 is IE, 1 is overrun, 0 is ready (data change has been detected)
+        CTRL <= {DBUS[4:2], DBUS[1] && CTRL[1], CTRL[0]}; // 4 is IE, 3-2 don't matter, 1 is overrun, 0 is ready (data change has been detected)
       else if (CLK_COUNT >= ONE_MS) begin     //number of clocks in 1 ms
         CNT <= CNT + 1;
       end else if ((CNT >= LIM - 1) && (LIM != 0)) begin //if counter reached

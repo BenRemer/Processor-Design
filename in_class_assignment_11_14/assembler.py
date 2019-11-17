@@ -360,13 +360,13 @@ regs = {
 
 special_regs = {
 	
-	'pcs'	:	'00', # Process control and status
+	'pcs'	:	'0000', # Process control and status
 
-	'iha'	:	'01', # Interrupt handler address
+	'iha'	:	'0001', # Interrupt handler address
 
-	'ira'	:	'10', # Interrupt return address
+	'ira'	:	'0010', # Interrupt return address
 
-	'idn'	:	'11', # Interrupt device ID
+	'idn'	:	'0011', # Interrupt device ID
 }
 
 
