@@ -5,23 +5,23 @@
 .NAME   TIMERCTRL = 0xFFFFF108
 
 ; IDN Values
-.NAME	TI	= 00
+.NAME	TI	= 0x00
+.NAME	constant = 0xFFFFFFFF
 
 .ORG 	0x20
 InterruptHandler:
 	; Interrupts are disabled by HW before this
 	RSR		T0, IDN 					; T0 is interrupt device number
-	SW		T0, HEX(Zero)
-	BR		Loop
-	; LW 		T1, TI(Zero)
-	; BEQ 	T0, T1, TimerHandler 		; Is a timer interrupt
+	; SW		T0, HEX(Zero)
+	; BR		Loop
+	LW 		T1, TI(Zero)
+	BEQ 	T0, T1, TimerHandler 		; Is a timer interrupt
 	; Execution should not occur here!!
 	RETI
 
 TimerHandler: 
-    AND    A3, A3, Zero                 ; increment A3
-    SW		A3, HEX(Zero)	
-	BR 		TimerHandler
+	LW		A2, constant(Zero)
+    SW		A2, HEX(Zero)	
     RETI
 
 ; Processor Initialization
@@ -36,11 +36,19 @@ TimerHandler:
 	RSR 	T0, PCS
 	ORI		T0, T0, 1					; For turning on IE bit for PCS
 	WSR 	PCS, T0
+	; AND		T1, T1, Zero
+	; ADDI	Zero, T1, 3
 
 InfiniteLoop:
+	; LW 		T1, TIMER(Zero)
+	; SW		T1, HEX(Zero)
+	; LW		T1, constant(Zero)
 	ADDI    A3, A3, 1                 ; increment A3
     SW		A3, HEX(Zero)
-	BR		InfiniteLoop 				; Main Loop. Interrupts should occur here.
+	; BNE		T1, A2, InfiniteLoop 				; Main Loop. Interrupts should occur here.
+	BR		InfiniteLoop
 
-Loop:
-	BR		Loop
+; Loop:
+; 	ADDI	Zero, A3, 3
+; 	SW		A3, HEX(Zero)
+; 	BR		Loop

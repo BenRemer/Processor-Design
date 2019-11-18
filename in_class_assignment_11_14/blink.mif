@@ -6,14 +6,13 @@ CONTENT
 BEGIN
     [0000..001f] : dead;
     0008 : 7c094c00; --> 0020 : RSR		T0, IDN
-    0009 : 68f00005; --> 0024 : SW		T0, HEX(Zero)
-    000a : 20004200; --> 0028 : BR		Loop
+    0009 : 48000006; --> 0024 : LW 		T1, TI(Zero)
+    000a : 20000156; --> 0028 : BEQ 	T0, T1, TimerHandler
     000b : 7c040000; --> 002c : RETI
-    000c : 00900440; --> 0030 : AND    A3, A3, Zero
-    000d : 68f00004; --> 0034 : SW		A3, HEX(Zero)
-    000e : 20fffd00; --> 0038 : BR 		TimerHandler
-    000f : 7c040000; --> 003c : RETI
-    [0010..00ff] : dead;
+    000c : 48ffff03; --> 0030 : LW		A2, constant(Zero)
+    000d : 68f00003; --> 0034 : SW		A2, HEX(Zero)
+    000e : 7c040000; --> 0038 : RETI
+    [000f..00ff] : dead;
     0040 : 00980000; --> 0100 : XOR		Zero, Zero, Zero
     0041 : 00900400; --> 0104 : AND     A3, Zero, Zero
     0042 : 68f00004; --> 0108 : SW		A3, HEX(Zero)
@@ -27,6 +26,5 @@ BEGIN
     004a : 80000144; --> 0128 : ADDI    A3, A3, 1
     004b : 68f00004; --> 012c : SW		A3, HEX(Zero)
     004c : 20fffd00; --> 0130 : BR		InfiniteLoop
-    004d : 20ffff00; --> 0134 : BR		Loop
-    [004e..3fff] : dead;
+    [004d..3fff] : dead;
 END;

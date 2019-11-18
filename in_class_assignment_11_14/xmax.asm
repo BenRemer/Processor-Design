@@ -139,7 +139,7 @@ InfiniteLoop:
 .NAME	KY	= 0x01
 .NAME	SW	= 0x10
 
-; Bit masks
+; Bit maskss
 .NAME	BIT0 = 0x1
 .NAME 	BIT1 = 0x2
 .NAME	BIT2 = 0x4

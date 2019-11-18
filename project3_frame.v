@@ -45,8 +45,8 @@ module project3_frame(
 //  parameter IMEMINITFILE = "part2-tests/test.mif";
   // parameter IMEMINITFILE = "part2-tests/fmedian2.mif";
 //   parameter IMEMINITFILE = "part2-tests/xmax.mif";
-  // parameter IMEMINITFILE = "in_class_assignment_11_14/blink.mif";
-  parameter IMEMINITFILE = "in_class_assignment_11_14/xmax.mif";
+   parameter IMEMINITFILE = "in_class_assignment_11_14/blink.mif";
+//  parameter IMEMINITFILE = "in_class_assignment_11_14/xmax.mif";
 
   parameter IMEMADDRBITS = 16;
   parameter IMEMWORDBITS = 2;
