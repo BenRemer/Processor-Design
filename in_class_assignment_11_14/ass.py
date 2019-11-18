@@ -45,12 +45,14 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
 	# first pass - parse lines into MemWords, create symbol table
 
 	for line in source.readlines():
-
+    		
 		if ';' in line:
 
 			line = line[0:line.index(';')] # remove comment
 
 		line = line.strip()
+
+		# print(line)
 
 		if ':' in line:
 
@@ -135,7 +137,7 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
 	# second pass - assemble MemWords into machine code (mif format)
 
 	for mw in memwords:
-
+    		
 		hex8 = mw.hex8
 
 		if not hex8:
@@ -241,7 +243,6 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
 				if t[0] == 'reti':
 
 					bin32 = opcode + '000000000000000000' # bin32
-					print(bin32, len(bin32))
 
 				elif t[0] == 'rsr':
 
@@ -257,12 +258,11 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
 					rs = regs[t[2].lower()];
 					
 					bin32 = opcode + sd + rs + '0000000000' # bin32
-			print(bin32)
+			print(t[0], bin32)
 			hex8 = hex(int(bin32,2))[2:].zfill(8) # hex8
-			# hex8 = hex(int(bin32,2))
-			print(hex8)
-
-
+			op = bin32[0:6]
+			print(t[0], op)
+			print(t[0], hex8)
 
 		if current_byte < mw.address:
 

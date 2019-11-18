@@ -11,14 +11,17 @@
 InterruptHandler:
 	; Interrupts are disabled by HW before this
 	RSR		T0, IDN 					; T0 is interrupt device number
-	LW 		T1, TI(Zero)
-	BEQ 	T0, T1, TimerHandler 		; Is a timer interrupt
+	SW		T0, HEX(Zero)
+	BR		Loop
+	; LW 		T1, TI(Zero)
+	; BEQ 	T0, T1, TimerHandler 		; Is a timer interrupt
 	; Execution should not occur here!!
 	RETI
 
 TimerHandler: 
-    ;ADDI    A3, A3, 1                 ; increment A3
-    ;SW		A3, HEX(Zero)				
+    AND    A3, A3, Zero                 ; increment A3
+    SW		A3, HEX(Zero)	
+	BR 		TimerHandler
     RETI
 
 ; Processor Initialization
@@ -38,3 +41,6 @@ InfiniteLoop:
 	ADDI    A3, A3, 1                 ; increment A3
     SW		A3, HEX(Zero)
 	BR		InfiniteLoop 				; Main Loop. Interrupts should occur here.
+
+Loop:
+	BR		Loop

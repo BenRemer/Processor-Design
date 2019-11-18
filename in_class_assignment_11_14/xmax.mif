@@ -1,0 +1,100 @@
+DEPTH = 16384;
+WIDTH = 32;
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+CONTENT
+BEGIN
+    [0000..001f] : dead;
+    0008 : 7c094c00; --> 0020 : RSR		T0, IDN
+    0009 : 48000006; --> 0024 : LW 		T1, TI(Zero)
+    000a : 20000556; --> 0028 : BEQ 	T0, T1, TimerHandler
+    000b : 48000106; --> 002c : LW 		T1, KY(Zero)
+    000c : 20000b56; --> 0030 : BEQ 	T0, T1, KeyHandler
+    000d : 48001006; --> 0034 : LW 		T1, SW(Zero)
+    000e : 20000c56; --> 0038 : BEQ 	T0, T1, SwitchHandler
+    000f : 7c040000; --> 003c : RETI
+    0010 : 80000306; --> 0040 : ADDI 	Zero, T1, 3
+    0011 : 24003c26; --> 0044 : BLT 	A1, T1, UpperBlink
+    0012 : 80000366; --> 0048 : ADDI	T1, T1, 3
+    0013 : 24003f26; --> 004c : BLT 	A1, T1, LowerBlink
+    0014 : 80000366; --> 0050 : ADDI 	T1, T1, 3
+    0015 : 24004226; --> 0054 : BLT 	A1, T1, FullBlink
+    0016 : 80000002; --> 0058 : ADDI 	Zero, A1, 0
+    0017 : 20001d00; --> 005c : BR 		EndInterruptHandler
+    0018 : 48f08006; --> 0060 : LW 		T1, KEY(Zero)
+    0019 : 20004c56; --> 0064 : BEQ 	T0, T1, Slow
+    001a : 20004500; --> 0068 : BR Fast
+    001b : 48f09006; --> 006c : LW 		T1, SWITCH(Zero)
+    001c : 80000107; --> 0070 : ADDI 	Zero, S0, 1
+    001d : 28000276; --> 0074 : BGE 	T1, S0, Not0
+    001e : 80000009; --> 0078 : ADDI 	Zero, S2, 0
+    001f : 20001300; --> 007c : BR 		FinishSwitch
+    0020 : 80000207; --> 0080 : ADDI 	Zero, S0, 2
+    0021 : 28000276; --> 0084 : BGE 	T1, S0, Not1
+    0022 : 80000709; --> 0088 : ADDI 	Zero, S2, 7
+    0023 : 20000f00; --> 008c : BR 		FinishSwitch
+    0024 : 80000407; --> 0090 : ADDI 	Zero, S0, 4
+    0025 : 28000276; --> 0094 : BGE 	T1, S0, Not2
+    0026 : 80000e09; --> 0098 : ADDI 	Zero, S2, 14
+    0027 : 20000b00; --> 009c : BR 		FinishSwitch
+    0028 : 80000807; --> 00a0 : ADDI 	Zero, S0, 8
+    0029 : 28000276; --> 00a4 : BGE 	T1, S0, Not3
+    002a : 80001509; --> 00a8 : ADDI 	Zero, S2, 21
+    002b : 20000700; --> 00ac : BR 		FinishSwitch
+    002c : 80001007; --> 00b0 : ADDI 	Zero, S0, 16
+    002d : 28000276; --> 00b4 : BGE 	T1, S0, Not4
+    002e : 80001c09; --> 00b8 : ADDI 	Zero, S2, 28
+    002f : 20000300; --> 00bc : BR 		FinishSwitch
+    0030 : 80002007; --> 00c0 : ADDI 	Zero, S0, 32
+    0031 : 28000376; --> 00c4 : BGE 	T1, S0, EndInterruptHandler
+    0032 : 80002309; --> 00c8 : ADDI 	Zero, S2, 35
+    0033 : 00c40919; --> 00cc : LSHF 	S2, A0, S2
+    0034 : 68f00009; --> 00d0 : SW 		S2, HEX(Zero)
+    0035 : 7c040000; --> 00d4 : RETI
+    [0036..00ff] : dead;
+    0040 : 00980000; --> 0100 : XOR		Zero, Zero, Zero
+    0041 : 80000201; --> 0104 : ADDI	Zero, A0, 2
+    0042 : 68f00001; --> 0108 : SW		A0, HEX(Zero)
+    0043 : 00800200; --> 010c : ADD 	A1, Zero, Zero
+    0044 : 8001f408; --> 0110 : ADDI 	Zero, S1, 500
+    0045 : 68f10408; --> 0114 : SW 		S1, TIMERLIM(Zero)
+    0046 : 80001005; --> 0118 : ADDI 	Zero, T0, 16
+    0047 : 68f08405; --> 011c : SW 		T0, KEYCTRL(Zero)
+    0048 : 68f09405; --> 0120 : SW 		T0, SWITCHCTRL(Zero)
+    0049 : 68f10805; --> 0124 : SW 		T0, TIMERCTRL(Zero)
+    004a : 7c094000; --> 0128 : RSR 	T0, PCS
+    004b : 94000155; --> 012c : ORI		T0, T0, 1
+    004c : 7c0c1400; --> 0130 : WSR 	PCS, T0
+    004d : 20ffff00; --> 0134 : BR		InfiniteLoop
+    004e : 48f02005; --> 0138 : LW 		T0, LEDR(Zero)
+    004f : 00b00555; --> 013c : NOT 	T0, T0
+    0050 : 68f02005; --> 0140 : SW 		T0, LEDR(Zero)
+    0051 : 80000122; --> 0144 : ADDI 	A1, A1, 1
+    0052 : 7c040000; --> 0148 : RETI
+    0053 : 48f02005; --> 014c : LW 		T0, LEDR(Zero)
+    0054 : 00b00555; --> 0150 : NOT 	T0, T0
+    0055 : 68f02005; --> 0154 : SW 		T0, LEDR(Zero)
+    0056 : 80000122; --> 0158 : ADDI 	A1, A1, 1
+    0057 : 7c040000; --> 015c : RETI
+    0058 : 48f02005; --> 0160 : LW 		T0, LEDR(Zero)
+    0059 : 00b00555; --> 0164 : NOT 	T0, T0
+    005a : 68f02005; --> 0168 : SW 		T0, LEDR(Zero)
+    005b : 80000905; --> 016c : ADDI 	Zero, T0, 9
+    005c : 80000122; --> 0170 : ADDI 	A1, A1, 1
+    005d : 2cffd752; --> 0174 : BNE 	T0, A1, EndInterruptHandler
+    005e : 80000002; --> 0178 : ADDI 	Zero, A1, 0
+    005f : 7c040000; --> 017c : RETI
+    0060 : 80000105; --> 0180 : ADDI 	Zero, T0, 1
+    0061 : 20ffd351; --> 0184 : BEQ 	T0, A0, EndInterruptHandler
+    0062 : 80ffff11; --> 0188 : ADDI 	A0, A0, -1
+    0063 : 80ff0688; --> 018c : ADDI 	S1, S1, -250
+    0064 : 68f10408; --> 0190 : SW 		S1, TIMERLIM(Zero)
+    0065 : 20ffb500; --> 0194 : BR 		SwitchHandler
+    0066 : 80000805; --> 0198 : ADDI 	Zero, T0, 8
+    0067 : 20ffcd51; --> 019c : BEQ 	T0, A0, EndInterruptHandler
+    0068 : 80000111; --> 01a0 : ADDI 	A0, A0, 1
+    0069 : 8000fa88; --> 01a4 : ADDI 	S1, S1, 250
+    006a : 68f10408; --> 01a8 : SW 		S1, TIMERLIM(Zero)
+    006b : 20ffaf00; --> 01ac : BR 		SwitchHandler
+    [006c..3fff] : dead;
+END;

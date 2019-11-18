@@ -43,11 +43,11 @@ module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
         CTRL <= {DBUS[4:2], DBUS[1] && CTRL[1], CTRL[0]}; // 4 is IE, 3-2 don't matter, 1 is overrun, 0 is ready (data change has been detected)
       else if (CLK_COUNT >= ONE_MS) begin     //number of clocks in 1 ms
         CNT <= CNT + 1;
-      end else if ((CNT >= LIM - 1) && (LIM != 0)) begin //if counter reached
+      end else if ((CNT >= LIM - 1) && (LIM != 0)) begin //if counter reaches limit
         CNT <= 0;
         if (CTRL[0])    //if ready == 1 already then overflow
           CTRL[1] <= 1;
-        CTRL[0] <= 1;
+        CTRL[0] <= 1;   // we have reached the limit and timerInterrupt is asserted
       end
       CLK_COUNT <= (wr_cnt || wr_lim) ? {WBITS{1'b0}} : (CLK_COUNT + 1) % (ONE_MS + 1);
     end
@@ -57,7 +57,7 @@ module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
   assign DBUS = rd_cnt ? CNT :
                 rd_lim ? LIM :
                 rd_ctrl ? CTRL :
-                {WBITS{1'bz}}; 
+                {WBITS{1'bz}};
 
   assign INTR = CTRL[0] && CTRL[4];
 endmodule

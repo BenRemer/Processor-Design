@@ -4,7 +4,7 @@ module SW_DEVICE(SW, ABUS, DBUS, WE, INTR, CLK, RESET);
   parameter CBITS;
   parameter BASE;
 
-  parameter TEN_MS = 900000;
+  parameter TEN_MS = 15000 * 10;
 
   input wire [DBITS-1:0] SW;
   input wire [WBITS-1:0] ABUS;
