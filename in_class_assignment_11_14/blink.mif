@@ -6,25 +6,28 @@ CONTENT
 BEGIN
     [0000..001f] : dead;
     0008 : 7c094c00; --> 0020 : RSR		T0, IDN
-    0009 : 48000106; --> 0024 : LW 		T1, KY(Zero)
-    000a : 68f00006; --> 0028 : SW		T1, HEX(Zero)
-    000b : 20000156; --> 002c : BEQ 	T0, T1, TimerHandler
-    000c : 7c040000; --> 0030 : RETI
-    000d : 80000144; --> 0034 : ADDI	A3, A3, 1
-    000e : 68f00004; --> 0038 : SW		A3, HEX(Zero)
-    000f : 7c040000; --> 003c : RETI
-    [0010..00ff] : dead;
+    0009 : 80000206; --> 0024 : ADDI	Zero, T1, SW
+    000a : 68f00005; --> 0028 : SW		T0, HEX(Zero)
+    000b : 68f02006; --> 002c : SW 		T1, LEDR(Zero)
+    000c : 20000150; --> 0030 : BEQ 	T0, Zero, TimerHandler
+    000d : 7c040000; --> 0034 : RETI
+    000e : 00900400; --> 0038 : AND		A3, Zero, Zero
+    000f : 80000604; --> 003c : ADDI	Zero, A3, 6
+    0010 : 68f00004; --> 0040 : SW		A3, HEX(Zero)
+    0011 : 7c040000; --> 0044 : RETI
+    [0012..00ff] : dead;
     0040 : 00980000; --> 0100 : XOR		Zero, Zero, Zero
     0041 : 00900400; --> 0104 : AND     A3, Zero, Zero
     0042 : 00900300; --> 0108 : AND 	A2, Zero, Zero
     0043 : 8003e808; --> 010c : ADDI 	Zero, S1, 1000
-    0044 : 80001005; --> 0110 : ADDI 	Zero, T0, 16
-    0045 : 68f09405; --> 0114 : SW 		T0, SWITCHCTRL(Zero)
-    0046 : 7c094000; --> 0118 : RSR 	T0, PCS
-    0047 : 94000155; --> 011c : ORI		T0, T0, 1
-    0048 : 7c0c1400; --> 0120 : WSR 	PCS, T0
-    0049 : 80000133; --> 0124 : ADDI 	A2, A2, 1
-    004a : 68f02003; --> 0128 : SW 		A2, LEDR(Zero)
-    004b : 20fffd00; --> 012c : BR		InfiniteLoop
-    [004c..3fff] : dead;
+    0044 : 68f09008; --> 0110 : SW 		S1, SWITCH(Zero)
+    0045 : 80001005; --> 0114 : ADDI 	Zero, T0, 16
+    0046 : 68f09405; --> 0118 : SW 		T0, SWITCHCTRL(Zero)
+    0047 : 7c094000; --> 011c : RSR 	T0, PCS
+    0048 : 94000155; --> 0120 : ORI		T0, T0, 1
+    0049 : 7c0c1400; --> 0124 : WSR 	PCS, T0
+    004a : 80000144; --> 0128 : ADDI	A3, A3, 1
+    004b : 68f00004; --> 012c : SW		A3, HEX(Zero)
+    004c : 20fffd00; --> 0130 : BR		InfiniteLoop
+    [004d..3fff] : dead;
 END;

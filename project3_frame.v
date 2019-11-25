@@ -43,7 +43,7 @@ module project3_frame(
 
   // test file location
 //  parameter IMEMINITFILE = "part2-tests/test.mif";
-  // parameter IMEMINITFILE = "part2-tests/fmedian2.mif";
+//   parameter IMEMINITFILE = "part2-tests/fmedian2.mif";
 //   parameter IMEMINITFILE = "part2-tests/xmax.mif";
    parameter IMEMINITFILE = "in_class_assignment_11_14/blink.mif";
 //  parameter IMEMINITFILE = "in_class_assignment_11_14/xmax.mif";
@@ -105,6 +105,11 @@ module project3_frame(
   wire clk;
   wire locked;
   wire reset;
+  
+  reg [DBITS-1:0] PCS;
+  reg [DBITS-1:0] IHA;
+  reg [DBITS-1:0] IRA;
+  reg [DBITS-1:0] IDN;
 
   Pll myPll(
     .refclk	(CLOCK_50),
@@ -185,13 +190,13 @@ module project3_frame(
     if(reset)
       PC_FE <= STARTPC;
 	 else if(intreq)
-		PC_FE <= sys_regs[1];	// IHA, set to 0x20
+		PC_FE <= INTRPC;	// IHA, set to 0x20
+	 else if(reti)
+		PC_FE <= intr_ret_addr; 
     else if(mispred_EX) // This represents a branch taken or jmp in EX stage
       PC_FE <= pcgood_EX; // assign to what was caclulated in EX stage
     else if(!stall_pipe)   // maybe &&?
       PC_FE <= pcpred_FE; // if no stall, assign to the incremented pc (PC + 4)
-	 else if(reti)
-		PC_FE <= sys_regs[2]; 
     // Take from IRA sys_reg: holds the starting PC of all instructions that 
     // were still in the pipeline when the interrupt occured
 	 else
@@ -209,7 +214,7 @@ module project3_frame(
       inst_FE <= {INSTBITS{1'b0}};
     end else begin
 	   // Specify inst_FE considering misprediction and stall
-		if(mispred_EX || intreq) begin
+		if(mispred_EX || intreq || reti) begin
 			inst_FE <= NOP;
 		end else if (stall_pipe) begin
 			inst_FE <= inst_FE; // set it to itself so it stays here{INSTBITS{1'b0}};
@@ -270,6 +275,8 @@ module project3_frame(
   reg is_sys_inst_ID;
   reg is_reti_ID;
   reg signed [DBITS-1:0] sys_regval_ID;
+  reg [REGNOBITS-1:0]ss_ID;
+  reg [REGNOBITS-1:0]ss_EX;
 
   // Specify signals such as op*_ID_w, imm_ID_w, r*_ID_w
   assign op1_ID_w = inst_FE[31:26];
@@ -316,7 +323,7 @@ module project3_frame(
   // TODO: we must sign extend the system regnos, but still, we have to make sure forwarding doesn't work
   // assign wregno_ID_w = is_sys_instr_ID_w ? (is_wr_sys_ID_w ? sd_ID_w : sd_ID_w) : 
 	// 	(is_jmp_ID_w || op1_ID_w == OP1_LW || is_alui_operation) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
-  assign wregno_ID_w = is_sys_instr_ID_w ? (is_wr_sys_ID_w || is_rd_sys_ID_w ? sd_ID_w : 0) : 
+  assign wregno_ID_w = is_sys_instr_ID_w ? sd_ID_w : 
 		(is_jmp_ID_w || op1_ID_w == OP1_LW || is_alui_operation) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
 
   // concatenates everything together to be put in buffers/registers later {4:0}
@@ -336,7 +343,8 @@ module project3_frame(
 		is_sys_inst_ID <= 1'b0;
       is_reti_ID <= 1'b0;
 		sys_regval_ID <= {DBITS{1'b0}};
-	 end else if(stall_pipe || mispred_EX || intreq) begin // for some reason reset goes first and alone by convention
+		ss_ID	<= {REGNOBITS{1'b0}};
+	 end else if(intreq || reti) begin // for some reason reset goes first and alone by convention
 	 // Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
       PC_ID	 		<= {DBITS{1'b0}};
 		inst_ID	 	<= {INSTBITS{1'b0}};
@@ -349,6 +357,35 @@ module project3_frame(
 		is_sys_inst_ID <= 1'b0;
       is_reti_ID <= 1'b0;
 		sys_regval_ID <= {DBITS{1'b0}};
+		ss_ID	<= {REGNOBITS{1'b0}};
+	 end else if(mispred_EX) begin // for some reason reset goes first and alone by convention
+	 // Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
+      PC_ID	 		<= {DBITS{1'b0}};
+		inst_ID	 	<= {INSTBITS{1'b0}};
+      op1_ID	 	<= {OP1BITS{1'b0}};
+      op2_ID	 	<= {OP2BITS{1'b0}};
+      regval1_ID  <= {DBITS{1'b0}};
+      regval2_ID  <= {DBITS{1'b0}};
+      wregno_ID	<= {REGNOBITS{1'b0}};
+      ctrlsig_ID 	<= 5'h0;
+		is_sys_inst_ID <= 1'b0;
+      is_reti_ID <= 1'b0;
+		sys_regval_ID <= {DBITS{1'b0}};
+		ss_ID	<= {REGNOBITS{1'b0}};
+	 end else if(stall_pipe) begin // for some reason reset goes first and alone by convention
+	 // Send nops that are all 1s because all 0s evaluates to isOp2 == true and false positive for send_nop
+      PC_ID	 		<= {DBITS{1'b0}};
+		inst_ID	 	<= {INSTBITS{1'b0}};
+      op1_ID	 	<= {OP1BITS{1'b0}};
+      op2_ID	 	<= {OP2BITS{1'b0}};
+      regval1_ID  <= {DBITS{1'b0}};
+      regval2_ID  <= {DBITS{1'b0}};
+      wregno_ID	<= {REGNOBITS{1'b0}};
+      ctrlsig_ID 	<= 5'h0;
+		is_sys_inst_ID <= 1'b0;
+      is_reti_ID <= 1'b0;
+		sys_regval_ID <= {DBITS{1'b0}};
+		ss_ID	<= {REGNOBITS{1'b0}};
 	 end else begin
 		PC_ID	 		<= PC_FE;
 		inst_ID	 	<= inst_FE;
@@ -358,6 +395,7 @@ module project3_frame(
 		ctrlsig_ID 	<= ctrlsig_ID_w;
 		immval_ID 	<= sxt_imm_ID_w;
 		is_sys_inst_ID <= is_sys_instr_ID_w;
+		ss_ID			<=	ss_ID_w;
       is_reti_ID 	<= is_reti_ID_w;
 		sys_regval_ID <= sys_regval_ID_w; // If we are writing to sys_reg, write in a regular_reg; If we are reading from a system_
 		
@@ -494,7 +532,8 @@ module project3_frame(
 		is_sys_inst_EX <= 1'b0;
       is_reti_EX 	<= 1'b0;
 		sys_regval_EX <= {DBITS{1'b0}};
-	 end else if (mispred_EX || intreq) begin // Flush out EX state after branch or Jump
+		ss_EX 		<= {REGNOBITS{1'b0}};
+	 end else if(intreq || reti) begin
 		inst_EX	 	<= {INSTBITS{1'b0}};
 		PC_EX			<= {DBITS{1'b0}};
       aluout_EX	<= {DBITS{1'b0}};
@@ -508,6 +547,22 @@ module project3_frame(
 		is_sys_inst_EX <= 1'b0;
       is_reti_EX 	<= 1'b0;
 		sys_regval_EX <= {DBITS{1'b0}};
+		ss_EX 		<= {REGNOBITS{1'b0}};
+	 end else if (mispred_EX) begin // Flush out EX state after branch or Jump
+		inst_EX	 	<= {INSTBITS{1'b0}};
+		PC_EX			<= {DBITS{1'b0}};
+      aluout_EX	<= {DBITS{1'b0}};
+      wregno_EX	<= {REGNOBITS{1'b0}};
+      ctrlsig_EX 	<= 3'h0; 
+		mispred_EX 	<= 1'b0;
+		pcgood_EX  	<= {DBITS{1'b0}};
+		regval2_EX	<= {DBITS{1'b0}};
+		wr_sys_EX 	<= 1'b0;
+      rd_sys_EX 	<= 1'b0;
+		is_sys_inst_EX <= 1'b0;
+      is_reti_EX 	<= 1'b0;
+		sys_regval_EX <= {DBITS{1'b0}};
+		ss_EX 	<= {REGNOBITS{1'b0}};
     end else begin
 		inst_EX	 	<= inst_ID;
 		PC_EX			<= PC_ID;
@@ -522,6 +577,7 @@ module project3_frame(
 		is_sys_inst_EX <= is_sys_inst_ID;
       is_reti_EX 	<= is_reti_ID;
 		sys_regval_EX <= sys_regval_ID;
+		ss_EX			<=	ss_ID;
     end
   end
 
@@ -549,9 +605,9 @@ module project3_frame(
   assign reti = is_reti_EX;
   // option 1: save the good pc from each stage and flush all stages before this pc
   assign intr_ret_addr = 
-    inst_MEM != NOP ? PC_MEM : ( // valid instruction in WB stage
-    inst_EX  != NOP ? PC_EX : ( // valid instruction in MEM stage
-    inst_ID  != NOP ? (mispred_EX_w ? pcgood_EX_w : PC_ID) : PC_FE)); // valid instruction in EX stage, or default to ID/RR PC
+    (inst_MEM != NOP) ? PC_MEM : ( // valid instruction in WB stage
+    (inst_EX  != NOP) ? PC_EX : ( // valid instruction in MEM stage
+    (inst_ID  != NOP) ? (mispred_EX_w ? pcgood_EX_w : PC_ID) : PC_FE)); // valid instruction in EX stage, or default to ID/RR PC
 	 
   assign wr_sys_MEM_w = wr_sys_EX;
 
@@ -570,8 +626,8 @@ module project3_frame(
           10 IRA - Save return address
           11 IDN - Save interrupting device ID number
         */
+		  sys_regs[0][1] <= sys_regs[0][0]; //put current IE into OIE
         sys_regs[0][0] <= 0; //disable interrupts while we handle this interrupt
-        sys_regs[0][1] <= sys_regs[0][0]; //put current IE into OIE
         sys_regs[1] <= INTRPC;
         sys_regs[2] <= intr_ret_addr;
         sys_regs[3] <=  intr_timer ? TIMER_ID :
@@ -580,10 +636,10 @@ module project3_frame(
         // ^ Interrupt priority encoder ^                  
       end else if (is_sys_inst_EX) begin
         if (wr_sys_EX)
-          sys_regs[wregno_EX] = sys_regval_EX; //write regular register value to the correct system register
+          sys_regs[wregno_EX] = regs[ss_EX]; //write regular register value to the correct system register
         // if (rd_sys_EX)
         //   regs[wregno_EX] <= sys_regval_EX;
-        if (is_reti_EX)
+        if (reti)
           sys_regs[0][0] <= sys_regs[0][1];  //restore the IE to what is stored in the OIE
       end
     end
@@ -628,19 +684,19 @@ module project3_frame(
       ctrlsig_MEM <= 1'b0;
       wr_sys_MEM <= 1'b0;
 		PC_MEM <= {DBITS{1'b0}};
-	 end else if(intreq) begin
-		inst_MEM		<= {INSTBITS{1'b0}};
-      regval_MEM  <= {DBITS{1'b0}};
-      wregno_MEM  <= {REGNOBITS{1'b0}};
-      ctrlsig_MEM <= 1'b0;
-      wr_sys_MEM <= 1'b0;
-		PC_MEM <= {DBITS{1'b0}};
+//	 end else if(intreq || reti) begin
+//		inst_MEM		<= {INSTBITS{1'b0}};
+//      regval_MEM  <= {DBITS{1'b0}};
+//      wregno_MEM  <= {REGNOBITS{1'b0}};
+//      ctrlsig_MEM <= 1'b0;
+//      wr_sys_MEM <= 1'b0;
+//		PC_MEM <= {DBITS{1'b0}};
     end else begin
 		inst_MEM		<= inst_EX;
-      regval_MEM  <= rd_sys_EX ? sys_regval_EX : (rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX);
+      regval_MEM  <= rd_sys_EX ? sys_regs[ss_EX] : (rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX);
       wregno_MEM  <= wregno_EX;
       ctrlsig_MEM <= ctrlsig_EX[0];
-      wr_sys_MEM <= wr_sys_MEM_w;
+      wr_sys_MEM 	<= wr_sys_MEM_w;
 		PC_MEM		<= PC_EX;
     end
   end

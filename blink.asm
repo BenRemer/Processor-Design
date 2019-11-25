@@ -10,7 +10,7 @@
 ; IDN Values
 .NAME	TI	= 0
 .NAME	KY	= 1
-.NAME	SW	= 2
+.NAME	SW	= 10
 .NAME	constant = 0xFFFFFFFF
 
 .ORG 	0x20
@@ -20,21 +20,19 @@ InterruptHandler:
 	; SW		T0, HEX(Zero)
 	; BR		Loop
 	;LW 		T1, KY(Zero)
-	ADDI	Zero, T1, SW
-	SW		T0, HEX(Zero)
-	SW 		T1, LEDR(Zero)
-	BEQ 	T0, Zero, TimerHandler 		; Is a timer interrupt
+	ADDI	Zero, T1, TI
+	;SW		T0, HEX(Zero)
+	BEQ 	T0, T1, TimerHandler 		; Is a timer interrupt
 	; Execution should not occur here!!
 	;LW		T0, constant(Zero)
-	;AND		A3, Zero, Zero
+	;ADDI	A3, A3, 1
     ;SW		A3, HEX(Zero)
 	RETI
 
 TimerHandler: 
 	;LW		A2, constant(Zero)
     ;SW		A2, HEX(Zero)	
-    AND		A3, Zero, Zero
-    ADDI	Zero, A3, 6
+    ADDI	A3, A3, 1
     SW		A3, HEX(Zero)
     RETI
 
@@ -44,10 +42,10 @@ TimerHandler:
     AND     A3, Zero, Zero              ; A3 will be displayed on HEX
     AND 	A2, Zero, Zero
 	;SW		A3, HEX(Zero)
-	ADDI 	Zero, S1, 1000				; S1 = 100 ms
-	SW 		S1, SWITCH(Zero)			; Sets TLIM = 1000 ms
+	ADDI 	Zero, S1, 1000000				; S1 = 100 ms
+	SW 		S1, TIMERLIM(Zero)			; Sets TLIM = 1000 ms
 	ADDI 	Zero, T0, 16				; For turning on IE bit for devices => 16 = b10000
-	SW 		T0, SWITCHCTRL(Zero)
+	SW 		T0, TIMERCTRL(Zero)
 	RSR 	T0, PCS
 	ORI		T0, T0, 1					; For turning on IE bit for PCS
 	WSR 	PCS, T0
@@ -61,10 +59,8 @@ InfiniteLoop:
 	;ADDI    A3, A3, 1                 ; increment A3
     ;SW		A3, HEX(Zero)
 	; BNE		T1, A2, InfiniteLoop 				; Main Loop. Interrupts should occur here.
-	; ADDI 	A2, A2, 1
-	; SW 		A2, LEDR(Zero)
-	ADDI	A3, A3, 1
-    SW		A3, HEX(Zero)
+	ADDI 	A2, A2, 1
+	SW 		A2, LEDR(Zero)
 	BR		InfiniteLoop
 
 ; Loop:
