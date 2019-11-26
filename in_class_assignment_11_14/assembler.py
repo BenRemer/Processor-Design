@@ -190,6 +190,23 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
 
             opcode = opcodes[t[0]]
 
+            # benschau: Added RSR, WSR, RETI for interrupt support.
+            if t[0] in SYS_TYPE:
+                
+                if t[0] == 'reti':
+                    bin32 = opcode + '000000000000000000'
+                else:
+                    # wsr or rsr
+                    # NOTE: registers will be interpreted as system registers in the 
+                    #       processor depending on wsr/rsr operands.
+                    #       e.g if `wsr ira, r2`, we interpret ira as 4'b1 in the assembled file and r2 as 4'b2.
+                    #           however, we won't access r1 or a0 (4'b1) but the actual ira system register. 
+                    rd = regs[t[1].lower()] 
+
+                    rs = regs[t[2].lower()] 
+
+                    bin32 = opcode + '000000' + rd + rs + '0000'
+
             if t[0] in EXT_TYPE:
 
                 rd = regs[t[1].lower()]
@@ -235,28 +252,6 @@ def assemble(source, depth=16384, width=32, address_radix='HEX', data_radix='HEX
                 imm = bin(imm & 0xffff)[2:].zfill(16) # bin16
 
                 bin32 = opcode + '00' + imm + rs + rt # bin32
-
-            if t[0] in SYS_TYPE:
-                
-                if t[0] == 'reti':
-                    
-                    bin32 = opcode + '000000000000000000' # bin32
-
-                elif t[0] == 'rsr':
-    
-                    regular_destination = regs[t[1].lower()];
-
-                    system_source = special_regs[t[2].lower()];
-
-                    bin32 = opcode + regular_destination + system_source + '0000000000' # bin32
-
-                elif t[0] == 'wrs':
-
-                    system_destination = special_regs[t[1].lower()];
-
-                    regular_source = regs[t[2].lower()];
-            		
-                    bin32 = opcode + system_destination + regular_source + '0000000000' # bin32
 
             hex8 = hex(int(bin32,2))[2:].zfill(8) # hex8
 
@@ -314,9 +309,9 @@ regs = {
 
     'r10'   :   '1010',
 
-    'r11'   :   '1011', # (system stack pointer)
+    'r11'   :   '1011',
 
-    'r12'   :   '1100', # (jal target - slide 23 lecture 16 interrupts)
+    'r12'   :   '1100',
 
     'r13'   :   '1101',
 
@@ -346,32 +341,31 @@ regs = {
 
     's2'    :   '1001', # r9
 
-    'ssp'   :   '1011', # r11 (system stack pointer)
-
-    'jaltg':   '1100', # r12 (jal target - slide 23 lecture 16 interrupts)
-
     'fp'    :   '1101', # r13
 
     'sp'    :   '1110', # r14
 
-    'ra'    :   '1111'  # r15
+    'ra'    :   '1111',  # r15
+
+    # ssp - system stack pointer, which we designate R11 (1011). 
+    'ssp'   :   '1011',
+    
+    # system registers, use only through RSR, WSR, RETI
+    # mostly here for clarity's sake
+    'ira'   :   '0001', # interrupt return address reg
+
+    'iha'   :   '0010', # interrupt handler address reg
+
+    'idn'   :   '0011', # interrupt device id reg
+
+    'pcs'   :   '0100', # process control & status reg
 
 }
 
-special_regs = {
-	
-	'pcs'	:	'0000', # Process control and status
-
-	'iha'	:	'0001', # Interrupt handler address
-
-	'ira'	:	'0010', # Interrupt return address
-
-	'idn'	:	'0011', # Interrupt device ID
-}
 
 
 EXT = '000000'
-SYS_EXT = '011111' # represents 6'h1F so we continue to check ALUI operations with the MSB (bit 31) of the instruction
+SYS = '011111' 
 
 opcodes = {
 
@@ -425,26 +419,13 @@ opcodes = {
 
     'sw'    :   '011010',
 
-    'reti' :   SYS_EXT +  '00000001',
-    
-    'rsr'  :   SYS_EXT +  '00000010',
-    
-    'wsr'  :   SYS_EXT +  '00000011',
+    # benschau: Added RSR, WSR, RETI for interrupt support.
+    'reti'  :   SYS + '00000001',
 
+    'rsr'   :   SYS + '00000010',
+
+    'wsr'   :   SYS + '00000011',
 }
-
-"""
-
-RETI (opcode2 is 1)
-{6’h1F, 8’h1, 18’b0}
-
-RSR Rx, Sx (opcode2 is 2)
-{6’h1F, 8’h2, rd, ss, 10’b0,}
-
-WSR Sx, Rx (opcode2 is 3)
-{6’h1F, 8’h3, sd, rs, 10’b0}
-
-"""
 
 
 EXT_TYPE        = ('eq','lt','le','ne','add','and','or','xor','sub','nand','nor','nxor','rshf','lshf')
@@ -459,8 +440,7 @@ IMM_TYPE_JAL    = ('jal',)
 
 IMM_TYPE_MEM    = ('lw','sw')
 
-SYS_TYPE        = ('reti', 'rsr', 'wsr')
-
+# benschau: Added RSR, WSR, RETI for interrupt support.
+SYS_TYPE        = ('rsr','wsr','reti')
 
 main() # run main script
-

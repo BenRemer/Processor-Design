@@ -5,7 +5,7 @@ DATA_RADIX = HEX;
 CONTENT
 BEGIN
     [0000..001f] : dead;
-    0008 : 7c094c00; --> 0020 : RSR		T0, IDN
+    0008 : 7c080530; --> 0020 : RSR		T0, IDN
     0009 : 48000106; --> 0024 : LW 		T1, KY(Zero)
     000a : 68f00006; --> 0028 : SW		T1, HEX(Zero)
     000b : 20000156; --> 002c : BEQ 	T0, T1, TimerHandler
@@ -20,9 +20,9 @@ BEGIN
     0043 : 8003e808; --> 010c : ADDI 	Zero, S1, 1000
     0044 : 80001005; --> 0110 : ADDI 	Zero, T0, 16
     0045 : 68f09405; --> 0114 : SW 		T0, SWITCHCTRL(Zero)
-    0046 : 7c094000; --> 0118 : RSR 	T0, PCS
+    0046 : 7c080540; --> 0118 : RSR 	T0, PCS
     0047 : 94000155; --> 011c : ORI		T0, T0, 1
-    0048 : 7c0c1400; --> 0120 : WSR 	PCS, T0
+    0048 : 7c0c0450; --> 0120 : WSR 	PCS, T0
     0049 : 80000133; --> 0124 : ADDI 	A2, A2, 1
     004a : 68f02003; --> 0128 : SW 		A2, LEDR(Zero)
     004b : 20fffd00; --> 012c : BR		InfiniteLoop
