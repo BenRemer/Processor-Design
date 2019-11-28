@@ -18,18 +18,18 @@
 	SW		Zero,LEDR(Zero)						; Turn off LEDR
 	SW		Zero,HEX(Zero)
 	
-	ADDI		Zero,T0,0x20
+	ADDI		Zero,T0,0x1000			; store interrupt handler address (0x1000) in IHA
 	WSR		IHA,T0	
 
 	ADDI		Zero,T0,0x10
-	SW		T0,TCTL(Zero)
+	SW		T0,TCTL(Zero)				; enable interrupts for timer's controller
 	ADDI		Zero,A0,500
-	SW		A0,TLIM(Zero)
+	SW		A0,TLIM(Zero)				; set timer limit (500 ms?)
 
 	ADDI		Zero,A1,12
 
 	ADDI		Zero,T0,0x01
-	WSR		PCS,T0
+	WSR		PCS,T0						; enable interrupts across whole processor
 
 	ADDI		Zero,T0,0xFFF
 	LSHF		T0,T0,A1
@@ -46,7 +46,7 @@ MainLoop:
 	BR		MainLoop
 
 ;Interrupt Handler
-	.ORG 20
+	.ORG 0x1000
 	SUBI		SSP,SSP,4
 	SW		T0,0(SSP)
 	SUBI		SSP,SSP,4
