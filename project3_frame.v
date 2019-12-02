@@ -37,10 +37,10 @@ module project3_frame(
 //  parameter IMEMINITFILE = "part2-tests/test.mif";
 //   parameter IMEMINITFILE = "part2-tests/fmedian2.mif";
 //   parameter IMEMINITFILE = "part2-tests/xmax.mif";
-  parameter IMEMINITFILE = "in_class_assignment_11_14/test_intr.mif";
+//  parameter IMEMINITFILE = "in_class_assignment_11_14/test_intr.mif";
 //  parameter IMEMINITFILE = "benschau/test_interrupt.mif";
 //  parameter IMEMINITFILE = "benschau/xmax.mif";
-  // parameter IMEMINITFILE = "in_class_assignment_11_14/xmax.mif";
+   parameter IMEMINITFILE = "in_class_assignment_11_14/xmax.mif";
 
   parameter IMEMADDRBITS = 16;
   parameter IMEMWORDBITS = 2;
@@ -284,7 +284,7 @@ module project3_frame(
 							|| is_alui_operation 	 			// any alui operation writes to a register
 							|| op1_ID_w === OP1_JAL	 			// We write to rt in JAL
 							|| op1_ID_w === OP1_LW         // we write to rt in LW
-              || is_rd_sys_ID_w) ? 1 : 0;   // we write to regular registers in an RSR instruction
+							|| is_rd_sys_ID_w) ? 1 : 0;   // we write to regular registers in an RSR instruction
 
   //wregno is the register number that will be written to
   // TODO: we must sign extend the system regnos, but still, we have to make sure forwarding doesn't work
@@ -525,7 +525,7 @@ module project3_frame(
   assign dbus = wr_mem_MEM_w ? regval2_EX : {32{1'bz}};
 
   // Interupts
-  assign IRQ = inst_EX != {DBITS{!'b0}} && !is_sys_inst_EX && PCS[0] && (intr_key || intr_sw || intr_timer);
+  assign IRQ = inst_EX != {DBITS{1'b0}} && !is_sys_inst_EX && PCS[0] && (intr_key || intr_sw || intr_timer);
   assign RETI = is_reti_EX;
 
   // System Latch
