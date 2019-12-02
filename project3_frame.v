@@ -256,13 +256,13 @@ module project3_frame(
   assign rs_ID_w = inst_FE[7:4];
   assign rt_ID_w = inst_FE[3:0];
   assign is_alui_operation = inst_FE[31];
-  assign is_op2_ID = ((op1_ID_w === OP1_ALUR) && (op2_ID_w != OP2_NOP))  ? 1 : 0; // if op1 is all zeros, we know it is op2
+  assign is_op2_ID = ((op1_ID_w == OP1_ALUR) && (op2_ID_w != OP2_NOP))  ? 1 : 0; // if op1 is all zeros, we know it is op2
   assign is_op1_ID = (op1_ID_w != OP1_ALUR) ? 1 : 0;
 
-  assign is_sys_instr_ID_w = (op1_ID_w === OP1_SYS);
-  assign is_wr_sys_ID_w = is_sys_instr_ID_w && (op2_ID_w === OP2_WSR);
-  assign is_rd_sys_ID_w = is_sys_instr_ID_w && (op2_ID_w === OP2_RSR);
-  assign is_reti_ID_w = is_sys_instr_ID_w && (op2_ID_w === OP2_RETI);
+  assign is_sys_instr_ID_w = (op1_ID_w == OP1_SYS);
+  assign is_wr_sys_ID_w = is_sys_instr_ID_w && (op2_ID_w == OP2_WSR);
+  assign is_rd_sys_ID_w = is_sys_instr_ID_w && (op2_ID_w == OP2_RSR);
+  assign is_reti_ID_w = is_sys_instr_ID_w && (op2_ID_w == OP2_RETI);
   
   // Read register values
   assign regval1_ID_w = regs[rs_ID_w];
@@ -273,18 +273,18 @@ module project3_frame(
 
   // Specify control signals such as is_br_ID_w, is_jmp_ID_w, rd_mem_ID_w, etc.
   // You may add or change control signals if needed
-  assign is_br_ID_w = (op1_ID_w === OP1_BEQ
-							|| op1_ID_w === OP1_BLT
-							|| op1_ID_w === OP1_BLE
-							|| op1_ID_w === OP1_BNE) ? 1 : 0;
-  assign is_jmp_ID_w = (op1_ID_w === OP1_JAL) ? 1 : 0;
-  assign rd_mem_ID_w = (op1_ID_w === OP1_LW) ? 1 : 0; // are we reading from memory?
-  assign wr_mem_ID_w = (op1_ID_w === OP1_SW) ? 1 : 0; // are we writing to memory?
+  assign is_br_ID_w = (op1_ID_w == OP1_BEQ
+							|| op1_ID_w == OP1_BLT
+							|| op1_ID_w == OP1_BLE
+							|| op1_ID_w == OP1_BNE) ? 1 : 0;
+  assign is_jmp_ID_w = (op1_ID_w == OP1_JAL) ? 1 : 0;
+  assign rd_mem_ID_w = (op1_ID_w == OP1_LW) ? 1 : 0; // are we reading from memory?
+  assign wr_mem_ID_w = (op1_ID_w == OP1_SW) ? 1 : 0; // are we writing to memory?
   assign wr_reg_ID_w = (is_op2_ID				 			// any OP2 writes to a register
 							|| is_alui_operation 	 			// any alui operation writes to a register
-							|| op1_ID_w === OP1_JAL	 			// We write to rt in JAL
-							|| op1_ID_w === OP1_LW         // we write to rt in LW
-							|| is_rd_sys_ID_w) ? 1 : 0;   // we write to regular registers in an RSR instruction
+							|| op1_ID_w == OP1_JAL	 			// We write to rt in JAL
+							|| op1_ID_w == OP1_LW         // we write to rt in LW
+              || is_rd_sys_ID_w) ? 1 : 0;   // we write to regular registers in an RSR instruction
 
   //wregno is the register number that will be written to
   // TODO: we must sign extend the system regnos, but still, we have to make sure forwarding doesn't work
@@ -306,10 +306,10 @@ module project3_frame(
   wire rt_ex_hazard_w;
   wire rt_mem_hazard_w;
   
-  assign rs_ex_hazard_w = (wregno_ID === rs_ID_w && ctrlsig_ID[0]); //===
-  assign rs_mem_hazard_w = (wregno_EX === rs_ID_w && ctrlsig_EX[0]);
-  assign rt_ex_hazard_w = (read_rt && wregno_ID === rt_ID_w  && ctrlsig_ID[0]);
-  assign rt_mem_hazard_w = (read_rt && wregno_EX === rt_ID_w && ctrlsig_EX[0]);
+  assign rs_ex_hazard_w = (wregno_ID == rs_ID_w && ctrlsig_ID[0]); //==
+  assign rs_mem_hazard_w = (wregno_EX == rs_ID_w && ctrlsig_EX[0]);
+  assign rt_ex_hazard_w = (read_rt && wregno_ID == rt_ID_w  && ctrlsig_ID[0]);
+  assign rt_mem_hazard_w = (read_rt && wregno_EX == rt_ID_w && ctrlsig_EX[0]);
   assign stall_pipe = (rs_ex_hazard_w || rt_ex_hazard_w) && (ctrlsig_ID[2] || is_rd_sys_EX_w); // if rd_mem or is rsr in ex
   
   // ID_latch
@@ -380,7 +380,7 @@ module project3_frame(
   reg [DBITS-1:0] regval2_EX;
   reg [OP1BITS-1:0] op1_EX;
   reg [OP2BITS-1:0] op2_EX;
-  reg [DBITS-1:0] pc_next_EX;
+  reg [DBITS-1:0] next_pc_EX;
 
   wire is_rd_sys_EX_w;
   wire is_wr_sys_EX_w;
@@ -462,7 +462,7 @@ module project3_frame(
 		is_wr_sys_EX 	<= 1'b0;
       is_rd_sys_EX 	<= 1'b0;
       is_reti_EX 	<= 1'b0;
-		pc_next_EX    <= {DBITS{1'b0}};
+		next_pc_EX    <= {DBITS{1'b0}};
 	 end else if (IRQ || RETI) begin // Flush out EX state after branch or Jump
 		inst_EX   <= {INSTBITS{1'b0}};
       aluout_EX <= {DBITS{1'b0}};
@@ -474,7 +474,7 @@ module project3_frame(
     is_wr_sys_EX   <= 1'b0;
       is_rd_sys_EX   <= 1'b0;
       is_reti_EX  <= 1'b0;
-    pc_next_EX    <= {DBITS{1'b0}};
+    next_pc_EX    <= {DBITS{1'b0}};
     end else begin
 		inst_EX	 	<= inst_ID;
       aluout_EX	<= aluout_EX_r;
@@ -486,7 +486,7 @@ module project3_frame(
 		is_wr_sys_EX 	<= is_wr_sys_EX_w;
       is_rd_sys_EX 	<= is_rd_sys_EX_w;
       is_reti_EX 	<= is_reti_ID;
-		pc_next_EX    <= mispred_EX_w ? pcgood_EX_w : PC_ID;
+		next_pc_EX    <= mispred_EX_w ? pcgood_EX_w : PC_ID;
     end
   end
 
@@ -525,7 +525,7 @@ module project3_frame(
   assign dbus = wr_mem_MEM_w ? regval2_EX : {32{1'bz}};
 
   // Interupts
-  assign IRQ = inst_EX != {DBITS{1'b0}} && !is_sys_inst_EX && PCS[0] && (intr_key || intr_sw || intr_timer);
+  assign IRQ = inst_EX != NOP && !is_sys_inst_EX && PCS[0] && (intr_key || intr_sw || intr_timer);
   assign RETI = is_reti_EX;
 
   // System Latch
@@ -544,7 +544,7 @@ module project3_frame(
         4'h4: PCS <= regval1_EX;
       endcase
     end else if (IRQ) begin 
-      IRA <= pc_next_EX;
+      IRA <= next_pc_EX;
       PCS[1] <= PCS[0];
       PCS[0] <= 0;
       IDN <= intr_timer ? 32'h1 :
@@ -560,10 +560,11 @@ module project3_frame(
   wire [REGNOBITS-1:0] sys_regno_MEM_w;
   wire [DBITS-1:0] sys_regval_MEM_w;
   assign sys_regno_MEM_w = inst_EX[7:4];
-  assign sys_regval_MEM_w = sys_regno_MEM_w === 4'h1 ? IRA :
-                 sys_regno_MEM_w === 4'h2 ? IHA :
-                 sys_regno_MEM_w === 4'h3 ? IDN :
-                 sys_regno_MEM_w === 4'h4 ? PCS :
+  assign sys_regval_MEM_w = 
+                 sys_regno_MEM_w == 4'h1 ? IRA :
+                 sys_regno_MEM_w == 4'h2 ? IHA :
+                 sys_regno_MEM_w == 4'h3 ? IDN :
+                 sys_regno_MEM_w == 4'h4 ? PCS :
                  {DBITS{1'b0}};
   
   assign out_MEM_w = rd_mem_MEM_w ? rd_val_MEM_w : 
@@ -789,7 +790,7 @@ module Ledr(ABUS, DBUS, WE, OUT, CLK, RESET);
 
 	reg [9:0] LEDRDATA;
 
-	wire selData = (ABUS === BASE);
+	wire selData = (ABUS == BASE);
 	wire rdData = (!WE) && selData; 
 
 	always @ (posedge CLK or posedge RESET) begin
@@ -822,7 +823,7 @@ module Hex(ABUS, DBUS, WE, OUTHEX5, OUTHEX4, OUTHEX3, OUTHEX2, OUTHEX1, OUTHEX0,
 	
 	reg [23:0] HEXDATA;
 	
-	wire selData = (ABUS === BASE);
+	wire selData = (ABUS == BASE);
 	wire rdData = (!WE) && selData; 
 	
 	always @ (posedge CLK or posedge RESET) begin
@@ -973,8 +974,8 @@ module Key(ABUS, DBUS, KEY, WE, INTR, CLK, RESET);
 	input wire CLK, WE, RESET;
 	output wire INTR;
 	
-	wire selData = (ABUS === BASE);
-	wire selCtl = (ABUS === BASE + 4);
+	wire selData = (ABUS == BASE);
+	wire selCtl = (ABUS == BASE + 4);
 	reg [3:0] sample;
 	reg [3:0] last_sample;
 	reg [3:0] KEYDATA;
@@ -991,8 +992,8 @@ module Key(ABUS, DBUS, KEY, WE, INTR, CLK, RESET);
 			if (selData && !WE) begin
 				KEYCTRL[0] <= 0;
 			end
-			if (clockCount === 4'hF) begin
-				if (last_sample === sample && KEYDATA !== sample) begin
+			if (clockCount == 4'hF) begin
+				if (last_sample == sample && KEYDATA !== sample) begin
 					KEYDATA <= sample;
 					if (KEYCTRL[0]) begin
 						KEYCTRL[1] <= 1;
@@ -1006,7 +1007,7 @@ module Key(ABUS, DBUS, KEY, WE, INTR, CLK, RESET);
 			end
 			clockCount <= clockCount + 4'h1;
 			if (selCtl && WE) begin
-				if (DBUS[1] === 0) begin
+				if (DBUS[1] == 0) begin
 					KEYCTRL[1] <= 0;
 				end
 				KEYCTRL[4] <= DBUS[4];
@@ -1030,8 +1031,8 @@ module Switch(ABUS, DBUS, SW, WE, INTR, CLK, RESET);
 	input wire CLK, WE, RESET;
 	output wire INTR;
 	
-	wire selData = (ABUS === BASE);
-	wire selCtl = (ABUS === BASE + 4);
+	wire selData = (ABUS == BASE);
+	wire selCtl = (ABUS == BASE + 4);
 	reg [9:0] sample;
 	reg [9:0] last_sample;
 	reg [9:0] SDATA;
@@ -1048,8 +1049,8 @@ module Switch(ABUS, DBUS, SW, WE, INTR, CLK, RESET);
 			if (selData && !WE) begin
 				SCTRL[0] <= 0;
 			end
-			if (clockCount === 12'hFFF) begin
-				if (last_sample === sample && SDATA !== sample) begin
+			if (clockCount == 12'hFFF) begin
+				if (last_sample == sample && SDATA !== sample) begin
 					SDATA <= sample;
 					SCTRL[0] <= 1;
 				end
@@ -1059,7 +1060,7 @@ module Switch(ABUS, DBUS, SW, WE, INTR, CLK, RESET);
 			end
 			clockCount <= clockCount + 12'h1;
 			if (WE && selCtl) begin
-				if (DBUS[1] === 0) begin
+				if (DBUS[1] == 0) begin
 					SCTRL[1] <= 0;
 				end
 				SCTRL[4] <= DBUS[4];
@@ -1083,9 +1084,9 @@ module Timer(ABUS, DBUS, WE, INTR, CLK, RESET);
 	input wire WE, CLK, RESET;
 	output wire INTR;
 	
-	wire selCnt = (ABUS === BASE);
-	wire selLim = (ABUS === BASE + 4);
-	wire selCtl = (ABUS === BASE + 8); // select TCTL
+	wire selCnt = (ABUS == BASE);
+	wire selLim = (ABUS == BASE + 4);
+	wire selCtl = (ABUS == BASE + 8); // select TCTL
 	
 	wire rdLim = (!WE) && selLim;
 	wire rdCtl = (!WE) && selCtl;

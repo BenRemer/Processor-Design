@@ -4,156 +4,139 @@ ADDRESS_RADIX = HEX;
 DATA_RADIX = HEX;
 CONTENT
 BEGIN
-    [0000..00ff] : dead;
-    0040 : 00980000; --> 0100 : XOR 	Zero, Zero, Zero
-    0041 : 48120c0e; --> 0104 : LW 		SP, StackTopVal(Zero)
-    0042 : 68f02000; --> 0108 : SW 		Zero, LEDR(Zero)
-    0043 : 80000207; --> 010c : ADDI    Zero, S0, DefStateSpeed
-    0044 : 68f00007; --> 0110 : SW      S0, HEX(Zero)
-    0045 : 80000008; --> 0114 : ADDI 	Zero, S1, 0
-    0046 : 80100005; --> 0118 : ADDI	Zero, T0, 0x1000
-    0047 : 7c0c0250; --> 011c : WSR		IHA, T0
-    0048 : 80001005; --> 0120 : ADDI    Zero, T0, 0x10
-    0049 : 68f08405; --> 0124 : SW      T0, KEYCTL(Zero)
-    004a : 68f09405; --> 0128 : SW      T0, SWCTL(Zero)
-    004b : 68f10805; --> 012c : SW      T0, TCTL(Zero)
-    004c : 8001f409; --> 0130 : ADDI    Zero, S2, DefBlinkSpeed
-    004d : 68f10409; --> 0134 : SW      S2, TLIM(Zero)
-    004e : 80000105; --> 0138 : ADDI    Zero, T0, 0x01
-    004f : 7c0c0450; --> 013c : WSR     PCS, T0
-    0050 : 3000500a; --> 0140 : JMP     Forever(Zero)
-    [0051..0fff] : dead;
-    0400 : 80ffecbb; --> 1000 : ADDI 	SSP, SSP, -20
-    0401 : 680000b1; --> 1004 : SW 		A0, 0(SSP)
-    0402 : 680004b2; --> 1008 : SW 		A1, 4(SSP)
-    0403 : 680008b3; --> 100c : SW 		A2, 8(SSP)
-    0404 : 68000cb4; --> 1010 : SW 		A3, 12(SSP)
-    0405 : 680010b5; --> 1014 : SW 		T0, 16(SSP)
-    0406 : 7c080130; --> 1018 : RSR     A0, IDN
-    0407 : 80000102; --> 101c : ADDI    Zero, A1, 1
-    0408 : 20000612; --> 1020 : BEQ     A0, A1, Timer
-    0409 : 80000122; --> 1024 : ADDI    A1, A1, 1
-    040a : 20002e12; --> 1028 : BEQ     A0, A1, Key
-    040b : 80000122; --> 102c : ADDI    A1, A1, 1
-    040c : 20004612; --> 1030 : BEQ     A0, A1, Switch
-    040d : 80000122; --> 1034 : ADDI    A1, A1, 1
-    040e : 7c040000; --> 1038 : RETI
-    040f : 48f10805; --> 103c : LW		T0, TCTL(Zero)
-    0410 : 90fffe55; --> 1040 : ANDI	T0, T0, 0xFFFFFFFE
-    0411 : 68f10805; --> 1044 : SW		T0, TCTL(Zero)
-    0412 : 80001103; --> 1048 : ADDI    Zero, A2, 17
-    0413 : 24000138; --> 104c : BGT     S1, A2, ResetCounter
-    0414 : 20000100; --> 1050 : BR      StateMachine
-    0415 : 80000008; --> 1054 : ADDI    Zero, S1, 0
-    0416 : 80000003; --> 1058 : ADDI    Zero, A2, 0
-    0417 : 20001783; --> 105c : BEQ     S1, A2, State0
-    0418 : 80000203; --> 1060 : ADDI    Zero, A2, 2
-    0419 : 20001583; --> 1064 : BEQ     S1, A2, State2
-    041a : 80000403; --> 1068 : ADDI    Zero, A2, 4
-    041b : 20001383; --> 106c : BEQ     S1, A2, State4
-    041c : 80000603; --> 1070 : ADDI    Zero, A2, 6
-    041d : 20001483; --> 1074 : BEQ     S1, A2, State6
-    041e : 80000803; --> 1078 : ADDI    Zero, A2, 8
-    041f : 20001283; --> 107c : BEQ     S1, A2, State8
-    0420 : 80000a03; --> 1080 : ADDI    Zero, A2, 10
-    0421 : 20001083; --> 1084 : BEQ     S1, A2, State10
-    0422 : 80000c03; --> 1088 : ADDI    Zero, A2, 12
-    0423 : 20000b83; --> 108c : BEQ     S1, A2, State12
-    0424 : 80000d03; --> 1090 : ADDI    Zero, A2, 13
-    0425 : 20000c83; --> 1094 : BEQ     S1, A2, State13
-    0426 : 80000e03; --> 1098 : ADDI    Zero, A2, 14
-    0427 : 20000783; --> 109c : BEQ     S1, A2, State14
-    0428 : 80000f03; --> 10a0 : ADDI    Zero, A2, 15
-    0429 : 20000883; --> 10a4 : BEQ     S1, A2, State15
-    042a : 80001003; --> 10a8 : ADDI    Zero, A2, 16
-    042b : 20000383; --> 10ac : BEQ     S1, A2, State16
-    042c : 80001103; --> 10b0 : ADDI    Zero, A2, 17
-    042d : 20000483; --> 10b4 : BEQ     S1, A2, State17
-    042e : 20000600; --> 10b8 : BR      EmptyState
-    042f : 8003e002; --> 10bc : ADDI    Zero, A1, UpperHalf
-    0430 : 68f02002; --> 10c0 : SW      A1, LEDR(Zero)
-    0431 : 20000500; --> 10c4 : BR      TimerCleanup
-    0432 : 80001f02; --> 10c8 : ADDI    Zero, A1, LowerHalf
-    0433 : 68f02002; --> 10cc : SW      A1, LEDR(Zero)
-    0434 : 20000200; --> 10d0 : BR      TimerCleanup
-    0435 : 68f02000; --> 10d4 : SW      Zero, LEDR(Zero)
-    0436 : 20000000; --> 10d8 : BR      TimerCleanup
-    0437 : 80000188; --> 10dc : ADDI    S1, S1, 1
-    0438 : 20004300; --> 10e0 : BR IntHandlerCleanup
-    0439 : 80000103; --> 10e4 : ADDI    Zero, A2, 1
-    043a : 48f08001; --> 10e8 : LW      A0, KEY(Zero)
-    043b : 90000112; --> 10ec : ANDI    A0, A1, 1
-    043c : 20000423; --> 10f0 : BEQ     A1, A2, IncrLen
-    043d : 80000203; --> 10f4 : ADDI    Zero, A2, 2
-    043e : 90000212; --> 10f8 : ANDI    A0, A1, 2
-    043f : 20000a23; --> 10fc : BEQ     A1, A2, DecrLen
-    0440 : 20001200; --> 1100 : BR      Switch
-    0441 : 8000fa02; --> 1104 : ADDI    Zero, A1, DefIncrementVal
-    0442 : 48f10401; --> 1108 : LW      A0, TLIM(Zero)
-    0443 : 00800312; --> 110c : ADD     A2, A0, A1
-    0444 : 8007d002; --> 1110 : ADDI    Zero, A1, MaxBlinkSpeed
-    0445 : 24000d23; --> 1114 : BGT     A2, A1, Switch
-    0446 : 68f10403; --> 1118 : SW      A2, TLIM(Zero)
-    0447 : 80000177; --> 111c : ADDI    S0, S0, 1
-    0448 : 68f00007; --> 1120 : SW      S0, HEX(Zero)
-    0449 : 20000900; --> 1124 : BR      Switch
-    044a : 8000fa02; --> 1128 : ADDI    Zero, A1, DefIncrementVal
-    044b : 48f10401; --> 112c : LW      A0, TLIM(Zero)
-    044c : 00a00312; --> 1130 : SUB     A2, A0, A1
-    044d : 8000fa02; --> 1134 : ADDI    Zero, A1, MinBlinkSpeed
-    044e : 24000432; --> 1138 : BLT     A2, A1, Switch
-    044f : 68f10403; --> 113c : SW      A2, TLIM(Zero)
-    0450 : 80ffff77; --> 1140 : SUBI    S0, S0, 1
-    0451 : 68f00007; --> 1144 : SW      S0, HEX(Zero)
-    0452 : 20000000; --> 1148 : BR      Switch
-    0453 : 48f09001; --> 114c : LW      A0, SW(Zero)
-    0454 : 94000111; --> 1150 : ORI     A0, A0, 1
-    0455 : 90003f11; --> 1154 : ANDI    A0, A0, 0x3F
-    0456 : 80000003; --> 1158 : ADDI    Zero, A2, 0
-    0457 : 80000104; --> 115c : ADDI    Zero, A3, 1
-    0458 : 90000112; --> 1160 : ANDI    A0, A1, 1
-    0459 : 2c000324; --> 1164 : BNE     A1, A3, CheckSW1
-    045a : 80000005; --> 1168 : ADDI    Zero, T0, 0
-    045b : 00c40475; --> 116c : LSHF    A3, S0, T0
-    045c : 00940334; --> 1170 : OR      A2, A2, A3
-    045d : 80000204; --> 1174 : ADDI    Zero, A3, 2
-    045e : 90000212; --> 1178 : ANDI    A0, A1, 2
-    045f : 2c000324; --> 117c : BNE     A1, A3, CheckSW2
-    0460 : 80000405; --> 1180 : ADDI    Zero, T0, 4
-    0461 : 00c40475; --> 1184 : LSHF    A3, S0, T0
-    0462 : 00940334; --> 1188 : OR      A2, A2, A3
-    0463 : 80000404; --> 118c : ADDI    Zero, A3, 4
-    0464 : 90000412; --> 1190 : ANDI    A0, A1, 4
-    0465 : 2c000324; --> 1194 : BNE     A1, A3, CheckSW3
-    0466 : 80000805; --> 1198 : ADDI    Zero, T0, 8
-    0467 : 00c40475; --> 119c : LSHF    A3, S0, T0
-    0468 : 00940334; --> 11a0 : OR      A2, A2, A3
-    0469 : 80000804; --> 11a4 : ADDI    Zero, A3, 8
-    046a : 90000812; --> 11a8 : ANDI    A0, A1, 8
-    046b : 2c000324; --> 11ac : BNE     A1, A3, CheckSW4
-    046c : 80000c05; --> 11b0 : ADDI    Zero, T0, 12
-    046d : 00c40475; --> 11b4 : LSHF    A3, S0, T0
-    046e : 00940334; --> 11b8 : OR      A2, A2, A3
-    046f : 80001004; --> 11bc : ADDI    Zero, A3, 16
-    0470 : 90001012; --> 11c0 : ANDI    A0, A1, 16
-    0471 : 2c000324; --> 11c4 : BNE     A1, A3, CheckSW5
-    0472 : 80001005; --> 11c8 : ADDI    Zero, T0, 16
-    0473 : 00c40475; --> 11cc : LSHF    A3, S0, T0
-    0474 : 00940334; --> 11d0 : OR      A2, A2, A3
-    0475 : 80002004; --> 11d4 : ADDI    Zero, A3, 32
-    0476 : 90002012; --> 11d8 : ANDI    A0, A1, 32
-    0477 : 2c000324; --> 11dc : BNE     A1, A3, EndCheckSW
-    0478 : 80001405; --> 11e0 : ADDI    Zero, T0, 20
-    0479 : 00c40475; --> 11e4 : LSHF    A3, S0, T0
-    047a : 00940334; --> 11e8 : OR      A2, A2, A3
-    047b : 68f00003; --> 11ec : SW      A2, HEX(Zero)
-    047c : 480000b1; --> 11f0 : LW      A0, 0(SSP)
-    047d : 480004b2; --> 11f4 : LW      A1, 4(SSP)
-    047e : 480008b3; --> 11f8 : LW      A2, 8(SSP)
-    047f : 48000cb4; --> 11fc : LW      A3, 12(SSP)
-    0480 : 480010b5; --> 1200 : LW      T0, 16(SSP)
-    0481 : 800014bb; --> 1204 : ADDI    SSP, SSP, 20
-    0482 : 7c040000; --> 1208 : RETI
-    0483 : 00010000; --> 120c : .WORD StkTop
-    [0484..3fff] : dead;
+    [0000..000f] : dead;
+    0004 : 7c080130; --> 0010 : RSR     A0, IDN
+    0005 : 80000102; --> 0014 : ADDI    Zero, A1, 1
+    0006 : 20000612; --> 0018 : BEQ     A0, A1, Timer
+    0007 : 80000122; --> 001c : ADDI    A1, A1, 1
+    0008 : 20002e12; --> 0020 : BEQ     A0, A1, Key
+    0009 : 80000122; --> 0024 : ADDI    A1, A1, 1
+    000a : 20004612; --> 0028 : BEQ     A0, A1, Switch
+    000b : 80000122; --> 002c : ADDI    A1, A1, 1
+    000c : 7c040000; --> 0030 : RETI
+    000d : 48f10805; --> 0034 : LW		T0, TCTL(Zero)
+    000e : 90fffe55; --> 0038 : ANDI	T0, T0, 0xFFFFFFFE
+    000f : 68f10805; --> 003c : SW		T0, TCTL(Zero)
+    0010 : 80001103; --> 0040 : ADDI    Zero, A2, 17
+    0011 : 24000138; --> 0044 : BGT     S1, A2, Reset
+    0012 : 20000100; --> 0048 : BR      States
+    0013 : 80000008; --> 004c : ADDI    Zero, S1, 0
+    0014 : 80000003; --> 0050 : ADDI    Zero, A2, 0
+    0015 : 20001783; --> 0054 : BEQ     S1, A2, State0
+    0016 : 80000203; --> 0058 : ADDI    Zero, A2, 2
+    0017 : 20001583; --> 005c : BEQ     S1, A2, State2
+    0018 : 80000403; --> 0060 : ADDI    Zero, A2, 4
+    0019 : 20001383; --> 0064 : BEQ     S1, A2, State4
+    001a : 80000603; --> 0068 : ADDI    Zero, A2, 6
+    001b : 20001483; --> 006c : BEQ     S1, A2, State6
+    001c : 80000803; --> 0070 : ADDI    Zero, A2, 8
+    001d : 20001283; --> 0074 : BEQ     S1, A2, State8
+    001e : 80000a03; --> 0078 : ADDI    Zero, A2, 10
+    001f : 20001083; --> 007c : BEQ     S1, A2, State10
+    0020 : 80000c03; --> 0080 : ADDI    Zero, A2, 12
+    0021 : 20000b83; --> 0084 : BEQ     S1, A2, State12
+    0022 : 80000d03; --> 0088 : ADDI    Zero, A2, 13
+    0023 : 20000c83; --> 008c : BEQ     S1, A2, State13
+    0024 : 80000e03; --> 0090 : ADDI    Zero, A2, 14
+    0025 : 20000783; --> 0094 : BEQ     S1, A2, State14
+    0026 : 80000f03; --> 0098 : ADDI    Zero, A2, 15
+    0027 : 20000883; --> 009c : BEQ     S1, A2, State15
+    0028 : 80001003; --> 00a0 : ADDI    Zero, A2, 16
+    0029 : 20000383; --> 00a4 : BEQ     S1, A2, State16
+    002a : 80001103; --> 00a8 : ADDI    Zero, A2, 17
+    002b : 20000483; --> 00ac : BEQ     S1, A2, State17
+    002c : 20000600; --> 00b0 : BR      LightsOff
+    002d : 8003e002; --> 00b4 : ADDI    Zero, A1, Upper
+    002e : 68f02002; --> 00b8 : SW      A1, LEDR(Zero)
+    002f : 20000500; --> 00bc : BR      RetTimer
+    0030 : 80001f02; --> 00c0 : ADDI    Zero, A1, Lower
+    0031 : 68f02002; --> 00c4 : SW      A1, LEDR(Zero)
+    0032 : 20000200; --> 00c8 : BR      RetTimer
+    0033 : 68f02000; --> 00cc : SW      Zero, LEDR(Zero)
+    0034 : 20000000; --> 00d0 : BR      RetTimer
+    0035 : 80000188; --> 00d4 : ADDI    S1, S1, 1
+    0036 : 7c040000; --> 00d8 : RETI
+    0037 : 80000103; --> 00dc : ADDI    Zero, A2, 1
+    0038 : 48f08001; --> 00e0 : LW      A0, KEY(Zero)
+    0039 : 90000112; --> 00e4 : ANDI    A0, A1, 1
+    003a : 20000423; --> 00e8 : BEQ     A1, A2, IncrLen
+    003b : 80000203; --> 00ec : ADDI    Zero, A2, 2
+    003c : 90000212; --> 00f0 : ANDI    A0, A1, 2
+    003d : 20000a23; --> 00f4 : BEQ     A1, A2, DecrLen
+    003e : 20001200; --> 00f8 : BR      Switch
+    003f : 8000fa02; --> 00fc : ADDI    Zero, A1, IncrementValue
+    0040 : 48f10401; --> 0100 : LW      A0, TLIM(Zero)
+    0041 : 00800312; --> 0104 : ADD     A2, A0, A1
+    0042 : 8007d002; --> 0108 : ADDI    Zero, A1, MaxSpeed
+    0043 : 24000d23; --> 010c : BGT     A2, A1, Switch
+    0044 : 68f10403; --> 0110 : SW      A2, TLIM(Zero)
+    0045 : 80000177; --> 0114 : ADDI    S0, S0, 1
+    0046 : 68f00007; --> 0118 : SW      S0, HEX(Zero)
+    0047 : 20000900; --> 011c : BR      Switch
+    0048 : 8000fa02; --> 0120 : ADDI    Zero, A1, IncrementValue
+    0049 : 48f10401; --> 0124 : LW      A0, TLIM(Zero)
+    004a : 00a00312; --> 0128 : SUB     A2, A0, A1
+    004b : 8000fa02; --> 012c : ADDI    Zero, A1, MinSpeed
+    004c : 24000432; --> 0130 : BLT     A2, A1, Switch
+    004d : 68f10403; --> 0134 : SW      A2, TLIM(Zero)
+    004e : 80ffff77; --> 0138 : SUBI    S0, S0, 1
+    004f : 68f00007; --> 013c : SW      S0, HEX(Zero)
+    0050 : 20000000; --> 0140 : BR      Switch
+    0051 : 48f09001; --> 0144 : LW      A0, SW(Zero)
+    0052 : 90003f11; --> 0148 : ANDI    A0, A0, 0x3F
+    0053 : 80000003; --> 014c : ADDI    Zero, A2, 0
+    0054 : 80000104; --> 0150 : ADDI    Zero, A3, 1
+    0055 : 90000112; --> 0154 : ANDI    A0, A1, 1
+    0056 : 2c000324; --> 0158 : BNE     A1, A3, SW1
+    0057 : 80000005; --> 015c : ADDI    Zero, T0, 0
+    0058 : 00c40475; --> 0160 : LSHF    A3, S0, T0
+    0059 : 00940334; --> 0164 : OR      A2, A2, A3
+    005a : 80000204; --> 0168 : ADDI    Zero, A3, 2
+    005b : 90000212; --> 016c : ANDI    A0, A1, 2
+    005c : 2c000324; --> 0170 : BNE     A1, A3, SW2
+    005d : 80000405; --> 0174 : ADDI    Zero, T0, 4
+    005e : 00c40475; --> 0178 : LSHF    A3, S0, T0
+    005f : 00940334; --> 017c : OR      A2, A2, A3
+    0060 : 80000404; --> 0180 : ADDI    Zero, A3, 4
+    0061 : 90000412; --> 0184 : ANDI    A0, A1, 4
+    0062 : 2c000324; --> 0188 : BNE     A1, A3, SW3
+    0063 : 80000805; --> 018c : ADDI    Zero, T0, 8
+    0064 : 00c40475; --> 0190 : LSHF    A3, S0, T0
+    0065 : 00940334; --> 0194 : OR      A2, A2, A3
+    0066 : 80000804; --> 0198 : ADDI    Zero, A3, 8
+    0067 : 90000812; --> 019c : ANDI    A0, A1, 8
+    0068 : 2c000324; --> 01a0 : BNE     A1, A3, SW4
+    0069 : 80000c05; --> 01a4 : ADDI    Zero, T0, 12
+    006a : 00c40475; --> 01a8 : LSHF    A3, S0, T0
+    006b : 00940334; --> 01ac : OR      A2, A2, A3
+    006c : 80001004; --> 01b0 : ADDI    Zero, A3, 16
+    006d : 90001012; --> 01b4 : ANDI    A0, A1, 16
+    006e : 2c000324; --> 01b8 : BNE     A1, A3, SW5
+    006f : 80001005; --> 01bc : ADDI    Zero, T0, 16
+    0070 : 00c40475; --> 01c0 : LSHF    A3, S0, T0
+    0071 : 00940334; --> 01c4 : OR      A2, A2, A3
+    0072 : 80002004; --> 01c8 : ADDI    Zero, A3, 32
+    0073 : 90002012; --> 01cc : ANDI    A0, A1, 32
+    0074 : 2c000324; --> 01d0 : BNE     A1, A3, RetSW
+    0075 : 80001405; --> 01d4 : ADDI    Zero, T0, 20
+    0076 : 00c40475; --> 01d8 : LSHF    A3, S0, T0
+    0077 : 00940334; --> 01dc : OR      A2, A2, A3
+    0078 : 68f00003; --> 01e0 : SW      A2, HEX(Zero)
+    0079 : 7c040000; --> 01e4 : RETI
+    007a : 00980000; --> 0100 : XOR 	Zero, Zero, Zero
+    007b : 68f02000; --> 0104 : SW 		Zero, LEDR(Zero)
+    007c : 80000207; --> 0108 : ADDI    Zero, S0, StartSpeed
+    007d : 68f00000; --> 010c : SW      Zero, HEX(Zero)
+    007e : 80000008; --> 0110 : ADDI 	Zero, S1, 0
+    007f : 80001005; --> 0114 : ADDI	Zero, T0, 0x10
+    0080 : 7c0c0250; --> 0118 : WSR		IHA, T0
+    0081 : 68f08405; --> 011c : SW      T0, KEYCTL(Zero)
+    0082 : 68f09405; --> 0120 : SW      T0, SWCTL(Zero)
+    0083 : 68f10805; --> 0124 : SW      T0, TCTL(Zero)
+    0084 : 8001f409; --> 0128 : ADDI    Zero, S2, DefaultSpeed
+    0085 : 68f10409; --> 012c : SW      S2, TLIM(Zero)
+    0086 : 80000105; --> 0130 : ADDI    Zero, T0, 0x01
+    0087 : 7c0c0450; --> 0134 : WSR     PCS, T0
+    0088 : 20ffff00; --> 0138 : BR 		InfiniteLoop
+    [0089..3fff] : dead;
 END;
