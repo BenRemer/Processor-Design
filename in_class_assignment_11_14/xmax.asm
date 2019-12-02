@@ -20,7 +20,36 @@
 .NAME   MinSpeed = 250
 .NAME   MaxSpeed = 2000
 
-.ORG 0x10
+
+; Processor Initialization
+.ORG 0x100
+	XOR 	Zero, Zero, Zero 		; Zero out zero register
+	SW 		Zero, LEDR(Zero) 		; Turn off LEDR
+
+    ADDI    Zero, S0, StartSpeed	; Set speed to 2
+    SW      Zero, HEX(Zero)			; Display 0's on hex
+
+    ADDI 	Zero, S1, 0 			; Initialize counter
+
+    ADDI	Zero, T0, 0x1000 		; Write interrupt handler address
+	WSR		IHA, T0
+
+    ADDI    Zero, T0, 0x10 			; Enable device interrupts
+    SW      T0, KEYCTL(Zero)
+    SW      T0, SWCTL(Zero)
+    SW      T0, TCTL(Zero)
+
+    ADDI    Zero, S2, DefaultSpeed	; set default speed
+    SW      S2, TLIM(Zero)			
+
+    ADDI    Zero, T0, 0x01 			; Enable processor interrupts
+    WSR     PCS, T0
+
+InfiniteLoop:
+	BR 		InfiniteLoop              
+   
+
+.ORG 0x1000
 IntHandler:
    
     RSR     A0, IDN 			; Get device
@@ -191,31 +220,3 @@ IntHandler:
         RetSW:
             SW      A2, HEX(Zero)
             RETI
-
-; Processor Initialization
-.ORG 0x100
-	XOR 	Zero, Zero, Zero 		; Zero out zero register
-	SW 		Zero, LEDR(Zero) 		; Turn off LEDR
-
-    ADDI    Zero, S0, StartSpeed	; Set speed to 2
-    SW      Zero, HEX(Zero)			; Display 0's on hex
-
-    ADDI 	Zero, S1, 0 			; Initialize counter
-
-    ADDI	Zero, T0, 0x10  		; Write interrupt handler address
-	WSR		IHA, T0
-
-    ; ADDI    Zero, T0, 0x10 			; Enable device interrupts
-    SW      T0, KEYCTL(Zero)
-    SW      T0, SWCTL(Zero)
-    SW      T0, TCTL(Zero)
-
-    ADDI    Zero, S2, DefaultSpeed	; set default speed
-    SW      S2, TLIM(Zero)			
-
-    ADDI    Zero, T0, 0x01 			; Enable processor interrupts
-    WSR     PCS, T0
-
-InfiniteLoop:
-	BR 		InfiniteLoop              
-   
