@@ -122,22 +122,6 @@ module project3_frame(
   reg [DBITS-1:0] IRA;
   reg [DBITS-1:0] IDN;
 
- //  wire [DBITS-1:0] aluout_EX_w;
-	// // Forward EX
-	// wire forward_from_exstage_rs;
-	// wire forward_from_exstage_rt;
-	// wire forward_from_exstage;
-	
-	// // Forward MEM
-	// wire forward_from_memstage_rs;
-	// wire forward_from_memstage_rt;
-	// wire forward_from_memstage;
-	
-	// // Forward WB
-	// wire forward_from_wbstage_rs;
-	// wire forward_from_wbstage_rt;
-	// wire forward_from_wbstage;
-
   //*** FETCH STAGE ***//
   // The PC register and update logic
   wire [DBITS-1:0] pcplus_FE;
@@ -220,7 +204,7 @@ module project3_frame(
   wire [REGNOBITS-1:0] wregno_ID_w;
   wire wr_reg_EX_w;
   wire wr_reg_MEM_w;
-  wire [DBITS-1:0] out_MEM_w;
+  wire [DBITS-1:0] output_value_MEM_w;
 
   wire is_alui_operation;
   wire is_op2_ID;
@@ -288,8 +272,6 @@ module project3_frame(
 
   //wregno is the register number that will be written to
   // TODO: we must sign extend the system regnos, but still, we have to make sure forwarding doesn't work
-  // assign wregno_ID_w = is_sys_instr_ID_w ? (is_wr_sys_ID_w ? sd_ID_w : sd_ID_w) : 
-	// 	(is_jmp_ID_w || op1_ID_w == OP1_LW || is_alui_operation) ? rt_ID_w : (is_op2_ID ? rd_ID_w : 0);
   assign wregno_ID_w = (is_op2_ID || is_sys_instr_ID_w) ? rd_ID_w : rt_ID_w;
 
   // concatenates everything together to be put in buffers/registers later {4:0}
@@ -351,7 +333,7 @@ module project3_frame(
 		if (rs_ex_hazard_w) begin
 			regval1_ID  <= aluout_EX_r;
 		end else if (rs_mem_hazard_w) begin
-			regval1_ID  <= out_MEM_w;
+			regval1_ID  <= output_value_MEM_w;
 		end else begin
 			regval1_ID  <=  regval1_ID_w;  
 		end
@@ -359,7 +341,7 @@ module project3_frame(
 		if (rt_ex_hazard_w) begin
 			regval2_ID  <= aluout_EX_r;
 		end else if (rt_mem_hazard_w) begin
-			regval2_ID  <= out_MEM_w;
+			regval2_ID  <= output_value_MEM_w;
 		end else begin
 			regval2_ID  <= regval2_ID_w;
 		end
@@ -495,6 +477,7 @@ module project3_frame(
 
   wire [DBITS-1:0] abus;
   wire [DBITS-1:0] dbus;
+  wire we;
 
   wire [DBITS-1:0] memaddr_MEM_w;
   wire [DBITS-1:0] rd_val_MEM_w;
@@ -523,6 +506,7 @@ module project3_frame(
 
   assign abus = memaddr_MEM_w;
   assign dbus = wr_mem_MEM_w ? regval2_EX : {32{1'bz}};
+  assign we = wr_mem_MEM_w;
 
   // Interupts
   assign IRQ = inst_EX != {DBITS{1'b0}} && !is_sys_inst_EX && PCS[0] && (intr_key || intr_sw || intr_timer);
@@ -566,7 +550,7 @@ module project3_frame(
                  sys_regno_MEM_w === 4'h4 ? PCS :
                  {DBITS{1'b0}};
   
-  assign out_MEM_w = rd_mem_MEM_w ? rd_val_MEM_w : 
+  assign output_value_MEM_w = rd_mem_MEM_w ? rd_val_MEM_w : 
               is_rd_sys_EX ? sys_regval_MEM_w :
               aluout_EX;
 
@@ -579,7 +563,7 @@ module project3_frame(
       ctrlsig_MEM <= 1'b0;
     end else begin
 		inst_MEM		<= inst_EX;
-      regval_MEM  <= out_MEM_w;
+      regval_MEM  <= output_value_MEM_w;
       wregno_MEM  <= wregno_EX;
       ctrlsig_MEM <= ctrlsig_EX[0];
     end
@@ -594,126 +578,28 @@ module project3_frame(
 
   always @ (negedge clk or posedge reset) begin
     if(reset) begin
-		regs[0] <= {DBITS{1'b0}};
-		regs[1] <= {DBITS{1'b0}};
-		regs[2] <= {DBITS{1'b0}};
-		regs[3] <= {DBITS{1'b0}};
-		regs[4] <= {DBITS{1'b0}};
-		regs[5] <= {DBITS{1'b0}};
-		regs[6] <= {DBITS{1'b0}};
-		regs[7] <= {DBITS{1'b0}};
-		regs[8] <= {DBITS{1'b0}};
-		regs[9] <= {DBITS{1'b0}};
-		regs[10] <= {DBITS{1'b0}};
-		regs[11] <= {DBITS{1'b0}};
-		regs[12] <= {DBITS{1'b0}};
-		regs[13] <= {DBITS{1'b0}};
-		regs[14] <= {DBITS{1'b0}};
-		regs[15] <= {DBITS{1'b0}};
+      regs[0] <= {DBITS{1'b0}};
+      regs[1] <= {DBITS{1'b0}};
+      regs[2] <= {DBITS{1'b0}};
+      regs[3] <= {DBITS{1'b0}};
+      regs[4] <= {DBITS{1'b0}};
+      regs[5] <= {DBITS{1'b0}};
+      regs[6] <= {DBITS{1'b0}};
+      regs[7] <= {DBITS{1'b0}};
+      regs[8] <= {DBITS{1'b0}};
+      regs[9] <= {DBITS{1'b0}};
+      regs[10] <= {DBITS{1'b0}};
+      regs[11] <= {DBITS{1'b0}};
+      regs[12] <= {DBITS{1'b0}};
+      regs[13] <= {DBITS{1'b0}};
+      regs[14] <= {DBITS{1'b0}};
+      regs[15] <= {DBITS{1'b0}};
 	 end else if(wr_reg_WB_w) begin
       regs[wregno_MEM] <= regval_MEM;
 	 end
   end
 
-
- //  /***** STALL **************************************/
-
- //  //We check wrregno_ID because whatever is in the ID latch is actually in the EX stage!
- //  wire read_rs = (rs_ID_w != 0) && ((wregno_MEM == rs_ID_w) // mem is wb, ex is mem, id is ex
-	// 	|| (wregno_EX == rs_ID_w) 
-	// 	|| (wregno_ID == rs_ID_w)); 
-		
- //  wire read_rt = (rt_ID_w != 0) && ((wregno_MEM == rt_ID_w) 
-	// 	|| (wregno_EX == rt_ID_w) 
-	// 	|| (wregno_ID == rt_ID_w));
-
- //  wire read_ss = (ss_ID_w != 0) && ((wregno_MEM == ss_ID_w) 
-	// 	|| (wregno_EX == ss_ID_w) 
-	// 	|| (wregno_ID == ss_ID_w));
-  
- //  assign stall_pipe = (
- //    ((is_rd_sys_ID_w || is_wr_sys_ID_w) && read_ss)||
- //    (is_br_ID_w && (read_rs || read_rt)) 
-	// 	||(is_jmp_ID_w && (read_rs)) 
-	// 	||(ctrlsig_ID[2] && ((wregno_ID == rs_ID_w) || (wregno_ID == rt_ID_w)))
- //    );//rd_mem_ID_w && (read_rs))));// && ctrlsig_ID[2] && (wregno_ID == rs_ID_w)));
-	// 	//||(is_alui_operation && (read_rs))
-	// 	//||(wr_mem_ID_w && (read_rs || read_rt)));
-	// 	//(is_op2_ID && (read_rs || read_rt)) 
-		
-	// //******************************************************************
-
-	/*********FORWARDING*****************************************/	
-	//aluout_EX_r // output value ex
-	//rd_mem_MEM_w ? rd_val_MEM_w : aluout_EX; // output value mem
-	//regval_mem // output wb
-	
-	// Forward EX
-  // Don't forward if EX instruction is a sys_write or ID/RR instruction is a sys_read
-	// assign forward_from_exstage_rs = ((rs_ID_w != 0) && (wregno_ID == rs_ID_w)) ? 1 : 0;
-	// assign forward_from_exstage_rt = ((rt_ID_w != 0) && (wregno_ID == rt_ID_w)) ? 1 : 0; 
-	// assign forward_from_exstage = (forward_from_exstage_rs || forward_from_exstage_rt) && !is_sys_instr_ID_w ? 1 : 0;
- //                                  // && !is_rd_sys_ID_w && !is_wr_sys_EX_w ? 1 : 0;
-	
-	// // Forward MEM
- //  // Don't forward if MEM instruction is a sys_write or ID/RR instruction is a sys_read
-	// assign forward_from_memstage_rs = ((rs_ID_w != 0) && (wregno_EX == rs_ID_w)) ? 1 : 0;
-	// assign forward_from_memstage_rt = ((rt_ID_w != 0) && (wregno_EX == rt_ID_w)) ? 1 : 0;
-	// assign forward_from_memstage = (forward_from_memstage_rs || forward_from_memstage_rs) && !is_sys_instr_ID_w ? 1 : 0;
- //                                  // && !is_rd_sys_ID_w && !is_wr_sys_EX ? 1 : 0;
-	
-	// // Forward WB
- //  // Don't forward if WB instruction is a sys_write or ID/RR instruction is a sys_read
-	// assign forward_from_wbstage_rs = ((rs_ID_w != 0) && (wregno_MEM == rs_ID_w)) ? 1 : 0;
-	// assign forward_from_wbstage_rt = ((rt_ID_w != 0) && (wregno_MEM == rt_ID_w)) ? 1 : 0;
-	// assign forward_from_wbstage = (forward_from_wbstage_rs || forward_from_wbstage_rs) && !is_sys_instr_ID_w ? 1 : 0;
-                                // && !is_rd_sys_ID_w && !wr_sys_MEM ? 1 : 0;
-	
-
-	//*******************************************************/
-
-  /*** I/O ***/
-  // Create and connect HEX register
-//  reg [23:0] HEX_out;
-//
-//  SevenSeg ss5(.OUT(HEX5), .IN(HEX_out[23:20]), .OFF(1'b0));
-//  SevenSeg ss4(.OUT(HEX4), .IN(HEX_out[19:16]), .OFF(1'b0));
-//  SevenSeg ss3(.OUT(HEX3), .IN(HEX_out[15:12]), .OFF(1'b0));
-//  SevenSeg ss2(.OUT(HEX2), .IN(HEX_out[11:8]), .OFF(1'b0));
-//  SevenSeg ss1(.OUT(HEX1), .IN(HEX_out[7:4]), .OFF(1'b0));
-//  SevenSeg ss0(.OUT(HEX0), .IN(HEX_out[3:0]), .OFF(1'b0));
-//
-//  always @ (posedge clk or posedge reset) begin
-//    if(reset)
-//	   HEX_out <= 24'hFEDEAD;
-//	 else if(wr_mem_MEM_w && (memaddr_MEM_w == ADDRHEX))
-//      HEX_out <= regval2_EX[HEXBITS-1:0];
-//  end
-//
-//  // Write the code for LEDR here
-//
-//  reg [9:0] LEDR_out;
-//
-//  // If the code stores a word into the memory address of our LEDR I/O device, then output the value to LEDR
-//  always @ (posedge clk or posedge reset) begin
-//    if(reset)
-//	   LEDR_out <= 10'b0;
-//	 else if(wr_mem_MEM_w && (memaddr_MEM_w == ADDRLEDR))
-//      LEDR_out <= regval2_EX[LEDRBITS-1:0];
-//  end
-//  
-//  assign LEDR = LEDR_out;
-
-  // wire [31:0] regval2_MEM_w;
-
-  // assign regval2_MEM_w = (wr_mem_MEM_w) ? regval2_EX : {DBITS{1'bz}};
-
-  // assign abus = memaddr_MEM_w;
-  // assign dbus = regval2_MEM_w;
-  wire we;
-  assign we = wr_mem_MEM_w;
-  
-   Ledr #(.BITS(DBITS), .BASE(ADDRLEDR)) ledr(
+   LEDR_DEVICE #(.BITS(DBITS), .BASE(ADDRLEDR)) ledr(
 	 .ABUS(abus), 
 	 .DBUS(dbus),
 	 .WE(we),
@@ -722,21 +608,16 @@ module project3_frame(
 	 .RESET(reset)
   );
   
-   Hex #(.BITS(DBITS), .BASE(ADDRHEX)) hex(
+   HEX_DEVICE #(.BITS(DBITS), .BASE(ADDRHEX)) hex(
 	 .ABUS(abus), 
 	 .DBUS(dbus),
 	 .WE(we),
-	 .OUTHEX5(HEX5),
-	 .OUTHEX4(HEX4),
-	 .OUTHEX3(HEX3),
-	 .OUTHEX2(HEX2),
-	 .OUTHEX1(HEX1),
-	 .OUTHEX0(HEX0),
+   .HEX({HEX5, HEX4, HEX3, HEX2, HEX1, HEX0}),
 	 .CLK(clk),
 	 .RESET(reset)
   );
   
-  Key #(.BITS(DBITS), .BASE(ADDRKEY)) key(
+  KEY_DEVICE #(.BITS(DBITS), .BASE(ADDRKEY)) key(
 	 .ABUS(abus), 
 	 .DBUS(dbus),
 	 .KEY(KEY),
@@ -746,7 +627,7 @@ module project3_frame(
 	 .RESET(reset)
   );
   
-  Switch #(.BITS(DBITS), .BASE(ADDRSW)) switch(
+  SWITCH_DEVICE #(.BITS(DBITS), .BASE(ADDRSW)) switch(
 	 .ABUS(abus), 
 	 .DBUS(dbus),
 	 .SW(SW),
@@ -756,7 +637,7 @@ module project3_frame(
 	 .RESET(reset)
   );
   
-  Timer #(.BITS(DBITS), .BASE(ADDRTIMER)) timer(
+  TIMER_DEVICE #(.BITS(DBITS), .BASE(ADDRTIMER)) timer(
 	 .ABUS(abus), 
 	 .DBUS(dbus),
 	 .WE(we),
@@ -767,205 +648,101 @@ module project3_frame(
   
 endmodule
 
-
-module SXT(IN, OUT);
-  parameter IBITS = 16;
-  parameter OBITS = 32;
-
-  input  [IBITS-1:0] IN;
-  output [OBITS-1:0] OUT;
-
-  assign OUT = {{(OBITS-IBITS){IN[IBITS-1]}}, IN};
+module SevenSeg(output [6:0] OUT, input [3:0] IN, input OFF);
+  assign OUT =
+    (OFF)        ? 7'b1111111 :
+    (IN == 4'h0) ? 7'b1000000 :
+    (IN == 4'h1) ? 7'b1111001 :
+    (IN == 4'h2) ? 7'b0100100 :
+    (IN == 4'h3) ? 7'b0110000 :
+    (IN == 4'h4) ? 7'b0011001 :
+    (IN == 4'h5) ? 7'b0010010 :
+    (IN == 4'h6) ? 7'b0000010 :
+    (IN == 4'h7) ? 7'b1111000 :
+    (IN == 4'h8) ? 7'b0000000 :
+    (IN == 4'h9) ? 7'b0010000 :
+    (IN == 4'hA) ? 7'b0001000 :
+    (IN == 4'hb) ? 7'b0000011 :
+    (IN == 4'hc) ? 7'b1000110 :
+    (IN == 4'hd) ? 7'b0100001 :
+    (IN == 4'he) ? 7'b0000110 :
+    /*IN == 4'hf*/ 7'b0001110 ;
 endmodule
 
-module Ledr(ABUS, DBUS, WE, OUT, CLK, RESET);
-	parameter BITS;
+module SXT(IN, OUT);
+  parameter IN_BITS = 16;
+  parameter OUT_BITS = 32;
+
+  input  [IN_BITS-1:0] IN;
+  output [OUT_BITS-1:0] OUT;
+
+  assign OUT = {{(OUT_BITS-IN_BITS){IN[IN_BITS-1]}}, IN};
+endmodule
+
+module LEDR_DEVICE(ABUS, DBUS, WE, OUT, CLK, RESET);
 	parameter BASE;
+	parameter BITS;
 
 	input wire [(BITS-1):0] ABUS;
 	inout wire [(BITS-1):0] DBUS;
 	input wire WE, CLK, RESET;
 	output wire [9:0] OUT;
 
-	reg [9:0] LEDRDATA;
-
-	wire selData = (ABUS === BASE);
-	wire rdData = (!WE) && selData; 
+	reg [9:0] LEDR_STATUS;
+	wire is_data_address = (ABUS === BASE);
+	wire is_read_data = (!WE) && is_data_address; 
 
 	always @ (posedge CLK or posedge RESET) begin
 		if (RESET) begin
-			LEDRDATA <= 10'd0;
-		end else begin
-			
-			if (WE && selData) begin
-				LEDRDATA <= DBUS[9:0];
+			LEDR_STATUS <= 10'd0;
+		end else begin // Writing to LEDR:
+			if (WE && is_data_address) begin
+				LEDR_STATUS <= DBUS[9:0];
 			end
-			
-		end
-		
-	end
-
-	assign OUT = LEDRDATA;
-	assign DBUS = rdData ? {22'b0,LEDRDATA} :
-					  {BITS{1'bz}};
-	
-endmodule
-
-module Hex(ABUS, DBUS, WE, OUTHEX5, OUTHEX4, OUTHEX3, OUTHEX2, OUTHEX1, OUTHEX0, CLK, RESET);
-	parameter BITS;
-	parameter BASE;
-	
-	input wire [(BITS-1):0] ABUS;
-	inout wire [(BITS-1):0] DBUS;
-	input wire WE, CLK, RESET;
-	output wire [7:0] OUTHEX5, OUTHEX4, OUTHEX3, OUTHEX2, OUTHEX1, OUTHEX0;
-	
-	reg [23:0] HEXDATA;
-	
-	wire selData = (ABUS === BASE);
-	wire rdData = (!WE) && selData; 
-	
-	always @ (posedge CLK or posedge RESET) begin
-		if (RESET) begin
-			HEXDATA <= 24'hFEDEAD;
-		end else begin
-		
-			if (WE && selData) begin
-				HEXDATA <= DBUS[23:0];
-			end 
-			
 		end
 	end
-	
-	wire [3:0] HEX5 = HEXDATA[23:20];
-	wire [3:0] HEX4 = HEXDATA[19:16];
-	wire [3:0] HEX3 = HEXDATA[15:12];
-	wire [3:0] HEX2 = HEXDATA[11:8];
-	wire [3:0] HEX1 = HEXDATA[7:4];
-	wire [3:0] HEX0 = HEXDATA[3:0];
-	
-	assign OUTHEX5 =
-		(1'b0)         ? 7'b1111111 : /* IN == OFF */
-		(HEX5 == 4'h0) ? 7'b1000000 :
-		(HEX5 == 4'h1) ? 7'b1111001 :
-		(HEX5 == 4'h2) ? 7'b0100100 :
-		(HEX5 == 4'h3) ? 7'b0110000 :
-		(HEX5 == 4'h4) ? 7'b0011001 :
-		(HEX5 == 4'h5) ? 7'b0010010 :
-		(HEX5 == 4'h6) ? 7'b0000010 :
-		(HEX5 == 4'h7) ? 7'b1111000 :
-		(HEX5 == 4'h8) ? 7'b0000000 :
-		(HEX5 == 4'h9) ? 7'b0010000 :
-		(HEX5 == 4'hA) ? 7'b0001000 :
-		(HEX5 == 4'hb) ? 7'b0000011 :
-		(HEX5 == 4'hc) ? 7'b1000110 :
-		(HEX5 == 4'hd) ? 7'b0100001 :
-		(HEX5 == 4'he) ? 7'b0000110 :
-		/*HEX5 == 4'hf*/ 7'b0001110 ;
-  
-  assign OUTHEX4 =
-		(1'b0)         ? 7'b1111111 : /* IN == OFF */
-		(HEX4 == 4'h0) ? 7'b1000000 :
-		(HEX4 == 4'h1) ? 7'b1111001 :
-		(HEX4 == 4'h2) ? 7'b0100100 :
-		(HEX4 == 4'h3) ? 7'b0110000 :
-		(HEX4 == 4'h4) ? 7'b0011001 :
-		(HEX4 == 4'h5) ? 7'b0010010 :
-		(HEX4 == 4'h6) ? 7'b0000010 :
-		(HEX4 == 4'h7) ? 7'b1111000 :
-		(HEX4 == 4'h8) ? 7'b0000000 :
-		(HEX4 == 4'h9) ? 7'b0010000 :
-		(HEX4 == 4'hA) ? 7'b0001000 :
-		(HEX4 == 4'hb) ? 7'b0000011 :
-		(HEX4 == 4'hc) ? 7'b1000110 :
-		(HEX4 == 4'hd) ? 7'b0100001 :
-		(HEX4 == 4'he) ? 7'b0000110 :
-		/*HEX4 == 4'hf*/ 7'b0001110 ;
-		
-	assign OUTHEX3 =
-		(1'b0)         ? 7'b1111111 : /* IN == OFF */
-		(HEX3 == 4'h0) ? 7'b1000000 :
-		(HEX3 == 4'h1) ? 7'b1111001 :
-		(HEX3 == 4'h2) ? 7'b0100100 :
-		(HEX3 == 4'h3) ? 7'b0110000 :
-		(HEX3 == 4'h4) ? 7'b0011001 :
-		(HEX3 == 4'h5) ? 7'b0010010 :
-		(HEX3 == 4'h6) ? 7'b0000010 :
-		(HEX3 == 4'h7) ? 7'b1111000 :
-		(HEX3 == 4'h8) ? 7'b0000000 :
-		(HEX3 == 4'h9) ? 7'b0010000 :
-		(HEX3 == 4'hA) ? 7'b0001000 :
-		(HEX3 == 4'hb) ? 7'b0000011 :
-		(HEX3 == 4'hc) ? 7'b1000110 :
-		(HEX3 == 4'hd) ? 7'b0100001 :
-		(HEX3 == 4'he) ? 7'b0000110 :
-		/*HEX3 == 4'hf*/ 7'b0001110 ;
-		
-	assign OUTHEX2 =
-		(1'b0)         ? 7'b1111111 : /* IN == OFF */
-		(HEX2 == 4'h0) ? 7'b1000000 :
-		(HEX2 == 4'h1) ? 7'b1111001 :
-		(HEX2 == 4'h2) ? 7'b0100100 :
-		(HEX2 == 4'h3) ? 7'b0110000 :
-		(HEX2 == 4'h4) ? 7'b0011001 :
-		(HEX2 == 4'h5) ? 7'b0010010 :
-		(HEX2 == 4'h6) ? 7'b0000010 :
-		(HEX2 == 4'h7) ? 7'b1111000 :
-		(HEX2 == 4'h8) ? 7'b0000000 :
-		(HEX2 == 4'h9) ? 7'b0010000 :
-		(HEX2 == 4'hA) ? 7'b0001000 :
-		(HEX2 == 4'hb) ? 7'b0000011 :
-		(HEX2 == 4'hc) ? 7'b1000110 :
-		(HEX2 == 4'hd) ? 7'b0100001 :
-		(HEX2 == 4'he) ? 7'b0000110 :
-		/*HEX2 == 4'hf*/ 7'b0001110 ;
-		
-	assign OUTHEX1 =
-		(1'b0)         ? 7'b1111111 : /* IN == OFF */
-		(HEX1 == 4'h0) ? 7'b1000000 :
-		(HEX1 == 4'h1) ? 7'b1111001 :
-		(HEX1 == 4'h2) ? 7'b0100100 :
-		(HEX1 == 4'h3) ? 7'b0110000 :
-		(HEX1 == 4'h4) ? 7'b0011001 :
-		(HEX1 == 4'h5) ? 7'b0010010 :
-		(HEX1 == 4'h6) ? 7'b0000010 :
-		(HEX1 == 4'h7) ? 7'b1111000 :
-		(HEX1 == 4'h8) ? 7'b0000000 :
-		(HEX1 == 4'h9) ? 7'b0010000 :
-		(HEX1 == 4'hA) ? 7'b0001000 :
-		(HEX1 == 4'hb) ? 7'b0000011 :
-		(HEX1 == 4'hc) ? 7'b1000110 :
-		(HEX1 == 4'hd) ? 7'b0100001 :
-		(HEX1 == 4'he) ? 7'b0000110 :
-		/*HEX1 == 4'hf*/ 7'b0001110 ;
-   
-	assign OUTHEX0 =
-		(1'b0)         ? 7'b1111111 : /* IN == OFF */
-		(HEX0 == 4'h0) ? 7'b1000000 :
-		(HEX0 == 4'h1) ? 7'b1111001 :
-		(HEX0 == 4'h2) ? 7'b0100100 :
-		(HEX0 == 4'h3) ? 7'b0110000 :
-		(HEX0 == 4'h4) ? 7'b0011001 :
-		(HEX0 == 4'h5) ? 7'b0010010 :
-		(HEX0 == 4'h6) ? 7'b0000010 :
-		(HEX0 == 4'h7) ? 7'b1111000 :
-		(HEX0 == 4'h8) ? 7'b0000000 :
-		(HEX0 == 4'h9) ? 7'b0010000 :
-		(HEX0 == 4'hA) ? 7'b0001000 :
-		(HEX0 == 4'hb) ? 7'b0000011 :
-		(HEX0 == 4'hc) ? 7'b1000110 :
-		(HEX0 == 4'hd) ? 7'b0100001 :
-		(HEX0 == 4'he) ? 7'b0000110 :
-		/*HEX0 == 4'hf*/ 7'b0001110 ;
-  
-	assign DBUS = rdData ? {8'b0,HEXDATA} :
+
+  // Reading from LEDR onto dbus:
+	assign OUT = LEDR_STATUS;
+	assign DBUS = is_read_data ? {22'b0,LEDR_STATUS} :
 					  {BITS{1'bz}};
-	
 endmodule
 
-module Key(ABUS, DBUS, KEY, WE, INTR, CLK, RESET);
-	parameter BITS;
+module HEX_DEVICE(HEX, ABUS, DBUS, WE, CLK, RESET);
+  parameter BITS;
+  parameter BASE;
+
+  output wire [41:0] HEX;
+  input wire [BITS-1:0] ABUS;
+  inout wire [BITS-1:0] DBUS;
+  input wire WE,CLK,RESET;
+
+  reg [23:0] HEX_out;
+
+  wire sel_data = ABUS == BASE;             //address of HEX
+  wire wr_data = WE && sel_data;
+  wire rd_data = !WE && sel_data;
+
+  always @(posedge CLK or posedge RESET) begin
+  	if (RESET)
+  		HEX_out <= 24'hFEDEAD;
+  	else if (wr_data)
+  		HEX_out <= DBUS[23:0];
+	end
+
+  SevenSeg ss5(.OUT(HEX[41:35]), .IN(HEX_out[23:20]), .OFF(1'b0));
+  SevenSeg ss4(.OUT(HEX[34:28]), .IN(HEX_out[19:16]), .OFF(1'b0));
+  SevenSeg ss3(.OUT(HEX[27:21]), .IN(HEX_out[15:12]), .OFF(1'b0));
+  SevenSeg ss2(.OUT(HEX[20:14]), .IN(HEX_out[11:8]), .OFF(1'b0));
+  SevenSeg ss1(.OUT(HEX[13:7]), .IN(HEX_out[7:4]), .OFF(1'b0));
+  SevenSeg ss0(.OUT(HEX[6:0]), .IN(HEX_out[3:0]), .OFF(1'b0));
+
+  assign DBUS = rd_data ? {{BITS-24{1'b0}}, HEX_out} : {BITS{1'bz}};
+endmodule
+
+module KEY_DEVICE(ABUS, DBUS, KEY, WE, INTR, CLK, RESET);
 	parameter BASE;
+	parameter BITS;
 	
 	input wire [(BITS-1):0] ABUS;
 	inout wire [(BITS-1):0] DBUS;
@@ -973,56 +750,59 @@ module Key(ABUS, DBUS, KEY, WE, INTR, CLK, RESET);
 	input wire CLK, WE, RESET;
 	output wire INTR;
 	
-	wire selData = (ABUS === BASE);
-	wire selCtl = (ABUS === BASE + 4);
-	reg [3:0] sample;
-	reg [3:0] last_sample;
-	reg [3:0] KEYDATA;
-	reg [(BITS-1):0] KEYCTRL;
-	reg [3:0] clockCount;
+	wire is_DATA_address = (ABUS === BASE);
+	wire is_CTL_address = (ABUS === BASE + 4);
+
+	reg [(BITS-1):0] KEY_CTRL;
+	reg [3:0] KEY_STATUS;
+	reg [3:0] current_poll;
+	reg [3:0] previous_poll;
+	reg [3:0] count;
+
 	always @ (posedge CLK or posedge RESET) begin 
 		if (RESET) begin
-			KEYDATA <= 4'h0;
-			KEYCTRL <= {(BITS-1){1'b0}};
-			last_sample <= 4'h0;
-			sample <= 4'h0;
-			clockCount <= 4'h0;
+			KEY_STATUS <= 4'h0;
+			KEY_CTRL <= {(BITS-1){1'b0}};
+			current_poll <= 4'h0;
+			previous_poll <= 4'h0;
+			count <= 4'h0;
 		end else begin
-			if (selData && !WE) begin
-				KEYCTRL[0] <= 0;
+			if (is_DATA_address && !WE) begin
+				KEY_CTRL[0] <= 0;
 			end
-			if (clockCount === 4'hF) begin
-				if (last_sample === sample && KEYDATA !== sample) begin
-					KEYDATA <= sample;
-					if (KEYCTRL[0]) begin
-						KEYCTRL[1] <= 1;
+			if (count === 4'hF) begin
+				if (previous_poll === current_poll && KEY_STATUS !== current_poll) begin
+					KEY_STATUS <= current_poll;
+					if (KEY_CTRL[0]) begin
+						KEY_CTRL[1] <= 1;
 					end else begin
-						KEYCTRL[0] <= 1;
+						KEY_CTRL[0] <= 1;
 					end
 				end
-				sample <= ~KEY;
-				last_sample <= sample;
-				clockCount <= 4'h0;
+				current_poll <= ~KEY;
+				previous_poll <= current_poll;
+				count <= 4'h0;
 			end
-			clockCount <= clockCount + 4'h1;
-			if (selCtl && WE) begin
+			count <= count + 4'h1;
+			if (is_CTL_address && WE) begin
 				if (DBUS[1] === 0) begin
-					KEYCTRL[1] <= 0;
+					KEY_CTRL[1] <= 0;
 				end
-				KEYCTRL[4] <= DBUS[4];
+				KEY_CTRL[4] <= DBUS[4];
 			end
 		end
 	end
 	
-	assign INTR = KEYCTRL[0] && KEYCTRL[4];
-	assign DBUS = (selData && !WE) ? {{(BITS-4){1'b0}},KEYDATA} : 
-					  (selCtl && !WE) ? KEYCTRL : 
+  // Reading from Key onto dbus:
+	assign INTR = KEY_CTRL[0] && KEY_CTRL[4];
+	assign DBUS = (is_DATA_address && !WE) ? {{(BITS-4){1'b0}},KEY_STATUS} : 
+					  (is_CTL_address && !WE) ? KEY_CTRL : 
 					  {BITS{1'bz}};
 endmodule
 
-module Switch(ABUS, DBUS, SW, WE, INTR, CLK, RESET);
-	parameter BITS;
+module SWITCH_DEVICE(ABUS, DBUS, SW, WE, INTR, CLK, RESET);
 	parameter BASE;
+	parameter BITS;
 	
 	input wire [(BITS-1):0] ABUS;
 	inout wire [(BITS-1):0] DBUS;
@@ -1030,96 +810,99 @@ module Switch(ABUS, DBUS, SW, WE, INTR, CLK, RESET);
 	input wire CLK, WE, RESET;
 	output wire INTR;
 	
-	wire selData = (ABUS === BASE);
-	wire selCtl = (ABUS === BASE + 4);
-	reg [9:0] sample;
-	reg [9:0] last_sample;
-	reg [9:0] SDATA;
-	reg [(BITS-1):0] SCTRL;
-	reg [11:0] clockCount;
+	wire is_DATA_address = (ABUS === BASE);
+	wire is_CTL_address = (ABUS === BASE + 4);
+
+	reg [9:0] SW_STATUS;
+	reg [(BITS-1):0] SW_CTRL;
+	reg [9:0] current_poll;
+	reg [9:0] previous_poll;
+	reg [11:0] count;
+
 	always @ (posedge CLK or posedge RESET) begin 
 		if (RESET) begin
-			SDATA <= 10'h0;
-			SCTRL <= {(BITS-1){1'b0}};
-			sample <= 10'h0;
-			last_sample <= 10'h0;
-			clockCount <= 12'h0;
+			SW_STATUS <= 10'h0;
+			SW_CTRL <= {(BITS-1){1'b0}};
+			current_poll <= 10'h0;
+			previous_poll <= 10'h0;
+			count <= 12'h0;
 		end else begin
-			if (selData && !WE) begin
-				SCTRL[0] <= 0;
+			if (is_DATA_address && !WE) begin
+				SW_CTRL[0] <= 0;
 			end
-			if (clockCount === 12'hFFF) begin
-				if (last_sample === sample && SDATA !== sample) begin
-					SDATA <= sample;
-					SCTRL[0] <= 1;
+			if (count === 12'hFFF) begin
+				if (previous_poll === current_poll && SW_STATUS !== current_poll) begin
+					SW_STATUS <= current_poll;
+					SW_CTRL[0] <= 1;
 				end
-				sample <= SW;
-				last_sample <= sample;
-				clockCount <= 12'h0;
+				current_poll <= SW;
+				previous_poll <= current_poll;
+				count <= 12'h0;
 			end
-			clockCount <= clockCount + 12'h1;
-			if (WE && selCtl) begin
+			count <= count + 12'h1;
+			if (WE && is_CTL_address) begin
 				if (DBUS[1] === 0) begin
-					SCTRL[1] <= 0;
+					SW_CTRL[1] <= 0;
 				end
-				SCTRL[4] <= DBUS[4];
+				SW_CTRL[4] <= DBUS[4];
 			end
 		end
 	end
 	
-	assign INTR = SCTRL[0] && SCTRL[4];
-	assign DBUS = (selData && !WE) ? {{(BITS-10){1'b0}},SDATA} : 
-					  (selCtl && !WE) ? SCTRL : 
+  // Reading from SW onto dbus:
+	assign INTR = SW_CTRL[0] && SW_CTRL[4];
+	assign DBUS = (is_DATA_address && !WE) ? {{(BITS-10){1'b0}},SW_STATUS} : 
+					  (is_CTL_address && !WE) ? SW_CTRL : 
 					  {BITS{1'bz}};
 endmodule
 
-module Timer(ABUS, DBUS, WE, INTR, CLK, RESET);
-	parameter BITS;
+module TIMER_DEVICE(ABUS, DBUS, WE, INTR, CLK, RESET);
 	parameter BASE;
-	parameter CLOCK_FREQ = 100000000;
+	parameter BITS;
+	// parameter CLOCK_FREQ = 100000000;
+	parameter CLOCK_FREQ = 50000000;
 	
 	input wire [(BITS-1):0] ABUS;
 	inout wire [(BITS-1):0] DBUS;
 	input wire WE, CLK, RESET;
 	output wire INTR;
 	
-	wire selCnt = (ABUS === BASE);
-	wire selLim = (ABUS === BASE + 4);
-	wire selCtl = (ABUS === BASE + 8); // select TCTL
+	wire is_CNT_address = (ABUS === BASE);
+	wire is_LIM_address = (ABUS === BASE + 4);
+	wire is_CTL_address = (ABUS === BASE + 8); // timer control address
 	
-	wire rdLim = (!WE) && selLim;
-	wire rdCtl = (!WE) && selCtl;
-	wire rdCnt = (!WE) && selCnt;
+	wire is_LIM_read = (!WE) && is_LIM_address;
+	wire is_CTL_read = (!WE) && is_CTL_address;
+	wire is_CNT_read = (!WE) && is_CNT_address;
 	
 	reg [(BITS - 1):0] TCNT; // current value of counter
 	reg [(BITS - 1):0] TLIM; // counter limit
 	reg [(BITS - 1):0] TCTL; // control/status reg
-	
-	reg [(BITS - 1):0] ms_count;
+	reg [(BITS - 1):0] counter; // counts number of elapsed milliseconds
 	
 	always @ (posedge CLK or posedge RESET) begin
 		if (RESET) begin 
 			TCNT <= {(BITS - 1){1'b0}};
 			TLIM <= {(BITS - 1){1'b0}};
 			TCTL <= {(BITS - 1){1'b0}};
-			ms_count <= {(BITS-1){1'b0}};
+			counter <= {(BITS-1){1'b0}};
 		end else begin 
 			if (WE) begin
-				if (selCnt) begin
+				if (is_CNT_address) begin
 					TCNT <= DBUS;
-				end else if (selLim) begin
+				end else if (is_LIM_address) begin
 					TCNT <= 0;
 					TLIM <= DBUS;
 				end
 			
-				if (selCtl) begin
+				if (is_CTL_address) begin
 					if (DBUS[0] == 0) 
-						TCTL[0] <= DBUS[0];	// clear ready bit
+						TCTL[0] <= DBUS[0];	// disable the ready bit
 					
 					if (DBUS[1] == 0) 
-						TCTL[1] <= DBUS[1];	// clear overflow bit
+						TCTL[1] <= DBUS[1];	// disable the overflow bit
 					
-					TCTL[4] <= DBUS[4]; 	// fill interrupt bit
+					TCTL[4] <= DBUS[4]; 	// copy over to interrupt bit
 				end
 			end
 			
@@ -1131,18 +914,18 @@ module Timer(ABUS, DBUS, WE, INTR, CLK, RESET);
 					TCTL[0] <= 1;
 				end
 			end
-			ms_count <= ms_count + 1;
-			if (ms_count >= CLOCK_FREQ / 1000) begin
+			counter <= counter + 1;
+			if (counter >= CLOCK_FREQ / 1000) begin
 				TCNT <= TCNT + 1;
-				ms_count <= 0;
+				counter <= 0;
 			end
 		end
 	end
 	
+  // Reading from Timer onto dbus:
 	assign INTR = TCTL[4] && TCTL[0];
-	assign DBUS = rdCtl ? {TCTL} :
-					  rdCnt ? {TCNT} :
-					  rdLim ? {TLIM} :
+	assign DBUS = is_CTL_read ? {TCTL} :
+					  is_CNT_read ? {TCNT} :
+					  is_LIM_read ? {TLIM} :
 					  {BITS{1'bz}};
-	
 endmodule
